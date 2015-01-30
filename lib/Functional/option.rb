@@ -3,21 +3,13 @@ module Functional
     def self.empty
       None()
     end
-  end
 
-  def Option(value)
-    if value == nil
-      None()
-    else
-      Some(value)
+    def empty?
+      fail NotImplementedError
     end
-  end
 
-  def None
-    None.new
-  end
-
-  def Some(value)
-    Some.new(value)
+    def defined?
+      !empty?
+    end
   end
 end
