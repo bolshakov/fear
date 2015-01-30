@@ -5,5 +5,9 @@ module Functional
     def empty?
       true
     end
+
+    def get
+      fail NoMethodError, 'None#get'
+    end
   end
 end

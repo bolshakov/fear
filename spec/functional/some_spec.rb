@@ -12,4 +12,12 @@ RSpec.describe Some do
 
     expect(some).to be_defined
   end
+
+  specify '#get returns value' do
+    value = double('wrapped value')
+
+    some = Some(value)
+
+    expect(some.get).to eq value
+  end
 end

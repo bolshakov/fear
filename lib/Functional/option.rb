@@ -5,11 +5,15 @@ module Functional
     end
 
     def empty?
-      fail NotImplementedError
+      fail NotImplementedError, "#{self.class.name}#empty?"
     end
 
     def defined?
       !empty?
+    end
+
+    def get
+      fail NotImplementedError, "#{self.class.name}#get"
     end
   end
 end

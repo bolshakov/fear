@@ -5,5 +5,9 @@ module Functional
     def empty?
       false
     end
+
+    def get
+      value
+    end
   end
 end
