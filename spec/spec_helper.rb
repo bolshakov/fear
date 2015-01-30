@@ -1,4 +1,7 @@
 require 'functional'
+$:<< File.join(File.dirname(__FILE__), '..')
+
+require 'spec/functional/option_examples'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
