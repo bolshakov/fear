@@ -30,4 +30,10 @@ RSpec.describe None do
 
     expect(result).to eq nil
   end
+
+  specify '#map returns None' do
+    result = none.map { |value| value*42 }
+
+    expect(result).to be_kind_of(None)
+  end
 end

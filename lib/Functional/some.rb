@@ -9,5 +9,21 @@ module Functional
     def get
       value
     end
+
+    def ==(that)
+      if that.is_a?(Some)
+        value == that.value
+      else
+        false
+      end
+    end
+
+    def eql?(that)
+      if that.is_a?(Some)
+        value.eql?(that.value)
+      else
+        false
+      end
+    end
   end
 end

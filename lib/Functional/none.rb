@@ -9,5 +9,13 @@ module Functional
     def get
       fail NoMethodError, 'None#get'
     end
+
+    def ==(that)
+      that.is_a?(None)
+    end
+
+    def eql?(that)
+      that.is_a?(None)
+    end
   end
 end

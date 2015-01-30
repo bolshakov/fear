@@ -3,7 +3,7 @@ include Functional
 RSpec.describe Some do
   it_behaves_like 'Option'
 
-  let(:value) { double('wrapped value') }
+  let(:value) { 42 }
 
   subject(:some) { Some(value) }
 
@@ -35,5 +35,11 @@ RSpec.describe Some do
     result = some.or_nil
 
     expect(result).to eq value
+  end
+
+  specify '#map returns Some with block applied to the value' do
+    result = some.map { |value| value + 42 }
+
+    expect(result).to eq Some(84)
   end
 end

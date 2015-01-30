@@ -40,5 +40,17 @@ module Functional
     def or_nil
       get_or_else { nil }
     end
+
+    # Returns a Some containing the result of applying `block` to this option's
+    # value if this Option is nonempty.
+    # Otherwise return None.
+    #
+    def map(&block)
+      if empty?
+        None()
+      else
+        Some(block.call(value))
+      end
+    end
   end
 end
