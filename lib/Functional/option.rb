@@ -26,7 +26,7 @@ module Functional
     # return the result of evaluating `default`.
     #
     def get_or_else(&default)
-      fail ArgumentError, '#get_or_else: block should be passed' unless block_given?
+      fail ArgumentError, '#get_or_else: no block given' unless block_given?
       if empty?
         default.call
       else
@@ -46,10 +46,24 @@ module Functional
     # Otherwise return None.
     #
     def map(&block)
+      fail ArgumentError, '#map: no block given' unless block_given?
       if empty?
         None()
       else
         Some(block.call(value))
+      end
+    end
+
+    # Returns the result of applying `block` to this option's
+    # value if the option is nonempty.  Otherwise, evaluates
+    # expression `if_empty`.
+    #
+    def inject(if_empty, &block)
+      fail ArgumentError, '#inject: no block given' unless block_given?
+      if empty?
+        if_empty
+      else
+        block.call(value)
       end
     end
   end

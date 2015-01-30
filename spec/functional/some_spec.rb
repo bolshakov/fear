@@ -42,4 +42,10 @@ RSpec.describe Some do
 
     expect(result).to eq Some(84)
   end
+
+  specify '#inject returns result of block evaluation' do
+    result = some.inject(13) { |value| value + 42}
+
+    expect(result).to eq 84
+  end
 end
