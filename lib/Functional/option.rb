@@ -12,7 +12,7 @@ module Functional
 
     # Returns true if the option is an instance of Some, false otherwise.
     #
-    def defined?
+    def present?
       !empty?
     end
 
@@ -50,7 +50,7 @@ module Functional
       if empty?
         None()
       else
-        Some(block.call(value))
+        Some(block.call(get))
       end
     end
 
@@ -63,7 +63,19 @@ module Functional
       if empty?
         if_empty
       else
-        block.call(value)
+        block.call(get)
+      end
+    end
+
+    # Returns this option if it is nonempty and applying the predicate to
+    # this option's value returns true. Otherwise, return none.
+    #
+    def select(&predicate)
+      fail ArgumentError, '#filter: no block given' unless block_given?
+      if(present? && predicate.call(get))
+        self
+      else
+        None()
       end
     end
   end

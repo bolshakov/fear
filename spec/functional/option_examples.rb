@@ -16,4 +16,10 @@ RSpec.shared_examples 'Option' do
       subject.inject(32)
     end.to raise_error(ArgumentError)
   end
+
+  specify '#select raises exception is no block given' do
+    expect do
+      subject.select
+    end.to raise_error(ArgumentError)
+  end
 end

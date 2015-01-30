@@ -11,8 +11,8 @@ RSpec.describe Some do
     expect(some).not_to be_empty
   end
 
-  it 'is defined' do
-    expect(some).to be_defined
+  it 'is present' do
+    expect(some).to be_present
   end
 
   specify '#get returns value' do
@@ -47,5 +47,17 @@ RSpec.describe Some do
     result = some.inject(13) { |value| value + 42}
 
     expect(result).to eq 84
+  end
+
+  specify '#select returens self if predicate evaluates to true' do
+    result = some.select { |value| value > 40}
+
+    expect(result).to eq some
+  end
+
+  specify '#select returns None if predicate evaluates to false' do
+    result = some.select { |value| value < 40}
+
+    expect(result).to eq None()
   end
 end

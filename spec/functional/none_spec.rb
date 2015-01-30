@@ -9,8 +9,8 @@ RSpec.describe None do
     expect(none).to be_empty
   end
 
-  it 'is not defined' do
-    expect(none).not_to be_defined
+  it 'is not present' do
+    expect(none).not_to be_present
   end
 
   specify '#get fails with exception' do
@@ -41,5 +41,11 @@ RSpec.describe None do
     result = none.inject(13) { |value| value + 42}
 
     expect(result).to eq 13
+  end
+
+  specify '#select returns None' do
+    result = none.select { |value| value > 42 }
+
+    expect(result).to eq None()
   end
 end
