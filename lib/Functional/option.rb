@@ -33,5 +33,12 @@ module Functional
         get
       end
     end
+
+    # Returns the option's value if it is nonempty,
+    # or `nil` if it is empty.
+    #
+    def or_nil
+      get_or_else { nil }
+    end
   end
 end

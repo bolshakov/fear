@@ -24,4 +24,10 @@ RSpec.describe None do
 
     expect(result).to eq 42
   end
+
+  specify '#or_nil returns nil' do
+    result = none.or_nil
+
+    expect(result).to eq nil
+  end
 end

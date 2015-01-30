@@ -30,4 +30,10 @@ RSpec.describe Some do
 
     expect(result).to eq value
   end
+
+  specify '#or_nil returns value' do
+    result = some.or_nil
+
+    expect(result).to eq value
+  end
 end
