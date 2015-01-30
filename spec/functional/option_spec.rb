@@ -13,5 +13,11 @@ RSpec.describe Option do
 
       expect(option).to be_kind_of(None)
     end
+
+    specify '#empty returns None' do
+      empty = Option.empty
+
+      expect(empty).to be_kind_of(None)
+    end
   end
 end

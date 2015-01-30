@@ -1,5 +1,8 @@
 module Functional
   module Option
+    def self.empty
+      None()
+    end
   end
 
   def Option(value)
