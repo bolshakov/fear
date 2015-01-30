@@ -22,4 +22,10 @@ RSpec.shared_examples 'Option' do
       subject.select
     end.to raise_error(ArgumentError)
   end
+
+  specify '#reject raises exception is no block given' do
+    expect do
+      subject.reject
+    end.to raise_error(ArgumentError)
+  end
 end

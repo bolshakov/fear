@@ -78,5 +78,17 @@ module Functional
         None()
       end
     end
+
+    # Returns this option if it is nonempty and applying the predicate to
+    # this option's value returns false. Otherwise, return none.
+    #
+    def reject(&predicate)
+      fail ArgumentError, '#reject: no block given' unless block_given?
+      if(present? && !predicate.call(get))
+        self
+      else
+        None()
+      end
+    end
   end
 end

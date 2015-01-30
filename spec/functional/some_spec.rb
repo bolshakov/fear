@@ -49,7 +49,7 @@ RSpec.describe Some do
     expect(result).to eq 84
   end
 
-  specify '#select returens self if predicate evaluates to true' do
+  specify '#select returns self if predicate evaluates to true' do
     result = some.select { |value| value > 40}
 
     expect(result).to eq some
@@ -57,6 +57,18 @@ RSpec.describe Some do
 
   specify '#select returns None if predicate evaluates to false' do
     result = some.select { |value| value < 40}
+
+    expect(result).to eq None()
+  end
+
+  specify '#reject returns self if predicate evaluates to false' do
+    result = some.reject { |value| value < 40 }
+
+    expect(result).to eq some
+  end
+
+  specify '#reject returns None if predicate evaluates to true' do
+    result = some.reject { |value| value > 40}
 
     expect(result).to eq None()
   end

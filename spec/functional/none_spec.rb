@@ -48,4 +48,10 @@ RSpec.describe None do
 
     expect(result).to eq None()
   end
+
+  specify '#reject returns None' do
+    result = none.reject { |value| value > 42 }
+
+    expect(result).to eq None()
+  end
 end
