@@ -1,6 +1,13 @@
 module Functional
-  class Some < Struct.new(:value)
+  class Some
     include Option
+
+    attr_reader :value
+    protected :value
+
+    def initialize(value)
+      @value = value
+    end
 
     def empty?
       false
