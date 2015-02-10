@@ -23,12 +23,11 @@ module Functional
     end
 
     # Returns the option's value if the option is nonempty, otherwise
-    # return the result of evaluating `default`.
+    # return `default`.
     #
-    def get_or_else(&default)
-      fail ArgumentError, '#get_or_else: no block given' unless block_given?
+    def get_or_else(default)
       if empty?
-        default.call
+        default
       else
         get
       end
@@ -38,7 +37,7 @@ module Functional
     # or `nil` if it is empty.
     #
     def or_nil
-      get_or_else { nil }
+      get_or_else(nil)
     end
 
     # Returns a Some containing the result of applying `block` to this option's

@@ -19,14 +19,8 @@ RSpec.describe Some do
     expect(some.get).to eq value
   end
 
-  specify '#get_or_else does not evaluate block' do
-    expect do |default|
-      some.get_or_else(&default)
-    end.not_to yield_control
-  end
-
   specify '#get_or_else returns value' do
-    result = some.get_or_else { 42 }
+    result = some.get_or_else(42)
 
     expect(result).to eq value
   end
