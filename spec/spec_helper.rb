@@ -1,5 +1,5 @@
-require 'functional'
 $:<< File.join(File.dirname(__FILE__), '..')
+require 'functional'
 
 require 'spec/functional/option_examples'
 
