@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'functional/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "functional"
-  spec.version       = Functional::VERSION
+  spec.version       = '0.0.0'
   spec.authors       = ["TODO: Write your name"]
   spec.email         = ["abolshakov@spbtv.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
