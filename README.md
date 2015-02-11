@@ -1,4 +1,5 @@
 # Functional
+[![Build Status](https://travis-ci.org/bolshakov/functional.svg?branch=master)](https://travis-ci.org/bolshakov/functional)
 
 TODO: Write a gem description
 
