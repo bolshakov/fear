@@ -44,5 +44,16 @@ module Functional
         default
       end
     end
+
+    # Returns `None` if this is a `Failure` or a `Some` containing the
+    # value if this is a `Success`.
+    #
+    def to_option
+      if success?
+        Some(get)
+      else
+        None()
+      end
+    end
   end
 end

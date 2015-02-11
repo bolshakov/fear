@@ -33,4 +33,9 @@ RSpec.describe Failure do
       failure.or_else(default)
     end.to raise_error(ArgumentError, 'default should be Try')
   end
+
+  specify '#to_option returns None' do
+    option = failure.to_option
+    expect(option).to be_kind_of(None)
+  end
 end

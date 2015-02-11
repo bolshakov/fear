@@ -23,4 +23,9 @@ RSpec.describe Success do
 
     expect(val).to eq success
   end
+
+  specify '#to_option returns Some' do
+    option = success.to_option
+    expect(option).to eq Some(value)
+  end
 end
