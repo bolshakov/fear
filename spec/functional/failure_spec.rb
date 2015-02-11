@@ -38,4 +38,10 @@ RSpec.describe Failure do
     option = failure.to_option
     expect(option).to be_kind_of(None)
   end
+
+  specify '#each do nothing' do
+    expect do |block|
+      failure.each(&block)
+    end.not_to yield_control
+  end
 end

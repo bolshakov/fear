@@ -28,4 +28,10 @@ RSpec.describe Success do
     option = success.to_option
     expect(option).to eq Some(value)
   end
+
+  specify '#each applies given block' do
+    expect do |block|
+      success.each(&block)
+    end.to yield_with_args(value)
+  end
 end

@@ -55,5 +55,17 @@ module Functional
         None()
       end
     end
+
+    # Applies the given block if this is a `Success`
+    #
+    # Note: If `block` throws exception, then this method may throw an exception.
+    #
+    def each(&block)
+      fail ArgumentError unless block_given?
+      if success?
+        block.call(get)
+      end
+      nil
+    end
   end
 end
