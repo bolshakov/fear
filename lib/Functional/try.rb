@@ -1,22 +1,24 @@
 module Functional
   module Try
+    BLOCK_REQUIRED = 'block required'.freeze
+
     # Returns `true` if the `Try` is a `Failure`, `false` otherwise.
     #
     def failure?
-      fail NotImplementedError, "#{self.class.name}#failure?"
+      assert_method_defined!('failure?')
     end
 
     # Returns `true` if the `Try` is a `Success`, `false` otherwise.
     #
     def success?
-      fail NotImplementedError, "#{self.class.name}#success?"
+      assert_method_defined!('success?')
     end
 
     # Returns the value from this `Success` or throws the exception if
     # this is a `Failure`.
     #
     def get
-      fail NotImplementedError, "#{self.class.name}#get?"
+      assert_method_defined!('get')
     end
 
     # Returns the value from this `Success` or the given `default`
@@ -38,6 +40,7 @@ module Functional
     #
     def or_else(default)
       fail ArgumentError, 'default should be Try' unless default.is_a?(Try)
+
       if success?
         self
       else
@@ -61,7 +64,8 @@ module Functional
     # Note: If `block` throws exception, then this method may throw an exception.
     #
     def each(&block)
-      fail ArgumentError unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
       if success?
         block.call(get)
       end
@@ -72,7 +76,7 @@ module Functional
     # or returns this if this is a `Failure`.
     #
     def flat_map(&block)
-      fail ArgumentError unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       if success?
         Try { block.call(value) }
@@ -82,5 +86,11 @@ module Functional
     end
 
     alias_method :map, :flat_map
+
+    private
+
+    def assert_method_defined!(method)
+      fail NotImplementedError, "#{self.class.name}##{method}"
+    end
   end
 end

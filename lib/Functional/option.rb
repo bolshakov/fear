@@ -35,6 +35,8 @@ module Functional
   #  situations where one could have retained an Option.
   #
   module Option
+    BLOCK_REQUIRED = 'block required'.freeze
+
     def self.empty
       None()
     end
@@ -42,7 +44,7 @@ module Functional
     # Returns true if the option is None, false otherwise.
     #
     def empty?
-      fail NotImplementedError, "#{self.class.name}#empty?"
+      assert_method_defined!('empty?')
     end
 
     # Returns true if the option is an instance of Some, false otherwise.
@@ -54,7 +56,7 @@ module Functional
     # Returns the option's value.
     #
     def get
-      fail NotImplementedError, "#{self.class.name}#get"
+      assert_method_defined!('get')
     end
 
     # Returns the option's value if the option is nonempty, otherwise
@@ -80,7 +82,8 @@ module Functional
     # Otherwise return None.
     #
     def map(&block)
-      fail ArgumentError, '#map: no block given' unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
       if empty?
         None()
       else
@@ -93,7 +96,8 @@ module Functional
     # expression `if_empty`.
     #
     def inject(if_empty, &block)
-      fail ArgumentError, '#inject: no block given' unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
       if empty?
         if_empty
       else
@@ -105,7 +109,8 @@ module Functional
     # this option's value returns true. Otherwise, return none.
     #
     def select(&predicate)
-      fail ArgumentError, '#filter: no block given' unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
       if(present? && predicate.call(get))
         self
       else
@@ -117,12 +122,19 @@ module Functional
     # this option's value returns false. Otherwise, return none.
     #
     def reject(&predicate)
-      fail ArgumentError, '#reject: no block given' unless block_given?
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
       if(present? && !predicate.call(get))
         self
       else
         None()
       end
+    end
+
+    private
+
+    def assert_method_defined!(method)
+      fail NotImplementedError, "#{self.class.name}##{method}"
     end
   end
 end
