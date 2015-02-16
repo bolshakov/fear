@@ -87,6 +87,25 @@ module Functional
 
     alias_method :map, :flat_map
 
+    # Converts this to a `Failure` if the predicate
+    # is not satisfied.
+    #
+    def select(&predicate)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      if success?
+        Try do
+          if predicate.call(value)
+            value
+          else
+            fail "Predicate does not hold for #{value}"
+          end
+        end
+      else
+        self
+      end
+    end
+
     private
 
     def assert_method_defined!(method)

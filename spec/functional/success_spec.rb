@@ -47,4 +47,22 @@ RSpec.describe Success do
 
     expect(flat_mapped_success).to eq Failure(error)
   end
+
+  specify '#select returns self is predicate holds for value' do
+    selected_success = success.select { |val| val == value }
+
+    expect(selected_success).to eq success
+  end
+
+  specify '#select returns Failure is predicate does not hold for value' do
+    selected_success = success.select { |val| val != value }
+
+    begin
+      selected_success.get
+    rescue => error
+      expect(error.message).to eq 'Predicate does not hold for 42'
+    end
+
+    expect(selected_success).to be_kind_of(Failure)
+  end
 end
