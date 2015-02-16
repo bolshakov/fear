@@ -44,4 +44,10 @@ RSpec.describe Failure do
       failure.each(&block)
     end.not_to yield_control
   end
+
+  specify '#flat_map returns self' do
+    flat_mapped_failure = failure.flat_map { |value| value * 2 }
+
+    expect(flat_mapped_failure).to eq failure
+  end
 end

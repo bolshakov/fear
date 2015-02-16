@@ -34,4 +34,17 @@ RSpec.describe Success do
       success.each(&block)
     end.to yield_with_args(value)
   end
+
+  specify '#flat_map returns Success if block is not failing' do
+    flat_mapped_success = success.flat_map { |val| val*2 }
+
+    expect(flat_mapped_success).to eq Success(84)
+  end
+
+  specify 'flat_map returns Failure if block is failing' do
+    error = StandardError.new
+    flat_mapped_success = success.flat_map { |_| fail error }
+
+    expect(flat_mapped_success).to eq Failure(error)
+  end
 end

@@ -67,5 +67,18 @@ module Functional
       end
       nil
     end
+
+    # Returns the given function applied to the value from this `Success`
+    # or returns this if this is a `Failure`.
+    #
+    def flat_map(&block)
+      fail ArgumentError unless block_given?
+
+      if success?
+        Try { block.call(value) }
+      else
+        self
+      end
+    end
   end
 end
