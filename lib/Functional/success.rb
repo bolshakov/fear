@@ -20,5 +20,9 @@ module Functional
     def get
       value
     end
+
+    def ==(other)
+      self.value == other.value
+    end
   end
 end

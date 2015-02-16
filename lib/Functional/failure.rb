@@ -20,5 +20,9 @@ module Functional
     def get
       fail exception
     end
+
+    def ==(other)
+      self.exception == other.exception
+    end
   end
 end
