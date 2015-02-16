@@ -80,5 +80,7 @@ module Functional
         self
       end
     end
+
+    alias_method :map, :flat_map
   end
 end
