@@ -39,6 +39,14 @@ module Functional
       Some(get)
     end
 
+    def flatten
+      if self.value.is_a?(Try)
+        self.value.flatten
+      else
+        self
+      end
+    end
+
     def each(&block)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 

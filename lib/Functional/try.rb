@@ -45,6 +45,12 @@ module Functional
       assert_method_defined!('to_option')
     end
 
+    # Transforms a nested `Try`, ie, a `Success` of `Success``,
+    # into an un-nested `Try`, ie, a `Success`.
+    def flatten
+      assert_method_defined!('flatten')
+    end
+
     # Applies the given block if this is a `Success`
     #
     # Note: If `block` throws exception, then this method may throw an exception.

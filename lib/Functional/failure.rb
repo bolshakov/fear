@@ -39,6 +39,10 @@ module Functional
       None()
     end
 
+    def flatten
+      self
+    end
+
     def each(&_block)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
     end

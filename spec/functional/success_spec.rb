@@ -26,7 +26,30 @@ RSpec.describe Success do
 
   specify '#to_option returns Some' do
     option = success.to_option
+
     expect(option).to eq Some(value)
+  end
+
+  context '#flatten' do
+    specify 'Success of Success' do
+      flatten_success = Success(success).flatten
+
+      expect(flatten_success).to eq success
+    end
+
+    specify 'Success of Success of Success' do
+      flatten_success = Success(Success(success)).flatten
+
+      expect(flatten_success).to eq success
+    end
+
+    specify 'Success of Failure' do
+      failure = Failure(StandardError.new)
+
+      flatten_success = Success(failure).flatten
+
+      expect(flatten_success).to eq failure
+    end
   end
 
   specify '#each applies given block' do

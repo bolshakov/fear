@@ -36,7 +36,14 @@ RSpec.describe Failure do
 
   specify '#to_option returns None' do
     option = failure.to_option
+
     expect(option).to be_kind_of(None)
+  end
+
+  specify '#flatten returns self' do
+    flatten_failure = failure.flatten
+
+    expect(flatten_failure).to eq failure
   end
 
   specify '#each do nothing' do
