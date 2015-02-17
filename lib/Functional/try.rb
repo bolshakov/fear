@@ -27,62 +27,37 @@ module Functional
     # Note: This will throw an exception if it is not a success and
     # default throws an exception
     #
-    def get_or_else(default)
-      if success?
-        get
-      else
-        default
-      end
+    def get_or_else(_default)
+      assert_method_defined!('get_or_else')
     end
 
     # Returns this `Try` if it's a `Success` or the given `default`
     # argument if this is a `Failure`.
     #
-    def or_else(default)
-      fail ArgumentError, 'default should be Try' unless default.is_a?(Try)
-
-      if success?
-        self
-      else
-        default
-      end
+    def or_else(_default)
+      assert_method_defined!('or_else')
     end
 
     # Returns `None` if this is a `Failure` or a `Some` containing the
     # value if this is a `Success`.
     #
     def to_option
-      if success?
-        Some(get)
-      else
-        None()
-      end
+      assert_method_defined!('to_option')
     end
 
     # Applies the given block if this is a `Success`
     #
     # Note: If `block` throws exception, then this method may throw an exception.
     #
-    def each(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      if success?
-        block.call(get)
-      end
-      nil
+    def each(&_block)
+      assert_method_defined!('each')
     end
 
     # Returns the given function applied to the value from this `Success`
     # or returns this if this is a `Failure`.
     #
-    def flat_map(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      if success?
-        Try { block.call(value) }
-      else
-        self
-      end
+    def flat_map(&_block)
+      assert_method_defined!('flat_map')
     end
 
     alias_method :map, :flat_map
@@ -90,20 +65,8 @@ module Functional
     # Converts this to a `Failure` if the predicate
     # is not satisfied.
     #
-    def select(&predicate)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      if success?
-        Try do
-          if predicate.call(value)
-            value
-          else
-            fail "Predicate does not hold for #{value}"
-          end
-        end
-      else
-        self
-      end
+    def select(&_predicate)
+      assert_method_defined!('select')
     end
 
     private
