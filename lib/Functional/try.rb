@@ -62,8 +62,10 @@ module Functional
     # Returns the given function applied to the value from this `Success`
     # or returns this if this is a `Failure`.
     #
-    def flat_map(&_block)
-      assert_method_defined!('flat_map')
+    def flat_map(&block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      map(&block).flatten
     end
 
     # Maps the given function to the value from this `Success`

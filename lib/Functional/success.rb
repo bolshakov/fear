@@ -54,12 +54,6 @@ module Functional
       nil
     end
 
-    def flat_map(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      Try { block.call(value) }
-    end
-
     def map(&block)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
