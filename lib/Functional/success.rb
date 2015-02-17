@@ -22,7 +22,7 @@ module Functional
     end
 
     def ==(other)
-      self.value == other.value
+      other.is_a?(Success) && self.value == other.value
     end
 
     def get_or_else(_default)
