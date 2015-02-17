@@ -52,6 +52,12 @@ module Functional
       Try { block.call(value) }
     end
 
+    def map(&block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      Try { block.call(value) }
+    end
+
     def select(&predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 

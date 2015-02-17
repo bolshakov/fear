@@ -60,7 +60,12 @@ module Functional
       assert_method_defined!('flat_map')
     end
 
-    alias_method :map, :flat_map
+    # Maps the given function to the value from this `Success`
+    # or returns this if this is a `Failure`.
+    #
+    def map(&_block)
+      assert_method_defined!('map')
+    end
 
     # Converts this to a `Failure` if the predicate
     # is not satisfied.

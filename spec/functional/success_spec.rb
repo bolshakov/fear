@@ -41,11 +41,19 @@ RSpec.describe Success do
     expect(flat_mapped_success).to eq Success(84)
   end
 
-  specify 'flat_map returns Failure if block is failing' do
-    error = StandardError.new
-    flat_mapped_success = success.flat_map { |_| fail error }
+  context '#map' do
+    specify 'returns Success if block is not failing' do
+      mapped_success = success.map { |val| val*2 }
 
-    expect(flat_mapped_success).to eq Failure(error)
+      expect(mapped_success).to eq Success(84)
+    end
+
+    specify 'returns Failure if block is failing' do
+      error = StandardError.new
+      mapped_success = success.map { |_| fail error }
+
+      expect(mapped_success).to eq Failure(error)
+    end
   end
 
   specify '#select returns self is predicate holds for value' do

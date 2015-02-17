@@ -51,6 +51,12 @@ RSpec.describe Failure do
     expect(flat_mapped_failure).to eq failure
   end
 
+  specify '#map returns self' do
+    mapped_failure = failure.map { |value| value * 2 }
+
+    expect(mapped_failure).to eq failure
+  end
+
   specify '#select returns self' do
     selected_failure = failure.select { |value| value == 42 }
 

@@ -49,6 +49,12 @@ module Functional
       self
     end
 
+    def map(&_block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      self
+    end
+
     def select(&_predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
