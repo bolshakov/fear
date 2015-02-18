@@ -14,24 +14,16 @@ RSpec.describe Failure do
 
   specify '#get_or_else returns default value' do
     default = 13
-    val = failure.get_or_else(default)
+    val = failure.get_or_else { default }
 
     expect(val).to eq default
   end
 
   specify '#or_else returns default' do
     default = Try { 13 }
-    val = failure.or_else(default)
+    val = failure.or_else { default }
 
     expect(val).to eq default
-  end
-
-  specify '#or_else fail if default is not Try' do
-    default = 13
-
-    expect do
-      failure.or_else(default)
-    end.to raise_error(ArgumentError, 'default should be Try')
   end
 
   specify '#to_option returns None' do

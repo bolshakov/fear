@@ -12,14 +12,14 @@ RSpec.describe Success do
 
   specify '#get_or_else returns value' do
     default = 13
-    val = success.get_or_else(default)
+    val = success.get_or_else { default }
 
     expect(val).to eq value
   end
 
   specify '#or_else returns success' do
     default = Try { 13 }
-    val = success.or_else(default)
+    val = success.or_else { Try { default } }
 
     expect(val).to eq success
   end

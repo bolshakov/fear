@@ -25,14 +25,14 @@ module Functional
       other.is_a?(Failure) && self.exception == other.exception
     end
 
-    def get_or_else(default)
-      default
+    def get_or_else(&default)
+      default.call
     end
 
-    def or_else(default)
-      fail ArgumentError, 'default should be Try' unless default.is_a?(Try)
+    def or_else(&default)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
-      default
+      Try { default.call }.flatten
     end
 
     def to_option

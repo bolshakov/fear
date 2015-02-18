@@ -27,14 +27,14 @@ module Functional
     # Note: This will throw an exception if it is not a success and
     # default throws an exception
     #
-    def get_or_else(_default)
+    def get_or_else(&_default)
       assert_method_defined!('get_or_else')
     end
 
     # Returns this `Try` if it's a `Success` or the given `default`
     # argument if this is a `Failure`.
     #
-    def or_else(_default)
+    def or_else(&_default)
       assert_method_defined!('or_else')
     end
 

@@ -25,12 +25,12 @@ module Functional
       other.is_a?(Success) && self.value == other.value
     end
 
-    def get_or_else(_default)
+    def get_or_else(&_default)
       get
     end
 
-    def or_else(_default)
-      fail ArgumentError, 'default should be Try' unless _default.is_a?(Try)
+    def or_else(&_default)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       self
     end
