@@ -20,7 +20,7 @@ RSpec.describe None do
   end
 
   specify '#get_or_else devaluates block and return its value' do
-    result = none.get_or_else(42)
+    result = none.get_or_else { 42 }
 
     expect(result).to eq 42
   end

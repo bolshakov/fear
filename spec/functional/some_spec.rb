@@ -20,7 +20,7 @@ RSpec.describe Some do
   end
 
   specify '#get_or_else returns value' do
-    result = some.get_or_else(42)
+    result = some.get_or_else { 42 }
 
     expect(result).to eq value
   end
