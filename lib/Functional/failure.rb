@@ -64,5 +64,17 @@ module Functional
 
       self
     end
+
+    def recover_with(&block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      recover(&block).flatten
+    end
+
+    def recover(&block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      Try { block.call(exception) }
+    end
   end
 end

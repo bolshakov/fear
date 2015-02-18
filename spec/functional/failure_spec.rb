@@ -2,7 +2,8 @@ include Functional
 
 RSpec.describe Failure do
   TestError = Class.new(StandardError)
-  let(:error) { TestError }
+  let(:message) { 'something went wrong' }
+  let(:error) { TestError.new(message) }
 
   subject(:failure) { Failure(error) }
 
@@ -60,5 +61,43 @@ RSpec.describe Failure do
     selected_failure = failure.select { |value| value == 42 }
 
     expect(selected_failure).to eq failure
+  end
+
+  context '#recover_with' do
+    specify 'returns failure if block is not failing' do
+      recovered_failure = failure.recover_with { |error| error.message }
+
+      expect(recovered_failure).to eq Success(message)
+    end
+
+    specify 'returns Failure if block is failing' do
+      error = StandardError.new
+      recovered_failure = failure.recover_with { |_| fail error }
+
+      expect(recovered_failure).to eq Failure(error)
+    end
+
+    specify 'flatten 2 levels deep Success' do
+      recovered_failure = failure.recover_with do |error|
+        Success(Failure(error))
+      end
+
+      expect(recovered_failure).to eq Failure(error)
+    end
+  end
+
+  context '#recover' do
+    specify 'returns failure if block is not failing' do
+      recovered_failure = failure.recover { |error| error.message }
+
+      expect(recovered_failure).to eq Success(message)
+    end
+
+    specify 'returns Failure if block is failing' do
+      error = StandardError.new
+      recovered_failure = failure.recover { |_| fail error }
+
+      expect(recovered_failure).to eq Failure(error)
+    end
   end
 end

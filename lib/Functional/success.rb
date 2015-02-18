@@ -71,5 +71,17 @@ module Functional
         end
       end
     end
+
+    def recover_with(&_block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      self
+    end
+
+    def recover(&_block)
+      fail ArgumentError, BLOCK_REQUIRED unless block_given?
+
+      self
+    end
   end
 end

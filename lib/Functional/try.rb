@@ -82,6 +82,22 @@ module Functional
       assert_method_defined!('select')
     end
 
+    # Applies the given `block` if this is a `Failure`,
+    # otherwise returns this if this is a `Success`.
+    # This is like `flat_map` for the exception.
+    #
+    def recover_with(&_block)
+      assert_method_defined!('recover_with')
+    end
+
+    # Applies the given `block` if this is a `Failure`,
+    # otherwise returns this if this is a `Success`.
+    # This is like map for the exception.
+    #
+    def recover(&_block)
+      assert_method_defined!('recover')
+    end
+
     private
 
     def assert_method_defined!(method)

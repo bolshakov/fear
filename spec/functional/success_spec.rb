@@ -113,4 +113,16 @@ RSpec.describe Success do
 
     expect(selected_success).to be_kind_of(Failure)
   end
+
+  specify '#recover_with returns self' do
+    recovered_success = success.recover_with { |value| value * 2 }
+
+    expect(recovered_success).to eq success
+  end
+
+  specify '#recover returns self' do
+    recovered_success = success.recover { |value| value * 2 }
+
+    expect(recovered_success).to eq success
+  end
 end
