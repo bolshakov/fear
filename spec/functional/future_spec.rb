@@ -43,4 +43,22 @@ RSpec.describe Future do
       end.not_to yield_with_args
     end
   end
+
+  context '#on_failure' do
+    it 'do not run callback if no error' do
+      expect do |callback|
+        await do
+          Future { value }.on_failure(&callback)
+        end
+      end.not_to yield_with_args
+    end
+
+    it 'run callback if error occured' do
+      expect do |callback|
+        await do
+          Future { fail error }.on_failure(&callback)
+        end
+      end.to yield_with_args(error)
+    end
+  end
 end

@@ -7,7 +7,6 @@ module Functional
     end
 
     attr_reader :exception
-    protected :exception
 
     def failure?
       true
