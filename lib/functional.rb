@@ -7,6 +7,7 @@ module Functional
   autoload :Try, 'functional/try'
   autoload :Success, 'functional/success'
   autoload :Failure, 'functional/failure'
+  autoload :Future, 'functional/future'
 
   def Option(value)
     if value == nil
@@ -40,5 +41,9 @@ module Functional
 
   def Success(value)
     Success.new(value)
+  end
+
+  def Future(&block)
+    Future.new(&block)
   end
 end
