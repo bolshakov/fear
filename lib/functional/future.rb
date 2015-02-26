@@ -47,8 +47,8 @@ module Functional
     # this will either be applied immediately or be scheduled asynchronously.
     #
     def on_complete(&callback)
-      @future.add_observer do |_time, value, error|
-        callback.call(value || error)
+      @future.add_observer do |_time, try, _error|
+        callback.call(try)
       end
     end
 
