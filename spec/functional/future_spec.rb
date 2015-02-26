@@ -14,7 +14,7 @@ RSpec.describe Future do
         await do
           Future { value }.on_complete(&callback)
         end
-      end.to yield_with_args(value)
+      end.to yield_with_args(Success(value))
     end
 
     it 'run callback with error' do
@@ -22,7 +22,7 @@ RSpec.describe Future do
         await do
           Future { fail error }.on_complete(&callback)
         end
-      end.to yield_with_args(error)
+      end.to yield_with_args(Failure(error))
     end
   end
 end

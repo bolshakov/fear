@@ -5,7 +5,9 @@ module Functional
     NoSuchElementException = Class.new(StandardError)
 
     def initialize(&block)
-      @future = Concurrent::Future.execute(&block)
+      @future = Concurrent::Future.execute do
+        Try(&block)
+      end
     end
 
     # When this future is completed successfully (i.e. with a value),
