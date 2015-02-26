@@ -58,7 +58,7 @@ module Functional
     # @return    `true` if the future is already completed, `false` otherwise
     #
     def completed?
-      fail NotImplementedError
+      @future.fulfilled?
     end
 
     # The value of this `Future`.

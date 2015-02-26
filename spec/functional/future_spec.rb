@@ -4,8 +4,9 @@ RSpec.describe Future do
   let(:value) { 5 }
   let(:error) { StandardError.new('something went wrong') }
   def await(&block)
-    block.call
+    result = block.call
     sleep 0.1
+    result
   end
 
   context '#on_complete' do
@@ -59,6 +60,41 @@ RSpec.describe Future do
           Future { fail error }.on_failure(&callback)
         end
       end.to yield_with_args(error)
+    end
+  end
+
+  context '#completed?' do
+    it 'completed with value' do
+      future = await do
+        Future { value }
+      end
+      expect(future).to be_completed
+    end
+
+    it 'completed with error' do
+      future = await do
+        Future { fail error }
+      end
+      expect(future).to be_completed
+    end
+
+    it 'not completed with value' do
+      future =
+        Future do
+          sleep 1
+          value
+        end
+      expect(future).not_to be_completed
+    end
+
+    it 'not completed with error' do
+      future =
+        Future do
+          sleep 1
+          fail error
+        end
+
+      expect(future).not_to be_completed
     end
   end
 end
