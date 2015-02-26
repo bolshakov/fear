@@ -113,7 +113,7 @@ module Functional
     def select(&predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
-      if(present? && predicate.call(get))
+      if present? && predicate.call(get)
         self
       else
         None()
@@ -126,7 +126,7 @@ module Functional
     def reject(&predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
-      if(present? && !predicate.call(get))
+      if present? && !predicate.call(get)
         self
       else
         None()

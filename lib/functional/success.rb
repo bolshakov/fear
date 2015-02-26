@@ -22,7 +22,7 @@ module Functional
     end
 
     def ==(other)
-      other.is_a?(Success) && self.value == other.value
+      other.is_a?(Success) && value == other.value
     end
 
     def get_or_else(&_default)
@@ -40,8 +40,8 @@ module Functional
     end
 
     def flatten
-      if self.value.is_a?(Try)
-        self.value.flatten
+      if value.is_a?(Try)
+        value.flatten
       else
         self
       end

@@ -38,19 +38,19 @@ RSpec.describe Some do
   end
 
   specify '#inject returns result of block evaluation' do
-    result = some.inject(13) { |value| value + 42}
+    result = some.inject(13) { |value| value + 42 }
 
     expect(result).to eq 84
   end
 
   specify '#select returns self if predicate evaluates to true' do
-    result = some.select { |value| value > 40}
+    result = some.select { |value| value > 40 }
 
     expect(result).to eq some
   end
 
   specify '#select returns None if predicate evaluates to false' do
-    result = some.select { |value| value < 40}
+    result = some.select { |value| value < 40 }
 
     expect(result).to eq None()
   end
@@ -62,7 +62,7 @@ RSpec.describe Some do
   end
 
   specify '#reject returns None if predicate evaluates to true' do
-    result = some.reject { |value| value > 40}
+    result = some.reject { |value| value > 40 }
 
     expect(result).to eq None()
   end

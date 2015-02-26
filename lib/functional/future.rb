@@ -93,7 +93,7 @@ module Functional
     #            the returned future
     # @return    a future that will be completed with the transformed value
     #
-    def transform(s,f)
+    def transform(_s, _f)
       fail NotImplementedError
     end
 
@@ -101,7 +101,7 @@ module Functional
     # this future. If this future is completed with an exception then the new
     # future will also contain this exception.
     #
-    def map(&block)
+    def map(&_block)
       fail NotImplementedError
     end
 
@@ -110,7 +110,7 @@ module Functional
     # If this future is completed with an exception then the new future will
     # also contain this exception.
     #
-    def flat_map(&block)
+    def flat_map(&_block)
       fail NotImplementedError
     end
 
@@ -149,7 +149,7 @@ module Functional
     # Future { 6 / 0 }.recover { |error| 0 if error.is_a?(ArgumentError) } # result: exception
     # Future { 6 / 2 }.recover { |error| 0 if error.is_a?(ZeroDivisionError) } # result: 3
     # }}}
-    def recover(&block)
+    def recover(&_block)
       fail NotImplementedError
     end
 
@@ -161,7 +161,7 @@ module Functional
     # Otherwise, if `that` future fails, the resulting future is failed
     # with the exception stored in `that`.
     #
-    def zip(that)
+    def zip(_that)
       fail NotImplementedError
     end
 
@@ -180,7 +180,7 @@ module Functional
     # f.fallback_to(g) # evaluates to 5
     # }}}
     #
-    def fallback_to(fallback)
+    def fallback_to(_fallback)
       fail NotImplementedError
     end
 
@@ -208,26 +208,26 @@ module Functional
     # end
     # }}}
     #
-    def and_then(&callback)
+    def and_then(&_callback)
       fail NotImplementedError
     end
 
     class << self
       # Creates an already completed Future with the specified exception.
       #
-      def failed(exception)
+      def failed(_exception)
         fail NotImplementedError
       end
 
       # Creates an already completed Future with the specified result.
       #
-      def successful(result)
+      def successful(_result)
         fail NotImplementedError
       end
 
       # Creates an already completed Future with the specified
       # result or exception.
-      def from_try(result)
+      def from_try(_result)
         fail NotImplementedError
       end
 

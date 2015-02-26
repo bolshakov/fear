@@ -32,13 +32,13 @@ RSpec.describe None do
   end
 
   specify '#map returns None' do
-    result = none.map { |value| value*42 }
+    result = none.map { |value| value * 42 }
 
     expect(result).to be_kind_of(None)
   end
 
   specify '#inject returns default value' do
-    result = none.inject(13) { |value| value + 42}
+    result = none.inject(13) { |value| value + 42 }
 
     expect(result).to eq 13
   end

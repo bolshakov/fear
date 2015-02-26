@@ -22,7 +22,7 @@ module Functional
     end
 
     def ==(other)
-      other.is_a?(Failure) && self.exception == other.exception
+      other.is_a?(Failure) && exception == other.exception
     end
 
     def get_or_else(&default)

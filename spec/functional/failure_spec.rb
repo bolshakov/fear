@@ -65,7 +65,7 @@ RSpec.describe Failure do
 
   context '#recover_with' do
     specify 'returns failure if block is not failing' do
-      recovered_failure = failure.recover_with { |error| error.message }
+      recovered_failure = failure.recover_with(&:message)
 
       expect(recovered_failure).to eq Success(message)
     end
@@ -88,7 +88,7 @@ RSpec.describe Failure do
 
   context '#recover' do
     specify 'returns failure if block is not failing' do
-      recovered_failure = failure.recover { |error| error.message }
+      recovered_failure = failure.recover(&:message)
 
       expect(recovered_failure).to eq Success(message)
     end

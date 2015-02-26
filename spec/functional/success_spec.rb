@@ -60,7 +60,7 @@ RSpec.describe Success do
 
   context '#flat_map' do
     specify 'returns Success if block is not failing' do
-      flat_mapped_success = success.flat_map { |val| val*2 }
+      flat_mapped_success = success.flat_map { |val| val * 2 }
 
       expect(flat_mapped_success).to eq Success(84)
     end
@@ -74,7 +74,7 @@ RSpec.describe Success do
 
     specify 'flatten 2 levels deep Success' do
       flat_mapped_success = success.flat_map do |val|
-        Success(Success(val*2))
+        Success(Success(val * 2))
       end
 
       expect(flat_mapped_success).to eq Success(84)
@@ -83,7 +83,7 @@ RSpec.describe Success do
 
   context '#map' do
     specify 'returns Success if block is not failing' do
-      mapped_success = success.map { |val| val*2 }
+      mapped_success = success.map { |val| val * 2 }
 
       expect(mapped_success).to eq Success(84)
     end

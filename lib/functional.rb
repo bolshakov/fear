@@ -10,7 +10,7 @@ module Functional
   autoload :Future, 'functional/future'
 
   def Option(value)
-    if value == nil
+    if value.nil?
       None()
     else
       Some(value)
