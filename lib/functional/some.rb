@@ -17,9 +17,9 @@ module Functional
       value
     end
 
-    def ==(that)
-      if that.is_a?(Some)
-        value == that.value
+    def ==(other)
+      if other.is_a?(Some)
+        get == other.get
       else
         false
       end

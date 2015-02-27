@@ -69,7 +69,7 @@ module Functional
     # an exception.
     #
     def value
-      fail NotImplementedError
+      Option(@future.value(0))
     end
 
     def failed

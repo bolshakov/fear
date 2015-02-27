@@ -97,4 +97,38 @@ RSpec.describe Future do
       expect(future).not_to be_completed
     end
   end
+
+  context '#value' do
+    it 'None if not completed' do
+      future =
+        Future do
+          sleep 1
+          value
+        end
+
+      future_value = future.value
+
+      expect(future_value).to be_kind_of(None)
+    end
+
+    it 'Some of Success if completed with result' do
+      future = await do
+        Future { value }
+      end
+
+      future_value = future.value
+
+      expect(future_value).to be == Some(Success(value))
+    end
+
+    it 'Some of Failure if completed with error' do
+      future = await do
+        Future { fail error }
+      end
+
+      future_value = future.value
+
+      expect(future_value).to eq Some(Failure(error))
+    end
+  end
 end
