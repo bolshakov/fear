@@ -131,4 +131,14 @@ RSpec.describe Future do
       expect(future_value).to eq Some(Failure(error))
     end
   end
+
+  context '.failed' do
+    it 'returns already failed Future' do
+      future = Future.failed(error)
+
+      future_value = future.value
+
+      expect(future_value).to eq Some(Failure(error))
+    end
+  end
 end

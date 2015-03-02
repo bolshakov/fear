@@ -4,8 +4,8 @@ module Functional
   class Future
     NoSuchElementException = Class.new(StandardError)
 
-    def initialize(&block)
-      @future = Concurrent::Future.execute do
+    def initialize(opts = {}, &block)
+      @future = Concurrent::Future.execute(opts) do
         Try(&block)
       end
     end
@@ -70,10 +70,6 @@ module Functional
     #
     def value
       Option(@future.value(0))
-    end
-
-    def failed
-      fail NotImplementedError
     end
 
     # Asynchronously processes the value in the future once the value becomes available.
@@ -217,8 +213,10 @@ module Functional
     class << self
       # Creates an already completed Future with the specified exception.
       #
-      def failed(_exception)
-        fail NotImplementedError
+      def failed(exception)
+        new(executor: Concurrent::ImmediateExecutor.new) do
+          fail exception
+        end
       end
 
       # Creates an already completed Future with the specified result.
