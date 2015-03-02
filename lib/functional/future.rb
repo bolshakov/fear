@@ -221,8 +221,10 @@ module Functional
 
       # Creates an already completed Future with the specified result.
       #
-      def successful(_result)
-        fail NotImplementedError
+      def successful(result)
+        new(executor: Concurrent::ImmediateExecutor.new) do
+          result
+        end
       end
 
       # Creates an already completed Future with the specified
