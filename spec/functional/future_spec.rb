@@ -3,6 +3,7 @@ include Functional
 RSpec.describe Future do
   let(:value) { 5 }
   let(:error) { StandardError.new('something went wrong') }
+
   def await(&block)
     result = block.call
     sleep 0.1
@@ -139,6 +140,31 @@ RSpec.describe Future do
       future_value = future.value
 
       expect(future_value).to eq Some(Failure(error))
+    end
+  end
+
+  context '#transform' do
+    let(:failure) { ->(e) { e.message } }
+    let(:success) { ->(v) { v*2 } }
+
+    it 'call first callback if successfull' do
+      transformed_future = Future(executor: Concurrent::ImmediateExecutor.new) do
+        value
+      end.transform(success, failure)
+
+      future_value = transformed_future.value
+
+      expect(future_value).to eq Some(Success(10))
+    end
+
+    it 'call second callback if failed' do
+      transformed_future = Future(executor: Concurrent::ImmediateExecutor.new) do
+        fail error
+      end.transform(success, failure)
+
+      future_value = transformed_future.value
+
+      expect(future_value).to eq Some(Failure('something went wrong'))
     end
   end
 

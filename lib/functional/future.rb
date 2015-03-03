@@ -4,8 +4,10 @@ module Functional
   class Future
     NoSuchElementException = Class.new(StandardError)
 
-    def initialize(opts = {}, &block)
-      @future = Concurrent::Future.execute(opts) do
+    def initialize(opts = {}, future = nil, &block)
+      fail ArgumentError, 'expected block or future to be given' if block_given? && future
+      @options = opts
+      @future = future || Concurrent::Future.execute(@options) do
         Try(&block)
       end
     end
@@ -91,8 +93,25 @@ module Functional
     #            the returned future
     # @return    a future that will be completed with the transformed value
     #
-    def transform(_s, _f)
-      fail NotImplementedError
+    def transform(s, f)
+      executor = Concurrent::OptionsParser::get_executor_from(@options)
+      transformation = ->(result) do
+        case result
+        when Success
+          Success(s.call(result.get))
+        when Failure
+          Failure(f.call(result.exception))
+        end
+      end
+
+      future =
+        if executor
+          Concurrent::dataflow_with(executor, @future, &transformation)
+        else
+          Concurrent::dataflow(@future, &transformation)
+        end
+
+      Future.new(@options, future)
     end
 
     # Creates a new future by applying a block to the successful result of
@@ -226,14 +245,6 @@ module Functional
           result
         end
       end
-
-      # Creates an already completed Future with the specified
-      # result or exception.
-      def from_try(_result)
-        fail NotImplementedError
-      end
-
-      # .....
     end
   end
 end

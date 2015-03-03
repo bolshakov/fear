@@ -43,7 +43,7 @@ module Functional
     Success.new(value)
   end
 
-  def Future(&block)
-    Future.new(&block)
+  def Future(opts = {}, &block)
+    Future.new(opts, &block)
   end
 end
