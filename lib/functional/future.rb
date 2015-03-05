@@ -94,24 +94,18 @@ module Functional
     # @return    a future that will be completed with the transformed value
     #
     def transform(s, f)
-      executor = Concurrent::OptionsParser::get_executor_from(@options)
-      transformation = ->(result) do
-        case result
+      promise = Promise.new(@options)
+      on_complete do |try|
+        case try
         when Success
-          Success(s.call(result.get))
+          promise.success s.call(try.get)
         when Failure
-          Failure(f.call(result.exception))
+          promise.failure f.call(try.exception)
+        else
+          fail IllegalStateException, 'should be try'
         end
       end
-
-      future =
-        if executor
-          Concurrent::dataflow_with(executor, @future, &transformation)
-        else
-          Concurrent::dataflow(@future, &transformation)
-        end
-
-      Future.new(@options, future)
+      promise.future
     end
 
     # Creates a new future by applying a block to the successful result of

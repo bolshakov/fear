@@ -2,8 +2,6 @@ require 'concurrent'
 
 module Functional
   class Promise
-    IllegalStateException = Class.new(StandardError)
-
     def initialize(options = {})
       @result = nil
       @future = Concurrent::Future.new(options) do

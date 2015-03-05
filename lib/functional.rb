@@ -1,6 +1,8 @@
 require 'functional/version'
 
 module Functional
+  IllegalStateException = Class.new(StandardError)
+
   autoload :Option, 'functional/option'
   autoload :Some, 'functional/some'
   autoload :None, 'functional/none'
