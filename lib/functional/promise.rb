@@ -33,8 +33,6 @@ module Functional
       complete!(Failure(error))
     end
 
-    private
-
     def complete!(result)
       if complete(result)
         self

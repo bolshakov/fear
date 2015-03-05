@@ -168,6 +168,30 @@ RSpec.describe Future do
     end
   end
 
+  context '#map' do
+    def future(value)
+      Future(executor: Concurrent::ImmediateExecutor.new) do
+        if value.is_a?(StandardError)
+          Failure(value)
+        else
+          Success(value)
+        end
+      end
+    end
+
+    it 'successfull result' do
+      result = future(value).map { |r| r * 2 }.value
+
+      expect(result).to eq Some(Success(10))
+    end
+
+    it 'failed result' do
+      result = future(error).map { |r| r * 2 }.value
+
+      expect(result).to eq Some(Failure(error))
+    end
+  end
+
   context '.successful' do
     it 'returns already succeed Future' do
       future = Future.successful(value)

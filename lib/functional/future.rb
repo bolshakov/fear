@@ -8,7 +8,7 @@ module Functional
       fail ArgumentError, 'expected block or future to be given' if block_given? && future
       @options = options
       @future = future || Concurrent::Future.execute(@options) do
-        Try(&block)
+        Try(&block).flatten
       end
     end
 
@@ -101,8 +101,6 @@ module Functional
           promise.success s.call(try.get)
         when Failure
           promise.failure f.call(try.exception)
-        else
-          fail IllegalStateException, 'should be try'
         end
       end
       promise.future
@@ -112,8 +110,17 @@ module Functional
     # this future. If this future is completed with an exception then the new
     # future will also contain this exception.
     #
-    def map(&_block)
-      fail NotImplementedError
+    def map(&block)
+      promise = Promise.new(@options)
+      on_complete do |try|
+        result = try.map do |result|
+          block.call(result)
+        end
+
+        promise.complete!(result)
+      end
+
+      promise.future
     end
 
     # Creates a new future by applying a block to the successful result of
