@@ -4,9 +4,9 @@ module Functional
   class Future
     NoSuchElementException = Class.new(StandardError)
 
-    def initialize(opts = {}, future = nil, &block)
+    def initialize(future = nil, **options, &block)
       fail ArgumentError, 'expected block or future to be given' if block_given? && future
-      @options = opts
+      @options = options
       @future = future || Concurrent::Future.execute(@options) do
         Try(&block)
       end
