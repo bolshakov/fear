@@ -4,14 +4,8 @@ RSpec.describe Future do
   let(:value) { 5 }
   let(:error) { StandardError.new('something went wrong') }
 
-  def future(value)
-    Future(executor: Concurrent::ImmediateExecutor.new) do
-      if value.is_a?(StandardError)
-        Failure(value)
-      else
-        Success(value)
-      end
-    end
+  def future(&block)
+    Future(executor: Concurrent::ImmediateExecutor.new, &block)
   end
 
   def await(&block)
@@ -180,13 +174,13 @@ RSpec.describe Future do
 
   context '#map' do
     it 'successfull result' do
-      result = future(value).map { |r| r * 2 }.value
+      result = future { value }.map { |r| r * 2 }.value
 
       expect(result).to eq Some(Success(10))
     end
 
     it 'failed result' do
-      result = future(error).map { |r| r * 2 }.value
+      result = future { fail error }.map { |r| r * 2 }.value
 
       expect(result).to eq Some(Failure(error))
     end
@@ -194,21 +188,42 @@ RSpec.describe Future do
 
   context '#select' do
     it 'satisfy predicate' do
-      value = future(2).select(&:even?).value
+      value = future { 2 }.select(&:even?).value
 
       expect(value).to eq Some(Success(2))
     end
 
     it 'does not satisfy predicate' do
-      value = future(3).select(&:even?).value
+      value = future { 3}.select(&:even?).value
 
       expect(value.get.exception).to be_kind_of(Functional::Future::NoSuchElementException)
     end
 
     it 'failure' do
-      value = future(error).select(&:even?).value
+      value = future { fail error }.select(&:even?).value
 
       expect(value.get.exception).to eq error
+    end
+  end
+
+  context '#recover' do
+    it 'success' do
+      value = future { 2/1 }.recover { 0 }.value
+
+      expect(value).to eq Some(Success(2))
+    end
+
+    it 'failure' do
+      value = future { 2/0 }.recover do |error|
+        case error
+        when ZeroDivisionError
+          0
+        else
+          42
+        end
+      end.value
+
+      expect(value).to eq Some(Success(0))
     end
   end
 

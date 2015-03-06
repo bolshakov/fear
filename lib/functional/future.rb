@@ -137,9 +137,9 @@ module Functional
     #
     # Example:
     # {{{
-    # f = Future { 5 }
-    # f.select { |value| value % 2 == 1 } # evaluates to 5
-    # f.select { |value| value % 2 == 0 } # fail with NoSuchElementException
+    #   f = Future { 5 }
+    #   f.select { |value| value % 2 == 1 } # evaluates to 5
+    #   f.select { |value| value % 2 == 0 } # fail with NoSuchElementException
     # }}}
     #
     def select(&predicate)
@@ -159,12 +159,15 @@ module Functional
     # Example:
     #
     # {{{
-    # Future { 6 / 0 }.recover { |error| 0 if error.is_a?(ZeroDivisionError) } # result: 0
-    # Future { 6 / 0 }.recover { |error| 0 if error.is_a?(ArgumentError) } # result: exception
-    # Future { 6 / 2 }.recover { |error| 0 if error.is_a?(ZeroDivisionError) } # result: 3
+    #   Future { 6 / 0 }.recover { |error| 0  } # result: 0
     # }}}
-    def recover(&_block)
-      fail NotImplementedError
+    def recover(&block)
+      promise = Promise.new(@options)
+      on_complete do |try|
+        promise.complete!(try.recover(&block))
+      end
+
+      promise.future
     end
 
     # Zips the values of `this` and `that` future, and creates
