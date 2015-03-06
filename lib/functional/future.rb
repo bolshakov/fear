@@ -113,11 +113,7 @@ module Functional
     def map(&block)
       promise = Promise.new(@options)
       on_complete do |try|
-        result = try.map do |result|
-          block.call(result)
-        end
-
-        promise.complete!(result)
+        promise.complete!(try.map(&block))
       end
 
       promise.future
