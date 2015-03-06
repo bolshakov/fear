@@ -227,6 +227,44 @@ RSpec.describe Future do
     end
   end
 
+  context '#zip' do
+    it 'success' do
+      this = future { 1 }
+      that = future { 2 }
+
+      value = this.zip(that).value
+
+      expect(value).to eq Some(Success([1, 2]))
+    end
+
+    it 'self fails' do
+      this = future { fail error }
+      that = future { 2 }
+
+      value = this.zip(that).value
+
+      expect(value).to eq Some(Failure(error))
+    end
+
+    it 'other fails' do
+      this = future { 1 }
+      that = future { fail error }
+
+      value = this.zip(that).value
+
+      expect(value).to eq Some(Failure(error))
+    end
+
+    it 'both fail' do
+      this = future { fail error }
+      that = future { fail ArgumentError }
+
+      value = this.zip(that).value
+
+      expect(value).to eq Some(Failure(error))
+    end
+  end
+
   context '.successful' do
     it 'returns already succeed Future' do
       future = Future.successful(value)

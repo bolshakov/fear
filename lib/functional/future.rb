@@ -170,16 +170,32 @@ module Functional
       promise.future
     end
 
-    # Zips the values of `this` and `that` future, and creates
+    # Zips the values of `self` and `other` future, and creates
     # a new future holding the array of their results.
     #
-    # If `this` future fails, the resulting future is failed
-    # with the exception stored in `this`.
-    # Otherwise, if `that` future fails, the resulting future is failed
-    # with the exception stored in `that`.
+    # If `self` future fails, the resulting future is failed
+    # with the exception stored in `self`.
+    # Otherwise, if `other` future fails, the resulting future is failed
+    # with the exception stored in `other`.
     #
-    def zip(_that)
-      fail NotImplementedError
+    def zip(other)
+      promise = Promise.new(@options)
+      on_complete do |try_of_self|
+        case try_of_self
+        when Success
+          other.on_complete do |try_of_other|
+            promise.complete!(
+              try_of_other.map do |other_value|
+                [try_of_self.get, other_value]
+              end
+            )
+          end
+        when Failure
+          promise.failure!(try_of_self.exception)
+        end
+      end
+
+      promise.future
     end
 
     # Creates a new future which holds the result of this future if it was
