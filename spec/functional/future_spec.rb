@@ -4,6 +4,16 @@ RSpec.describe Future do
   let(:value) { 5 }
   let(:error) { StandardError.new('something went wrong') }
 
+  def future(value)
+    Future(executor: Concurrent::ImmediateExecutor.new) do
+      if value.is_a?(StandardError)
+        Failure(value)
+      else
+        Success(value)
+      end
+    end
+  end
+
   def await(&block)
     result = block.call
     sleep 0.1
@@ -169,16 +179,6 @@ RSpec.describe Future do
   end
 
   context '#map' do
-    def future(value)
-      Future(executor: Concurrent::ImmediateExecutor.new) do
-        if value.is_a?(StandardError)
-          Failure(value)
-        else
-          Success(value)
-        end
-      end
-    end
-
     it 'successfull result' do
       result = future(value).map { |r| r * 2 }.value
 
@@ -189,6 +189,26 @@ RSpec.describe Future do
       result = future(error).map { |r| r * 2 }.value
 
       expect(result).to eq Some(Failure(error))
+    end
+  end
+
+  context '#select' do
+    it 'satisfy predicate' do
+      value = future(2).select(&:even?).value
+
+      expect(value).to eq Some(Success(2))
+    end
+
+    it 'does not satisfy predicate' do
+      value = future(3).select(&:even?).value
+
+      expect(value.get.exception).to be_kind_of(Functional::Future::NoSuchElementException)
+    end
+
+    it 'failure' do
+      value = future(error).select(&:even?).value
+
+      expect(value.get.exception).to eq error
     end
   end
 

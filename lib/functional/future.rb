@@ -138,8 +138,8 @@ module Functional
     # Example:
     # {{{
     # f = Future { 5 }
-    # f.filter { |value| value % 2 == 1 } # evaluates to 5
-    # h = f.filter { |value| value % 2 == 0 } # fail with NoSuchElementException
+    # f.select { |value| value % 2 == 1 } # evaluates to 5
+    # f.select { |value| value % 2 == 0 } # fail with NoSuchElementException
     # }}}
     #
     def select(&predicate)
