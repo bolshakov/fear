@@ -288,6 +288,137 @@ RSpec.describe Future do
     end
   end
 
+  context '#and_then' do
+    context 'single callback' do
+      context 'callback is called' do
+        it 'returns result of future' do
+          expect do |callback|
+            future { 5 }.and_then(&callback)
+          end.to yield_with_args(Success(5))
+        end
+      end
+
+      context 'future with Success' do
+        it 'ensure callback is called' do
+          expect do |callback|
+            future { 5 }.and_then(&callback)
+          end.to yield_with_args(Success(5))
+        end
+
+        context 'callback is not failing' do
+          it 'returns result of future' do
+            value = future { 5 }.and_then { }.value
+
+            expect(value).to eq Some(Success(5))
+          end
+        end
+
+        context 'callback is failing' do
+          it 'returns result of future' do
+            value = future { 5 }.and_then { fail error }.value
+
+            expect(value).to eq Some(Success(5))
+          end
+        end
+      end
+
+      context 'future with Failure' do
+        it 'ensure callback is called' do
+          expect do |callback|
+            future { fail error }.and_then(&callback)
+          end.to yield_with_args(Failure(error))
+        end
+
+        context 'callback is not failing' do
+          it 'returns result of future' do
+            value = future { fail error }.and_then { }.value
+
+            expect(value).to eq Some(Failure(error))
+          end
+        end
+
+        context 'callback is failing' do
+          it 'returns result of future' do
+            value = future { fail error }.and_then { fail ArgumentError }.value
+
+            expect(value).to eq Some(Failure(error))
+          end
+        end
+      end
+    end
+
+    context 'multiple callbacks' do
+      context 'on Future with Success' do
+        it 'ensure callbacks are called' do
+          expect do |first|
+            expect do |second|
+              future { 5 }.and_then(&first).and_then(&second)
+            end.to yield_with_args(Success(5))
+          end.to yield_with_args(Success(5))
+        end
+
+        it 'ensure callbacks called in specified order' do
+          # REVIEW: could not write failing test
+          last_called = nil
+          Future { 5 }.and_then do
+            sleep 1
+            expect(last_called).to eq(nil)
+            last_called = :first
+          end.and_then do
+            expect(last_called).to eq(:first), 'second callback called before first'
+            last_called = :second
+          end
+
+          sleep 2
+
+          expect(last_called).to eq(:second)
+        end
+
+        context 'first callback is not failing' do
+          context 'and second callback is not failing' do
+            it 'returns result of the Future' do
+              value = future { 5 }.and_then { }.and_then { }.value
+
+              expect(value).to eq Some(Success(5))
+            end
+          end
+
+          context 'and second callback is failing' do
+            it 'returns result of the Future' do
+              value = future { 5 }.and_then { }.and_then { fail ArgumentError }.value
+
+              expect(value).to eq Some(Success(5))
+            end
+          end
+        end
+
+        context 'first callback is failing' do
+          it 'calls second callback' do
+            expect do |callback|
+              future { 5 }.and_then { fail error }.and_then(&callback)
+            end.to yield_with_args(Success(5))
+          end
+
+          context 'and second callback is not failing' do
+            it 'returns result of the Future' do
+              value = future { 5 }.and_then { fail error }.and_then { }.value
+
+              expect(value).to eq Some(Success(5))
+            end
+          end
+
+          context 'and second callback is failing' do
+            it 'returns result of the Future' do
+              value = future { 5 }.and_then { fail error }.and_then { fail ArgumentError }.value
+
+              expect(value).to eq Some(Success(5))
+            end
+          end
+        end
+      end
+    end
+  end
+
   context '.successful' do
     it 'returns already succeed Future' do
       future = Future.successful(value)

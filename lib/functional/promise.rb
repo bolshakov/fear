@@ -4,7 +4,8 @@ module Functional
   class Promise
     def initialize(options = {})
       @result = nil
-      @future = Concurrent::Future.new(options) do
+      @options = options
+      @future = Concurrent::Future.new(@options) do
         Try { @result }.flatten
       end
     end
@@ -14,7 +15,7 @@ module Functional
     end
 
     def future
-      Future.new(@future)
+      Future.new(@future, @options)
     end
 
     def success(value)

@@ -248,18 +248,26 @@ module Functional
     # The following example prints out `5`:
     #
     # {{{
-    # f = Future { 5 }
-    # f.and_then do |result|
-    #   fail 'runtime exception'
-    # end.and_then do |result|
-    #   case result
-    #   when Success then puts result.get
-    #   when Failure then puts result.exception
-    # end
+    #   f = Future { 5 }
+    #   f.and_then do |result|
+    #     fail 'runtime exception'
+    #   end.and_then do |result|
+    #     case result
+    #     when Success then puts result.get
+    #     when Failure then puts result.exception
+    #   end
     # }}}
     #
-    def and_then(&_callback)
-      fail NotImplementedError
+    def and_then(&callback)
+      promise = Promise.new(@options)
+      on_complete do |try|
+        Try do
+          callback.call(try)
+        end
+        promise.complete!(try)
+      end
+
+      promise.future
     end
 
     class << self
