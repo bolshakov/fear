@@ -208,13 +208,30 @@ module Functional
     #
     # Example:
     # {{{
-    # f = Future { fail 'error' }
-    # g = Future { 5 }
-    # f.fallback_to(g) # evaluates to 5
+    #   f = Future { fail 'error' }
+    #   g = Future { 5 }
+    #   f.fallback_to(g) # evaluates to 5
     # }}}
     #
-    def fallback_to(_fallback)
-      fail NotImplementedError
+    def fallback_to(fallback)
+      promise = Promise.new(@options)
+      on_complete do |try|
+        case try
+        when Success
+          promise.complete!(try.get)
+        when Failure
+          fallback.on_complete do |fallback_try|
+            case fallback_try
+            when Success
+              promise.complete!(fallback_try.get)
+            when Failure
+              promise.failure!(try.exception)
+            end
+          end
+        end
+      end
+
+      promise.future
     end
 
     # Applies the side-effecting block to the result of this future, and returns

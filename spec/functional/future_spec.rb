@@ -265,6 +265,29 @@ RSpec.describe Future do
     end
   end
 
+  context '#fallback_to' do
+    it 'success' do
+      fallback = future { 42 }
+      value = future { 2 }.fallback_to(fallback).value
+
+      expect(value).to eq Some(Success(2))
+    end
+
+    it 'failure' do
+      fallback = future { 42 }
+      value = future { fail error }.fallback_to(fallback).value
+
+      expect(value).to eq Some(Success(42))
+    end
+
+    it 'failure with failed fallback' do
+      fallback = future { fail ArumentError }
+      value = future { fail error }.fallback_to(fallback).value
+
+      expect(value).to eq Some(Failure(error))
+    end
+  end
+
   context '.successful' do
     it 'returns already succeed Future' do
       future = Future.successful(value)
