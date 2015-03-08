@@ -25,9 +25,9 @@ module Functional
       end
     end
 
-    def eql?(that)
-      if that.is_a?(Some)
-        value.eql?(that.value)
+    def eql?(other)
+      if other.is_a?(Some)
+        get.eql?(other.get)
       else
         false
       end

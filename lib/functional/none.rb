@@ -10,12 +10,12 @@ module Functional
       fail NoMethodError, 'None#get'
     end
 
-    def ==(that)
-      that.is_a?(None)
+    def ==(other)
+      other.is_a?(None)
     end
 
-    def eql?(that)
-      that.is_a?(None)
+    def eql?(other)
+      other.is_a?(None)
     end
   end
 end

@@ -15,10 +15,6 @@ Metrics/ClassLength:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 3
-Style/OpMethod:
-  Enabled: false
-
 # Offense count: 2
 Style/RegexpLiteral:
   MaxSlashes: 0
