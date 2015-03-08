@@ -181,6 +181,7 @@ module Functional
     # Otherwise, if `other` future fails, the resulting future is failed
     # with the exception stored in `other`.
     #
+    # rubocop: disable Metrics/MethodLength
     def zip(other)
       promise = Promise.new(@options)
       on_complete do |try_of_self|
@@ -200,6 +201,7 @@ module Functional
 
       promise.future
     end
+    # rubocop: enable Metrics/MethodLength
 
     # Creates a new future which holds the result of this future if it was
     # completed successfully, or, if not, the result of the `that` future
@@ -214,6 +216,7 @@ module Functional
     #   f.fallback_to(g) # evaluates to 5
     # }}}
     #
+    # rubocop: disable Metrics/MethodLength
     def fallback_to(fallback)
       promise = Promise.new(@options)
       on_complete do |try|
@@ -234,6 +237,7 @@ module Functional
 
       promise.future
     end
+    # rubocop: enable Metrics/MethodLength
 
     # Applies the side-effecting block to the result of this future, and returns
     # a new future with the result of this future.
@@ -262,9 +266,7 @@ module Functional
     def and_then(&callback)
       promise = Promise.new(@options)
       on_complete do |try|
-        Try do
-          callback.call(try)
-        end
+        Try { callback.call(try) }
         promise.complete!(try)
       end
 
