@@ -312,6 +312,7 @@ RSpec.describe Future do
           end.to yield_with_args(Success(5))
         end
 
+        # rubocop: disable Style/MultilineBlockChain
         it 'ensure callbacks called in specified order' do
           # REVIEW: could not write failing test
           last_called = nil
@@ -330,6 +331,7 @@ RSpec.describe Future do
 
           expect(last_called).to eq(:second)
         end
+        # rubocop: enable Style/MultilineBlockChain
 
         context 'first callback is not failing' do
           context 'and second callback is not failing' do
