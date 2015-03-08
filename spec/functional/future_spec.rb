@@ -8,26 +8,16 @@ RSpec.describe Future do
     Future(executor: Concurrent::ImmediateExecutor.new, &block)
   end
 
-  def await(&block)
-    result = block.call
-    sleep 0.1
-    result
-  end
-
   context '#on_complete' do
     it 'run callback with value' do
       expect do |callback|
-        await do
-          Future { value }.on_complete(&callback)
-        end
+        future { value }.on_complete(&callback)
       end.to yield_with_args(Success(value))
     end
 
     it 'run callback with error' do
       expect do |callback|
-        await do
-          Future { fail error }.on_complete(&callback)
-        end
+        future { fail error }.on_complete(&callback)
       end.to yield_with_args(Failure(error))
     end
   end
@@ -35,17 +25,13 @@ RSpec.describe Future do
   context '#on_success' do
     it 'run callback if no error' do
       expect do |callback|
-        await do
-          Future { value }.on_success(&callback)
-        end
+        future { value }.on_success(&callback)
       end.to yield_with_args(value)
     end
 
     it 'do not run callback if error occured' do
       expect do |callback|
-        await do
-          Future { fail error }.on_success(&callback)
-        end
+        future { fail error }.on_success(&callback)
       end.not_to yield_with_args
     end
   end
@@ -53,97 +39,74 @@ RSpec.describe Future do
   context '#on_failure' do
     it 'do not run callback if no error' do
       expect do |callback|
-        await do
-          Future { value }.on_failure(&callback)
-        end
+        future { value }.on_failure(&callback)
       end.not_to yield_with_args
     end
 
     it 'run callback if error occured' do
       expect do |callback|
-        await do
-          Future { fail error }.on_failure(&callback)
-        end
+        future { fail error }.on_failure(&callback)
       end.to yield_with_args(error)
     end
   end
 
   context '#completed?' do
     it 'completed with value' do
-      future = await do
-        Future { value }
-      end
-      expect(future).to be_completed
+      completed_future = future { value }
+
+      expect(completed_future).to be_completed
     end
 
     it 'completed with error' do
-      future = await do
-        Future { fail error }
-      end
-      expect(future).to be_completed
+      completed_future = future { fail error }
+
+      expect(completed_future).to be_completed
     end
 
     it 'not completed with value' do
-      future =
+      not_completed_future =
         Future do
           sleep 1
           value
         end
-      expect(future).not_to be_completed
+
+      expect(not_completed_future).not_to be_completed
     end
 
     it 'not completed with error' do
-      future =
+      not_completed_future =
         Future do
           sleep 1
           fail error
         end
 
-      expect(future).not_to be_completed
+      expect(not_completed_future).not_to be_completed
     end
   end
 
   context '#value' do
     it 'None if not completed' do
-      future =
+      not_completed_future =
         Future do
           sleep 1
           value
         end
 
-      future_value = future.value
+      future_value = not_completed_future.value
 
       expect(future_value).to be_kind_of(None)
     end
 
     it 'Some of Success if completed with result' do
-      future = await do
-        Future { value }
-      end
+      future_value = future { value }.value
 
-      future_value = future.value
-
-      expect(future_value).to be == Some(Success(value))
+      expect(future_value).to eq Some(Success(value))
     end
 
     it 'Some of Failure if completed with error' do
-      future = await do
-        Future { fail error }
-      end
+      value = future { fail error }.value
 
-      future_value = future.value
-
-      expect(future_value).to eq Some(Failure(error))
-    end
-  end
-
-  context '.failed' do
-    it 'returns already failed Future' do
-      future = Future.failed(error)
-
-      future_value = future.value
-
-      expect(future_value).to eq Some(Failure(error))
+      expect(value).to eq Some(Failure(error))
     end
   end
 
@@ -152,23 +115,15 @@ RSpec.describe Future do
     let(:success) { ->(v) { v*2 } }
 
     it 'call first callback if successfull' do
-      transformed_future = Future(executor: Concurrent::ImmediateExecutor.new) do
-        value
-      end.transform(success, failure)
+      value = future { 2 }.transform(success, failure).value
 
-      future_value = transformed_future.value
-
-      expect(future_value).to eq Some(Success(10))
+      expect(value).to eq Some(Success(4))
     end
 
     it 'call second callback if failed' do
-      transformed_future = Future(executor: Concurrent::ImmediateExecutor.new) do
-        fail error
-      end.transform(success, failure)
+      value = future { fail error }.transform(success, failure).value
 
-      future_value = transformed_future.value
-
-      expect(future_value).to eq Some(Failure('something went wrong'))
+      expect(value).to eq Some(Failure('something went wrong'))
     end
   end
 
@@ -194,7 +149,7 @@ RSpec.describe Future do
     end
 
     it 'does not satisfy predicate' do
-      value = future { 3}.select(&:even?).value
+      value = future { 3 }.select(&:even?).value
 
       expect(value.get.exception).to be_kind_of(Functional::Future::NoSuchElementException)
     end
@@ -426,6 +381,14 @@ RSpec.describe Future do
       future_value = future.value
 
       expect(future_value).to eq Some(Success(value))
+    end
+  end
+
+  context '.failed' do
+    it 'returns already failed Future' do
+      value = Future.failed(error).value
+
+      expect(value).to eq Some(Failure(error))
     end
   end
 end
