@@ -16,10 +16,6 @@ Style/Documentation:
   Enabled: false
 
 # Offense count: 2
-Style/RegexpLiteral:
-  MaxSlashes: 0
-
-# Offense count: 2
 # Configuration parameters: Methods.
 Style/SingleLineBlockParams:
   Enabled: false
