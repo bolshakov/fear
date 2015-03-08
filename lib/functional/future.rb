@@ -5,7 +5,7 @@ module Functional
     NoSuchElementException = Class.new(StandardError)
 
     def initialize(future = nil, **options, &block)
-      fail ArgumentError, 'expected block or future to be given' if block_given? && future
+      fail ArgumentError, 'pass block or future' if block_given? && future
       @options = options
       @future = future || Concurrent::Future.execute(@options) do
         Try(&block).flatten
@@ -74,7 +74,8 @@ module Functional
       Option(@future.value(0))
     end
 
-    # Asynchronously processes the value in the future once the value becomes available.
+    # Asynchronously processes the value in the future once the value
+    # becomes available.
     #
     # Will not be called if the future fails.
     #
@@ -82,15 +83,15 @@ module Functional
       on_complete(&block)
     end
 
-    # Creates a new future by applying the 's' function to the successful result of
-    # this future, or the 'f' function to the failed result. If there is any non-fatal
-    # exception thrown when 's' or 'f' is applied, that exception will be propagated
-    # to the resulting future.
+    # Creates a new future by applying the 's' function to the successful
+    # result of this future, or the 'f' function to the failed result.
+    # If there is any non-fatal exception thrown when 's' or 'f' is
+    # applied, that exception will be propagated to the resulting future.
     #
-    # @param  s  function that transforms a successful result of the receiver into a
-    #            successful result of the returned future
-    # @param  f  function that transforms a failure of the receiver into a failure of
-    #            the returned future
+    # @param  s  function that transforms a successful result of the
+    #            receiver into a successful result of the returned future
+    # @param  f  function that transforms a failure of the receiver into
+    #            a failure of the returned future
     # @return    a future that will be completed with the transformed value
     #
     def transform(s, f)
@@ -128,10 +129,12 @@ module Functional
       fail NotImplementedError
     end
 
-    # Creates a new future by filtering the value of the current future with a predicate.
+    # Creates a new future by filtering the value of the current future
+    # with a predicate.
     #
-    # If the current future contains a value which satisfies the predicate, the new future will also hold that value.
-    # Otherwise, the resulting future will fail with a `NoSuchElementException`.
+    # If the current future contains a value which satisfies the predicate,
+    # the new future will also hold that value. Otherwise, the resulting
+    # future will fail with a `NoSuchElementException`.
     #
     # If the current future fails, then the resulting future also fails.
     #
@@ -147,7 +150,7 @@ module Functional
         if predicate.call(result)
           result
         else
-          fail NoSuchElementException, 'Future#filter predicate is not satisfied'
+          fail NoSuchElementException, '#select predicate is not satisfied'
         end
       end
     end
@@ -204,8 +207,6 @@ module Functional
     # If both futures are failed, the resulting future holds the exception
     # object of the first future.
     #
-    # Using this method will not cause concurrent programs to become nondeterministic.
-    #
     # Example:
     # {{{
     #   f = Future { fail 'error' }
@@ -241,9 +242,9 @@ module Functional
     # specified order.
     #
     # Note that if one of the chained `and_then` callbacks throws
-    # an exception, that exception is not propagated to the subsequent `and_then`
-    # callbacks. Instead, the subsequent `and_then` callbacks are given the original
-    # value of this future.
+    # an exception, that exception is not propagated to the subsequent
+    # `and_then` callbacks. Instead, the subsequent `and_then` callbacks
+    # are given the original value of this future.
     #
     # The following example prints out `5`:
     #

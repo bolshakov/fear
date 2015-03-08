@@ -1,6 +1,5 @@
 include Functional
 
-
 RSpec.describe Promise do
   let(:value) { 42 }
   let(:error) { StandardError.new('something went wrong') }
@@ -93,6 +92,5 @@ RSpec.describe Promise do
         expect(future_value).to eq Some(Success(value))
       end
     end
-
   end
 end

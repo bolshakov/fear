@@ -32,7 +32,8 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
-  # Limits the available syntax to the non-monkey patched syntax that is recommended.
+  # Limits the available syntax to the non-monkey patched syntax that is
+  # recommended.
   # For more details, see:
   #   - http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax
   #   - http://teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/

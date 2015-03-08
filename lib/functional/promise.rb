@@ -44,7 +44,8 @@ module Functional
 
     # Tries to complete the promise with either a value or the exception.
     #
-    # @return    If the promise has already been completed returns `false`, or `true` otherwise.
+    # @return    If the promise has already been completed returns
+    #            `false`, or `true` otherwise.
     #
     def complete(result)
       if completed?

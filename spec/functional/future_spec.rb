@@ -112,7 +112,7 @@ RSpec.describe Future do
 
   context '#transform' do
     let(:failure) { ->(e) { e.message } }
-    let(:success) { ->(v) { v*2 } }
+    let(:success) { ->(v) { v * 2 } }
 
     it 'call first callback if successfull' do
       value = future { 2 }.transform(success, failure).value
@@ -151,7 +151,7 @@ RSpec.describe Future do
     it 'does not satisfy predicate' do
       value = future { 3 }.select(&:even?).value
 
-      expect(value.get.exception).to be_kind_of(Functional::Future::NoSuchElementException)
+      expect(value.get.exception).to be_kind_of(Future::NoSuchElementException)
     end
 
     it 'failure' do
@@ -163,13 +163,13 @@ RSpec.describe Future do
 
   context '#recover' do
     it 'success' do
-      value = future { 2/1 }.recover { 0 }.value
+      value = future { 2 / 1 }.recover { 0 }.value
 
       expect(value).to eq Some(Success(2))
     end
 
     it 'failure' do
-      value = future { 2/0 }.recover do |error|
+      value = future { 2 / 0 }.recover do |error|
         case error
         when ZeroDivisionError
           0
@@ -262,7 +262,7 @@ RSpec.describe Future do
 
         context 'callback is not failing' do
           it 'returns result of future' do
-            value = future { 5 }.and_then { }.value
+            value = future { 5 }.and_then {}.value
 
             expect(value).to eq Some(Success(5))
           end
@@ -286,7 +286,7 @@ RSpec.describe Future do
 
         context 'callback is not failing' do
           it 'returns result of future' do
-            value = future { fail error }.and_then { }.value
+            value = future { fail error }.and_then {}.value
 
             expect(value).to eq Some(Failure(error))
           end
@@ -320,7 +320,9 @@ RSpec.describe Future do
             expect(last_called).to eq(nil)
             last_called = :first
           end.and_then do
-            expect(last_called).to eq(:first), 'second callback called before first'
+            expect(last_called).to(
+              eq(:first), 'second callback called before first'
+            )
             last_called = :second
           end
 
@@ -332,7 +334,7 @@ RSpec.describe Future do
         context 'first callback is not failing' do
           context 'and second callback is not failing' do
             it 'returns result of the Future' do
-              value = future { 5 }.and_then { }.and_then { }.value
+              value = future { 5 }.and_then {}.and_then {}.value
 
               expect(value).to eq Some(Success(5))
             end
@@ -340,7 +342,9 @@ RSpec.describe Future do
 
           context 'and second callback is failing' do
             it 'returns result of the Future' do
-              value = future { 5 }.and_then { }.and_then { fail ArgumentError }.value
+              value = future { 5 }.and_then {}.and_then do
+                fail ArgumentError
+              end.value
 
               expect(value).to eq Some(Success(5))
             end
@@ -356,7 +360,7 @@ RSpec.describe Future do
 
           context 'and second callback is not failing' do
             it 'returns result of the Future' do
-              value = future { 5 }.and_then { fail error }.and_then { }.value
+              value = future { 5 }.and_then { fail error }.and_then {}.value
 
               expect(value).to eq Some(Success(5))
             end
@@ -364,7 +368,10 @@ RSpec.describe Future do
 
           context 'and second callback is failing' do
             it 'returns result of the Future' do
-              value = future { 5 }.and_then { fail error }.and_then { fail ArgumentError }.value
+              value = future { 5 }
+                      .and_then { fail error }
+                      .and_then { fail ArgumentError }
+                      .value
 
               expect(value).to eq Some(Success(5))
             end

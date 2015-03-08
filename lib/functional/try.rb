@@ -53,7 +53,8 @@ module Functional
 
     # Applies the given block if this is a `Success`
     #
-    # Note: If `block` throws exception, then this method may throw an exception.
+    # Note: If `block` throws exception, then this method may
+    # throw an exception.
     #
     def each(&_block)
       assert_method_defined!('each')
