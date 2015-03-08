@@ -20,9 +20,7 @@ module Functional
     #
     def on_success(&callback)
       on_complete do |result|
-        if result.success?
-          callback.call(result.get)
-        end
+        callback.call(result.get) if result.success?
       end
     end
 
@@ -36,9 +34,7 @@ module Functional
     #
     def on_failure(&callback)
       on_complete do |result|
-        if result.failure?
-          callback.call(result.exception)
-        end
+        callback.call(result.exception) if result.failure?
       end
     end
 

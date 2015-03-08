@@ -15,11 +15,6 @@ Metrics/ClassLength:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 2
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Enabled: false
-
 # Offense count: 7
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/MethodName:
