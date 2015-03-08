@@ -15,11 +15,6 @@ Metrics/ClassLength:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 7
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/MethodName:
-  Enabled: false
-
 # Offense count: 1
 Style/MultilineBlockChain:
   Enabled: false

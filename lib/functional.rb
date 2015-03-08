@@ -12,6 +12,7 @@ module Functional
   autoload :Future, 'functional/future'
   autoload :Promise, 'functional/promise'
 
+  # rubocop: disable Style/MethodName
   def Option(value)
     if value.nil?
       None()
@@ -49,4 +50,5 @@ module Functional
   def Future(opts = {}, &block)
     Future.new(opts, &block)
   end
+  # rubocop: enable Style/MethodName
 end
