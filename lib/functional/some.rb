@@ -2,19 +2,16 @@ module Functional
   class Some
     include Option
 
-    attr_reader :value
-    protected :value
+    # @!attribute get
+    #   @return option's value
+    attr_reader :get
 
     def initialize(value)
-      @value = value
+      @get = value
     end
 
     def empty?
       false
-    end
-
-    def get
-      value
     end
 
     def ==(other)

@@ -1,38 +1,45 @@
 module Functional
   # Represents optional values. Instances of `Option`
-  #  are either an instance of $some or the object $none.
+  # are either an instance of $some or the object $none.
   #
-  #  The most idiomatic way to use an $option instance is to treat it
-  #  as a collection or monad and use `map`,`flat_map`, `select`, or
-  #  `each`:
+  # The most idiomatic way to use an `Option` instance is to treat it
+  # as a collection or monad and use `map`,`flat_map`, `select`, or `each`:
   #
-  #  {{{
-  #  name = Option(params[:name])
-  #  upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
-  #  puts upper.get_or_else('')
-  #  }}}
+  # @example
+  #   name = Option(params[:name])
+  #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
+  #   puts upper.get_or_else('')
   #
-  #  Because of how for comprehension works, if $none is returned
-  #  from `Option(params[:name])`, the entire expression results in
-  #  $none
+  # Because of how for comprehension works, if `None` is returned
+  # from `Option(params[:name])`, the entire expression results is
+  # `None`
   #
-  #  This allows for sophisticated chaining of $option values without
-  #  having to check for the existence of a value.
+  # This allows for sophisticated chaining of `Option` values without
+  # having to check for the existence of a value.
   #
-  #  A less-idiomatic way to use $option values is via pattern matching: {{{
-  #  name_maybe = Option(params[:name])
-  #  case name_maybe
-  #  when Some
-  #    puts name.strip.upcase
-  #  when None
-  #    puts 'No name value'
-  #  end
-  #  }}}
+  # A less-idiomatic way to use `Option` values is via pattern matching:
   #
-  #  @note Many of the methods in here are duplicative with those
-  #  in the Traversable hierarchy, but they are duplicated for a reason:
-  #  the implicit conversion tends to leave one with an Iterable in
-  #  situations where one could have retained an Option.
+  # @example
+  #   name = Option(params[:name])
+  #   case name
+  #   when Some
+  #     puts name.strip.upcase
+  #   when None
+  #     puts 'No name value'
+  #   end
+  #
+  # or manually checking for non emptiness:
+  #
+  # @example
+  #   name = Option(params[:name])
+  #   if name.present?
+  #     puts name.strip.upcase
+  #   else
+  #     puts 'No name value'
+  #   end
+  #
+  # @abstract Include and implement {#empty?}, and {#get} to
+  #   implement a `Some` or `None` value.
   #
   module Option
     BLOCK_REQUIRED = 'block required'.freeze
@@ -41,26 +48,37 @@ module Functional
       None()
     end
 
-    # Returns true if the option is None, false otherwise.
+    # @return [true, false] true if the option is `None`,
+    #   false otherwise.
+    # @abstract
     #
     def empty?
       assert_method_defined!('empty?')
     end
 
-    # Returns true if the option is an instance of Some, false otherwise.
+    # @return [true, false] true if the option is an instance
+    #   of `Some`, false otherwise.
     #
     def present?
       !empty?
     end
 
-    # Returns the option's value.
+    # @return [Object] the option's value.
+    # @raise [NoMethodError] if called on `None`
+    # @abstract
     #
     def get
       assert_method_defined!('get')
     end
 
-    # Returns the option's value if the option is nonempty, otherwise
-    # return `default`.
+    # @return [Object] the option's value if it is nonempty
+    # @yieldreturn [Object] default value if it is empty
+    #
+    # @example if `Option` is nonempty
+    #   Option(params[:name]).get_or_else('No name') #=> 'Albert'
+    #
+    # @example if `Option` is empty
+    #   Option(params[:name]).get_or_else('No name') #=> 'No name'
     #
     def get_or_else(&default)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
@@ -73,15 +91,34 @@ module Functional
     end
 
     # Returns the option's value if it is nonempty,
-    # or `nil` if it is empty.
+    # or `nil` if it is empty. Useful for unwrapping
+    # option's value.
+    #
+    # @return [Object, nil] the option's value if it is
+    #   nonempty or `nil` if it is empty
+    #
+    # @example if `Option` is nonempty
+    #   User.find(params[:id]).or_nil #=> <#User id=123>
+    #
+    # @example if `Option` is empty
+    #   User.find(params[:id]).or_nil #=> nil
     #
     def or_nil
       get_or_else { nil }
     end
 
-    # Returns a Some containing the result of applying `block` to this option's
-    # value if this Option is nonempty.
-    # Otherwise return None.
+    # Returns a `Some` containing the result of applying
+    # `block` to this option's value if this `Option` is
+    # nonempty. Otherwise return `None`.
+    #
+    # @yield [option's value] if it is nonempty
+    # @return [Some, None]
+    #
+    # @example if `Option` is nonempty
+    #   User.find(params[:id]).map(&:email) #=> Some('albert@example.com')
+    #
+    # @example if `Option` is empty
+    #   User.find(params[:id]).map(&:email) #=> None()
     #
     def map(&block)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
@@ -93,9 +130,21 @@ module Functional
       end
     end
 
-    # Returns the result of applying `block` to this option's
-    # value if the option is nonempty.  Otherwise, evaluates
-    # expression `if_empty`.
+    # @param if_empty [Object]
+    # @yield [option's value] if nonempty
+    # @return [Object] the result of applying `block` to this
+    #   option's value if the option is nonempty.  Otherwise,
+    #   return the value of `if_empty`.
+    #
+    # @example if `Option` is nonempty
+    #   User.find(params[:id]).inject(0) do |user|
+    #     user.posts.count
+    #   end #=> 42
+    #
+    # @example if `Option` is empty
+    #   User.find(params[:id]).inject(0) do |user|
+    #     user.posts.count
+    #   end #=> 0
     #
     def inject(if_empty, &block)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
@@ -107,8 +156,28 @@ module Functional
       end
     end
 
-    # Returns this option if it is nonempty and applying the predicate to
-    # this option's value returns true. Otherwise, return none.
+    # @return [Some, None] this `Option` if it is nonempty and
+    #   applying the `predicate` to this option's value
+    #   returns true. Otherwise, return `None`.
+    #
+    # @example if `Option` is nonempty
+    #   User.find(params[:id]).select do |user|
+    #     user.posts.count > 0
+    #   end #=> Some(User)
+    #
+    # @example if `Option` is empty
+    #   User.find(params[:id]).select do |user|
+    #     user.posts.count > 0
+    #   end #=> None
+    #
+    # So you can chain calls to `select` with `map`, `inject` etc
+    # without checking for emptiness.
+    #
+    # @example
+    #   User.find(params[:id])
+    #     .select(&:confirmed?)
+    #     .map(&:posts)
+    #     .inject(0, &:count)
     #
     def select(&predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
@@ -120,8 +189,28 @@ module Functional
       end
     end
 
-    # Returns this option if it is nonempty and applying the predicate to
-    # this option's value returns false. Otherwise, return none.
+    # @return [Some, None] this `Option` if it is nonempty and
+    #   applying the `predicate` to this option's value returns false.
+    #   Otherwise, return `None`.
+    #
+    # @example if `Option` is nonempty and satisfy `predicate`
+    #   User.find(params[:id]).reject do |user|
+    #     user.posts.count > 0
+    #   end #=> Some(User)
+    #
+    # @example if `Option` is empty
+    #   User.find(params[:id]).select do |user|
+    #     user.posts.count > 0
+    #   end #=> None
+    #
+    # So you can chain calls to `reject` with `map`, `inject` etc
+    # without checking for emptiness.
+    #
+    # @example
+    #   User.find(params[:id])
+    #     .reject { |u| u.posts.count > 0 }
+    #     .map { |u| "#{u.name}, write your first blog post" }
+    #
     #
     def reject(&predicate)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?

@@ -6,6 +6,8 @@ module Functional
       true
     end
 
+    # @raise [NoMethodError]
+    #
     def get
       fail NoMethodError, 'None#get'
     end
