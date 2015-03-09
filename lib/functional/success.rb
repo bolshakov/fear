@@ -2,86 +2,18 @@ module Functional
   class Success
     include Try
 
+    attr_reader :get
+
     def initialize(value)
-      @value = value
-    end
-
-    attr_reader :value
-    protected :value
-
-    def failure?
-      false
+      @get = value
     end
 
     def success?
       true
     end
 
-    def get
-      value
-    end
-
     def ==(other)
-      other.is_a?(Success) && value == other.value
-    end
-
-    def get_or_else(&_default)
-      get
-    end
-
-    def or_else(&_default)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      self
-    end
-
-    def to_option
-      Some(get)
-    end
-
-    def flatten
-      if value.is_a?(Try)
-        value.flatten
-      else
-        self
-      end
-    end
-
-    def each(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      block.call(get)
-      nil
-    end
-
-    def map(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      Try { block.call(value) }
-    end
-
-    def select(&predicate)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      Try do
-        if predicate.call(value)
-          value
-        else
-          fail "Predicate does not hold for #{value}"
-        end
-      end
-    end
-
-    def recover_with(&_block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      self
-    end
-
-    def recover(&_block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
-      self
+      other.is_a?(Success) && get == other.get
     end
   end
 end

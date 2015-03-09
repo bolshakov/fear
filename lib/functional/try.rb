@@ -2,16 +2,16 @@ module Functional
   module Try
     BLOCK_REQUIRED = 'block required'.freeze
 
-    # Returns `true` if the `Try` is a `Failure`, `false` otherwise.
-    #
-    def failure?
-      assert_method_defined!('failure?')
-    end
-
     # Returns `true` if the `Try` is a `Success`, `false` otherwise.
     #
     def success?
       assert_method_defined!('success?')
+    end
+
+    # Returns `true` if the `Try` is a `Failure`, `false` otherwise.
+    #
+    def failure?
+      !success?
     end
 
     # Returns the value from this `Success` or throws the exception if
@@ -27,28 +27,45 @@ module Functional
     # Note: This will throw an exception if it is not a success and
     # default throws an exception
     #
-    def get_or_else(&_default)
-      assert_method_defined!('get_or_else')
+    def get_or_else(&default)
+      if success?
+        get
+      else
+        default.call
+      end
     end
 
     # Returns this `Try` if it's a `Success` or the given `default`
     # argument if this is a `Failure`.
     #
-    def or_else(&_default)
-      assert_method_defined!('or_else')
+    def or_else(&default)
+      if success?
+        self
+      else
+        Try { default.call }.flatten
+      end
     end
 
     # Returns `None` if this is a `Failure` or a `Some` containing the
     # value if this is a `Success`.
     #
     def to_option
-      assert_method_defined!('to_option')
+      if success?
+        Some(get)
+      else
+        None()
+      end
     end
 
     # Transforms a nested `Try`, ie, a `Success` of `Success``,
     # into an un-nested `Try`, ie, a `Success`.
+    #
     def flatten
-      assert_method_defined!('flatten')
+      if success? && get.is_a?(Try)
+        get.flatten
+      else
+        self
+      end
     end
 
     # Applies the given block if this is a `Success`
@@ -56,47 +73,65 @@ module Functional
     # Note: If `block` throws exception, then this method may
     # throw an exception.
     #
-    def each(&_block)
-      assert_method_defined!('each')
+    def each(&block)
+      block.call(get) if success?
+      self
     end
 
     # Returns the given function applied to the value from this `Success`
     # or returns this if this is a `Failure`.
     #
     def flat_map(&block)
-      fail ArgumentError, BLOCK_REQUIRED unless block_given?
-
       map(&block).flatten
     end
 
     # Maps the given function to the value from this `Success`
     # or returns this if this is a `Failure`.
     #
-    def map(&_block)
-      assert_method_defined!('map')
+    def map(&block)
+      if success?
+        Try { block.call(get) }
+      else
+        self
+      end
     end
 
     # Converts this to a `Failure` if the predicate
     # is not satisfied.
     #
-    def select(&_predicate)
-      assert_method_defined!('select')
+    def select(&predicate)
+      return self if failure?
+      Try do
+        if predicate.call(get)
+          get
+        else
+          fail "Predicate does not hold for #{get}"
+        end
+      end
     end
 
     # Applies the given `block` if this is a `Failure`,
     # otherwise returns this if this is a `Success`.
     # This is like `flat_map` for the exception.
     #
-    def recover_with(&_block)
-      assert_method_defined!('recover_with')
+    def recover_with(&block)
+      if success?
+        self
+      else
+        recover(&block).flatten
+      end
     end
 
     # Applies the given `block` if this is a `Failure`,
     # otherwise returns this if this is a `Success`.
     # This is like map for the exception.
     #
-    def recover(&_block)
-      assert_method_defined!('recover')
+    def recover(&block)
+      if success?
+        self
+      else
+        Try { block.call(exception) }
+      end
     end
 
     private
