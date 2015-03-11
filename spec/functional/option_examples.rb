@@ -28,4 +28,40 @@ RSpec.shared_examples 'Option' do
       subject.reject
     end.to raise_error(ArgumentError)
   end
+
+  context '#==' do
+    it 'Some == Some if values matches each over' do
+      expect(Some(3)).to be == Some(3)
+    end
+
+    it 'Some != Some if values does not match each over' do
+      expect(Some(2)).not_to be == Some(3)
+    end
+
+    it 'Some != None' do
+      expect(Some(2)).not_to be == None()
+    end
+
+    it 'None == None' do
+      expect(None()).to be == None()
+    end
+  end
+
+  context '#eql?' do
+    it 'Some to eql Some if values matches each over' do
+      expect(Some(3)).to be_eql Some(3)
+    end
+
+    it 'Some not to eql Some if values does not match each over' do
+      expect(Some(2)).not_to be_eql Some(3)
+    end
+
+    it 'Some not to eql None' do
+      expect(Some(2)).not_to be_eql None()
+    end
+
+    it 'None to eql None' do
+      expect(None()).to be_eql None()
+    end
+  end
 end
