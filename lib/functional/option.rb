@@ -80,11 +80,12 @@ module Functional
     # @example if +Option+ is empty
     #   Option(params[:name]).get_or_else('No name') #=> 'No name'
     #
-    def get_or_else(&default)
+    # TODO: Accept either block or value. See LeftProjection for example
+    def get_or_else
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       if empty?
-        default.call
+        yield
       else
         get
       end
@@ -107,6 +108,8 @@ module Functional
       get_or_else { nil }
     end
 
+    # TODO: implement flat_map
+
     # Returns a +Some+ containing the result of applying
     # +block+ to this option's value if this +Option+ is
     # nonempty. Otherwise return +None+.
@@ -120,13 +123,13 @@ module Functional
     # @example if +Option+ is empty
     #   User.find(params[:id]).map(&:email) #=> None()
     #
-    def map(&block)
+    def map
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       if empty?
         None()
       else
-        Some(block.call(get))
+        Some(yield(get))
       end
     end
 
@@ -146,13 +149,13 @@ module Functional
     #     user.posts.count
     #   end #=> 0
     #
-    def inject(if_empty, &block)
+    def inject(if_empty)
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       if empty?
         if_empty
       else
-        block.call(get)
+        yield(get)
       end
     end
 
@@ -179,10 +182,10 @@ module Functional
     #     .map(&:posts)
     #     .inject(0, &:count)
     #
-    def select(&predicate)
+    def select
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
-      if present? && predicate.call(get)
+      if present? && yield(get)
         self
       else
         None()
@@ -212,10 +215,10 @@ module Functional
     #     .map { |u| "#{u.name}, write your first blog post" }
     #
     #
-    def reject(&predicate)
+    def reject
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
-      if present? && !predicate.call(get)
+      if present? && !yield(get)
         self
       else
         None()

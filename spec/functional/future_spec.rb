@@ -371,9 +371,9 @@ RSpec.describe Future do
           context 'and second callback is failing' do
             it 'returns result of the Future' do
               value = future { 5 }
-                      .and_then { fail error }
-                      .and_then { fail ArgumentError }
-                      .value
+                .and_then { fail error }
+                .and_then { fail ArgumentError }
+                .value
 
               expect(value).to eq Some(Success(5))
             end
@@ -385,7 +385,7 @@ RSpec.describe Future do
 
   context '.successful' do
     it 'returns already succeed Future' do
-      future = Future.successful(value)
+      future = described_class.successful(value)
 
       future_value = future.value
 
@@ -395,7 +395,7 @@ RSpec.describe Future do
 
   context '.failed' do
     it 'returns already failed Future' do
-      value = Future.failed(error).value
+      value = described_class.failed(error).value
 
       expect(value).to eq Some(Failure(error))
     end

@@ -34,7 +34,7 @@ RSpec.describe None do
   specify '#map returns None' do
     result = none.map { |value| value * 42 }
 
-    expect(result).to be_kind_of(None)
+    expect(result).to be_kind_of(described_class)
   end
 
   specify '#inject returns default value' do
