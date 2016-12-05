@@ -27,16 +27,3 @@ Style/Documentation:
 # Configuration parameters: Methods.
 Style/SingleLineBlockParams:
   Enabled: false
-
-
-# Offense count: 6
-# Configuration parameters: Max.
-RSpec/ExampleLength:
-  Exclude:
-    - 'spec/functional/future_spec.rb'
-
-# Offense count: 14
-# Configuration parameters: MaxNesting.
-RSpec/NestedGroups:
-  Exclude:
-    - 'spec/functional/future_spec.rb'

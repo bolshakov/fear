@@ -16,9 +16,6 @@ module Functional
   autoload :Success, 'functional/success'
   autoload :Failure, 'functional/failure'
 
-  autoload :Future, 'functional/future'
-  autoload :Promise, 'functional/promise'
-
   autoload :Either, 'functional/either'
   autoload :Left, 'functional/left'
   autoload :Right, 'functional/right'
