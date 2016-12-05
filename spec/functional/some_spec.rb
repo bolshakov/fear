@@ -1,11 +1,10 @@
 include Functional
 
 RSpec.describe Some do
-  it_behaves_like 'Option'
-
-  let(:value) { 42 }
+  it_behaves_like Functional::Option
 
   subject(:some) { Some(value) }
+  let(:value) { 42 }
 
   it 'is not empty' do
     expect(some).not_to be_empty

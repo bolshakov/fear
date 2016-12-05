@@ -81,7 +81,7 @@ module Functional
     #   Option(params[:name]).get_or_else('No name') #=> 'No name'
     #
     # TODO: Accept either block or value. See LeftProjection for example
-    def get_or_else
+    def get_or_else # rubocop: disable Style/AccessorMethodName
       fail ArgumentError, BLOCK_REQUIRED unless block_given?
 
       if empty?

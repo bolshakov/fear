@@ -1,6 +1,7 @@
 module Functional
   class Failure
     include Try
+    include Dry::Equalizer(:exception)
 
     def initialize(exception)
       @exception = exception
@@ -14,10 +15,6 @@ module Functional
 
     def get
       fail exception
-    end
-
-    def ==(other)
-      other.is_a?(Failure) && exception == other.exception
     end
   end
 end

@@ -14,6 +14,11 @@ Metrics/ClassLength:
   Enabled: false
   Max: 133
 
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 130
+
 # Offense count: 9
 Style/Documentation:
   Enabled: false
@@ -22,3 +27,16 @@ Style/Documentation:
 # Configuration parameters: Methods.
 Style/SingleLineBlockParams:
   Enabled: false
+
+
+# Offense count: 6
+# Configuration parameters: Max.
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/functional/future_spec.rb'
+
+# Offense count: 14
+# Configuration parameters: MaxNesting.
+RSpec/NestedGroups:
+  Exclude:
+    - 'spec/functional/future_spec.rb'

@@ -1,7 +1,7 @@
 include Functional
 
 RSpec.describe None do
-  it_behaves_like 'Option'
+  it_behaves_like Functional::Option
 
   subject(:none) { None() }
 

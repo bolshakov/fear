@@ -70,7 +70,7 @@ module Functional
     # @raise exception if it is not a success and +block+
     #   throws an exception.
     #
-    def get_or_else
+    def get_or_else # rubocop: disable Style/AccessorMethodName
       if success?
         get
       else

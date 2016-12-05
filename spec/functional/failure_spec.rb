@@ -2,10 +2,9 @@ include Functional
 
 RSpec.describe Failure do
   TestError = Class.new(StandardError)
+  subject(:failure) { Failure(error) }
   let(:message) { 'something went wrong' }
   let(:error) { TestError.new(message) }
-
-  subject(:failure) { Failure(error) }
 
   specify '#get fail with exception' do
     expect do

@@ -1,9 +1,8 @@
 include Functional
 
 RSpec.describe Success do
-  let(:value) { 42 }
-
   subject(:success) { Success(value) }
+  let(:value) { 42 }
 
   specify '#get returns value' do
     val = success.get
@@ -96,22 +95,21 @@ RSpec.describe Success do
     end
   end
 
-  specify '#select returns self is predicate holds for value' do
-    selected_success = success.select { |val| val == value }
+  describe '#select' do
+    subject(:selected) { success.select(&predicate) }
 
-    expect(selected_success).to eq success
-  end
+    context 'predicate holds for value' do
+      let(:predicate) { ->(v) { v == value } }
 
-  specify '#select returns Failure is predicate does not hold for value' do
-    selected_success = success.select { |val| val != value }
-
-    begin
-      selected_success.get
-    rescue => error
-      expect(error.message).to eq 'Predicate does not hold for 42'
+      it { is_expected.to eq success }
     end
 
-    expect(selected_success).to be_kind_of(Failure)
+    context 'predicate does not hold for value' do
+      let(:predicate) { ->(v) { v != value } }
+
+      it { is_expected.to be_kind_of(Failure) }
+      it { expect { selected.get }.to raise_error(RuntimeError, 'Predicate does not hold for 42') }
+    end
   end
 
   specify '#recover_with returns self' do

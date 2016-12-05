@@ -1,6 +1,7 @@
 module Functional
   class Success
     include Try
+    include Dry::Equalizer(:get)
 
     attr_reader :get
 
@@ -10,10 +11,6 @@ module Functional
 
     def success?
       true
-    end
-
-    def ==(other)
-      other.is_a?(Success) && get == other.get
     end
   end
 end
