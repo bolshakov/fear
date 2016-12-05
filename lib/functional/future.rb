@@ -178,9 +178,9 @@ module Functional
     #   f.select { |value| value % 2 == 1 } # evaluates to 5
     #   f.select { |value| value % 2 == 0 } # fail with NoSuchElementException
     #
-    def select(&predicate)
+    def select
       map do |result|
-        if predicate.call(result)
+        if yield(result)
           result
         else
           fail NoSuchElementException, '#select predicate is not satisfied'
@@ -227,7 +227,7 @@ module Functional
             promise.complete!(
               try_of_other.map do |other_value|
                 [try_of_self.get, other_value]
-              end
+              end,
             )
           end
         when Failure

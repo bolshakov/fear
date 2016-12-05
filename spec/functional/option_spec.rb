@@ -15,7 +15,7 @@ RSpec.describe Option do
     end
 
     specify '#empty returns None' do
-      empty = Option.empty
+      empty = described_class.empty
 
       expect(empty).to be_kind_of(None)
     end

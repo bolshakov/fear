@@ -135,9 +135,9 @@ module Functional
     # +Success+ or returns +self+ if this is a +Failure+.
     # @return [Try]
     #
-    def map(&block)
+    def map
       if success?
-        Try { block.call(get) }
+        Try { yield(get) }
       else
         self
       end
@@ -147,10 +147,10 @@ module Functional
     # is not satisfied.
     # @return [Try]
     #
-    def select(&predicate)
+    def select
       return self if failure?
       Try do
-        if predicate.call(get)
+        if yield(get)
           get
         else
           fail "Predicate does not hold for #{get}"
@@ -176,11 +176,11 @@ module Functional
     # This is like map for the exception.
     # @return [Try]
     #
-    def recover(&block)
+    def recover
       if success?
         self
       else
-        Try { block.call(exception) }
+        Try { yield(exception) }
       end
     end
   end
