@@ -13,11 +13,20 @@ RSpec.describe Option do
 
       expect(option).to be_kind_of(None)
     end
+  end
 
-    specify '#empty returns None' do
-      empty = described_class.empty
+  let(:some) { Some.new(42) }
+  let(:none) { None.new }
 
-      expect(empty).to be_kind_of(None)
+  describe '#empty?' do
+    context 'Some' do
+      subject { some.empty? }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'None' do
+      subject { none.empty? }
+      it { is_expected.to eq(true) }
     end
   end
 end

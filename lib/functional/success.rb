@@ -1,12 +1,18 @@
 module Functional
   class Success
     include Try
-    include Dry::Equalizer(:get)
+    include Dry::Equalizer(:value)
+    include RightBiased::Right
 
-    attr_reader :get
+    attr_reader :value
+    protected :value
 
     def initialize(value)
-      @get = value
+      @value = value
+    end
+
+    def get
+      @value
     end
 
     def success?

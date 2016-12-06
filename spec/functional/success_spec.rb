@@ -1,6 +1,10 @@
 include Functional
 
 RSpec.describe Success do
+  it_behaves_like Functional::RightBiased::Right do
+    let(:right) { described_class.new('value') }
+  end
+
   subject(:success) { Success(value) }
   let(:value) { 42 }
 
@@ -55,44 +59,6 @@ RSpec.describe Success do
     expect do |block|
       success.each(&block)
     end.to yield_with_args(value)
-  end
-
-  context '#flat_map' do
-    specify 'returns Success if block is not failing' do
-      flat_mapped_success = success.flat_map { |val| val * 2 }
-
-      expect(flat_mapped_success).to eq Success(84)
-    end
-
-    specify 'returns Failure if block is failing' do
-      error = StandardError.new
-      flat_mapped_success = success.flat_map { |_| fail error }
-
-      expect(flat_mapped_success).to eq Failure(error)
-    end
-
-    specify 'flatten 2 levels deep Success' do
-      flat_mapped_success = success.flat_map do |val|
-        Success(Success(val * 2))
-      end
-
-      expect(flat_mapped_success).to eq Success(84)
-    end
-  end
-
-  context '#map' do
-    specify 'returns Success if block is not failing' do
-      mapped_success = success.map { |val| val * 2 }
-
-      expect(mapped_success).to eq Success(84)
-    end
-
-    specify 'returns Failure if block is failing' do
-      error = StandardError.new
-      mapped_success = success.map { |_| fail error }
-
-      expect(mapped_success).to eq Failure(error)
-    end
   end
 
   describe '#select' do

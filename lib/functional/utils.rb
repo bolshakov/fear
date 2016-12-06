@@ -8,9 +8,17 @@ module Functional
       end
     end
 
-    def assert_type!(value, type)
-      unless value.is_a?(type)
-        fail TypeError, "expected `#{value}` to be of #{type} class"
+    def assert_type!(value, *types)
+      if types.none? { |type| value.is_a?(type) }
+        fail TypeError, "expected `#{value}` to be of #{types.join(', ')} class"
+      end
+    end
+
+    def return_or_call_proc(value)
+      if value.respond_to?(:call)
+        value.call
+      else
+        value
       end
     end
   end

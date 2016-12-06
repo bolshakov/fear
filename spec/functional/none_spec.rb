@@ -1,28 +1,16 @@
 include Functional
 
 RSpec.describe None do
-  it_behaves_like Functional::Option
+  it_behaves_like Functional::RightBiased::Left do
+    let(:left) { described_class.new }
+  end
 
   subject(:none) { None() }
-
-  it 'is empty' do
-    expect(none).to be_empty
-  end
-
-  it 'is not present' do
-    expect(none).not_to be_present
-  end
 
   specify '#get fails with exception' do
     expect do
       none.get
-    end.to raise_error(NoMethodError, 'None#get')
-  end
-
-  specify '#get_or_else devaluates block and return its value' do
-    result = none.get_or_else { 42 }
-
-    expect(result).to eq 42
+    end.to raise_error(NoMethodError)
   end
 
   specify '#or_nil returns nil' do
@@ -31,27 +19,19 @@ RSpec.describe None do
     expect(result).to eq nil
   end
 
-  specify '#map returns None' do
-    result = none.map { |value| value * 42 }
+  describe '#detect' do
+    subject { none.detect { |value| value > 42 } }
 
-    expect(result).to be_kind_of(described_class)
+    it 'always return None' do
+      is_expected.to eq(None())
+    end
   end
 
-  specify '#inject returns default value' do
-    result = none.inject(13) { |value| value + 42 }
+  describe '#reject' do
+    subject { none.reject { |value| value > 42 } }
 
-    expect(result).to eq 13
-  end
-
-  specify '#select returns None' do
-    result = none.select { |value| value > 42 }
-
-    expect(result).to eq None()
-  end
-
-  specify '#reject returns None' do
-    result = none.reject { |value| value > 42 }
-
-    expect(result).to eq None()
+    it 'always return None' do
+      is_expected.to eq(None())
+    end
   end
 end

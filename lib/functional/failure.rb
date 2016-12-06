@@ -2,6 +2,7 @@ module Functional
   class Failure
     include Try
     include Dry::Equalizer(:exception)
+    include RightBiased::Left
 
     def initialize(exception)
       @exception = exception

@@ -1,6 +1,10 @@
 include Functional
 
 RSpec.describe Failure do
+  it_behaves_like Functional::RightBiased::Left do
+    let(:left) { described_class.new(error) }
+  end
+
   TestError = Class.new(StandardError)
   subject(:failure) { Failure(error) }
   let(:message) { 'something went wrong' }
@@ -42,18 +46,6 @@ RSpec.describe Failure do
     expect do |block|
       failure.each(&block)
     end.not_to yield_control
-  end
-
-  specify '#flat_map returns self' do
-    flat_mapped_failure = failure.flat_map { |value| value * 2 }
-
-    expect(flat_mapped_failure).to eq failure
-  end
-
-  specify '#map returns self' do
-    mapped_failure = failure.map { |value| value * 2 }
-
-    expect(mapped_failure).to eq failure
   end
 
   specify '#select returns self' do

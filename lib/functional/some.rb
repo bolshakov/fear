@@ -2,17 +2,41 @@ module Functional
   class Some
     include Option
     include Dry::Equalizer(:get)
+    include RightBiased::Right
 
-    # @!attribute get
-    #   @return option's value
-    attr_reader :get
+    attr_reader :value
+    protected :value
 
     def initialize(value)
-      @get = value
+      @value = value
     end
 
-    def empty?
-      false
+    # @return option's value
+    def get
+      @value
+    end
+
+    # @return [Option] self if this `Option` is nonempty and
+    #   applying the `predicate` to this option's value
+    #   returns true. Otherwise, return `None`.
+    #
+    def detect
+      if yield(value)
+        self
+      else
+        None.new
+      end
+    end
+
+    # @return [Option] if applying the `predicate` to this
+    #   option's value returns false. Otherwise, return `None`.
+    #
+    def reject
+      if yield(value)
+        None.new
+      else
+        self
+      end
     end
   end
 end

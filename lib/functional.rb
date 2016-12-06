@@ -7,6 +7,7 @@ module Functional
   NoSuchElementError = Class.new(Error)
 
   autoload :Utils, 'functional/utils'
+  autoload :RightBiased, 'functional/right_biased'
 
   autoload :Option, 'functional/option'
   autoload :Some, 'functional/some'

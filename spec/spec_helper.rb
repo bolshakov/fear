@@ -2,7 +2,8 @@
 # CodeClimate::TestReporter.start
 
 require 'functional'
-require File.expand_path('spec/functional/option_examples')
+require File.expand_path('spec/functional/right_biased/right')
+require File.expand_path('spec/functional/right_biased/left')
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
