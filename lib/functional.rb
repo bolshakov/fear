@@ -6,6 +6,7 @@ module Functional
   IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
 
+  autoload :For, 'functional/For'
   autoload :Utils, 'functional/utils'
   autoload :RightBiased, 'functional/right_biased'
 
