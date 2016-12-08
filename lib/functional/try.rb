@@ -38,6 +38,45 @@ module Functional
   # @note all `Try` combinators will catch exceptions and return failure
   # unless otherwise specified in the documentation.
   #
+  # @example #or_else
+  #   Success(42).or_else { -1 }                 #=> Success(42)
+  #   Failure(ArgumentError.new).or_else { -1 }  #=> Success(-1)
+  #   Failure(ArgumentError.new).or_else { 1/0 } #=> Failure(ZeroDivisionError.new('divided by 0'))
+  #
+  # @example #flatten
+  #   Success(42).flatten                         #=> Success(42)
+  #   Success(Success(42)).flatten                #=> Success(42)
+  #   Success(Failure(ArgumentError.new)).flatten #=> Failure(ArgumentError.new)
+  #   Failure(ArgumentError.new).flatten { -1 }   #=> Failure(ArgumentError.new)
+  #
+  # @example #map
+  #   Success(42).map { |v| v/2 }                 #=> Success(21)
+  #   Failure(ArgumentError.new).map { |v| v/2 }  #=> Failure(ArgumentError.new)
+  #
+  # @example #detect
+  #   Success(42).detect { |v| v > 40 }
+  #     #=> Success(21)
+  #   Success(42).detect { |v| v < 40 }
+  #     #=> Failure(NoSuchElementError.new("Predicate does not hold for 42"))
+  #   Failure(ArgumentError.new).detect { |v| v < 40 }
+  #     #=> Failure(ArgumentError.new)
+  #
+  # @example #recover_with
+  #   Success(42).recover_with { |e| Success(e.massage) }
+  #     #=> Success(42)
+  #   Failure(ArgumentError.new).recover_with { |e| Success(e.massage) }
+  #     #=> Success('ArgumentError')
+  #   Failure(ArgumentError.new).recover_with { |e| fail }
+  #     #=> Failure(RuntimeError)
+  #
+  # @example #recover
+  #   Success(42).recover { |e| e.massage }
+  #     #=> Success(42)
+  #   Failure(ArgumentError.new).recover { |e| e.massage }
+  #     #=> Success('ArgumentError')
+  #   Failure(ArgumentError.new).recover { |e| fail }
+  #     #=> Failure(RuntimeError)
+  #
   # @author based on Twitter's original implementation.
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/util/Try.scala
   #
@@ -50,103 +89,11 @@ module Functional
       Success
     end
 
-    # @return [true, false] `true` if the `Try` is a `Success`,
-    #   `false` otherwise.
-    # @abstract
-    #
-    def success?
-      fail NotImplementedError
-    end
-
     # @return [true, false] `true` if the `Try` is a `Failure`,
     #   `false` otherwise.
     #
     def failure?
       !success?
-    end
-
-    # @return [value] the value from this `Success`.
-    # @raise [exception] this is a `Failure`.
-    # @abstract
-    #
-    def get
-      fail NotImplementedError
-    end
-
-    # @return [self] if it's a `Success`
-    # @yieldreturn if this is a `Failure`
-    #
-    def or_else
-      if success?
-        self
-      else
-        Try { yield }.flatten
-      end
-    end
-
-    # Transforms a nested `Try`, ie, a `Success` of `Success``,
-    # into an un-nested `Try`, ie, a `Success`.
-    # @return [Try]
-    #
-    def flatten
-      if success? && get.is_a?(Try)
-        get.flatten
-      else
-        self
-      end
-    end
-
-    # Maps the given function to the value from this
-    # `Success` or returns self if this is a `Failure`.
-    # @return [Try]
-    #
-    def map
-      if success?
-        Try { yield(get) }
-      else
-        self
-      end
-    end
-
-    # Converts this to a `Failure` if the predicate
-    # is not satisfied.
-    # @return [Try]
-    #
-    def select
-      return self if failure?
-      Try do
-        if yield(get)
-          get
-        else
-          fail "Predicate does not hold for #{get}"
-        end
-      end
-    end
-
-    # Applies the given block if this is a `Failure`,
-    # otherwise returns this if this is a `Success`.
-    # This is like `flat_map` for the exception.
-    # @return [Try]
-    #
-    def recover_with(&block)
-      if success?
-        self
-      else
-        recover(&block).flatten
-      end
-    end
-
-    # Applies the given block if this is a `Failure`,
-    # otherwise returns this if this is a `Success`.
-    # This is like map for the exception.
-    # @return [Try]
-    #
-    def recover
-      if success?
-        self
-      else
-        Try { yield(exception) }
-      end
     end
   end
 end

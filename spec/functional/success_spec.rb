@@ -1,92 +1,83 @@
-include Functional
+RSpec.describe Functional::Success do
+  let(:success) { described_class.new('value') }
 
-RSpec.describe Success do
   it_behaves_like Functional::RightBiased::Right do
-    let(:right) { described_class.new('value') }
-  end
+    let(:right) { success }
 
-  subject(:success) { Success(value) }
-  let(:value) { 42 }
+    describe '#map', 'block fails' do
+      subject(:map) { right.map { fail 'unexpected error' } }
 
-  specify '#get returns value' do
-    val = success.get
-    expect(val).to eq value
-  end
-
-  specify '#get_or_else returns value' do
-    default = 13
-    val = success.get_or_else { default }
-
-    expect(val).to eq value
-  end
-
-  specify '#or_else returns success' do
-    default = Try { 13 }
-    val = success.or_else { Try { default } }
-
-    expect(val).to eq success
-  end
-
-  specify '#to_option returns Some' do
-    option = success.to_option
-
-    expect(option).to eq Some(value)
-  end
-
-  context '#flatten' do
-    specify 'Success of Success' do
-      flatten_success = Success(success).flatten
-
-      expect(flatten_success).to eq success
+      it { is_expected.to be_kind_of(Functional::Failure) }
+      it { expect { map.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
 
-    specify 'Success of Success of Success' do
-      flatten_success = Success(Success(success)).flatten
+    describe '#flat_map', 'block fails' do
+      subject(:flat_map) { right.flat_map { fail 'unexpected error' } }
 
-      expect(flatten_success).to eq success
-    end
-
-    specify 'Success of Failure' do
-      failure = Failure(StandardError.new)
-
-      flatten_success = Success(failure).flatten
-
-      expect(flatten_success).to eq failure
+      it { is_expected.to be_kind_of(Functional::Failure) }
+      it { expect { flat_map.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
   end
 
-  specify '#each applies given block' do
-    expect do |block|
-      success.each(&block)
-    end.to yield_with_args(value)
+  describe '#get' do
+    subject { success.get }
+    it { is_expected.to eq('value') }
   end
 
-  describe '#select' do
-    subject(:selected) { success.select(&predicate) }
+  describe '#success?' do
+    subject { success }
+    it { is_expected.to be_success }
+  end
 
+  describe '#or_else' do
+    subject { success.or_else { described_class.new('another value') } }
+    it { is_expected.to eq(success) }
+  end
+
+  describe '#flatten' do
+    subject { described_class.new(value).flatten }
+
+    context 'value is a Success' do
+      let(:value) { described_class.new(42) }
+      it { is_expected.to eq(described_class.new(42)) }
+    end
+
+    context 'value is a Success of Success' do
+      let(:value) { described_class.new(described_class.new(42)) }
+      it { is_expected.to eq(described_class.new(42)) }
+    end
+
+    context 'value is a Success of Failure' do
+      let(:failure) { Functional::Failure.new(RuntimeError.new) }
+      let(:value) { described_class.new(failure) }
+      it { is_expected.to eq(failure) }
+    end
+  end
+
+  describe '#detect' do
     context 'predicate holds for value' do
-      let(:predicate) { ->(v) { v == value } }
-
-      it { is_expected.to eq success }
+      subject { success.detect { |v| v == 'value' } }
+      it { is_expected.to eq(success) }
     end
 
     context 'predicate does not hold for value' do
-      let(:predicate) { ->(v) { v != value } }
+      subject { proc { success.detect { |v| v != 'value' }.get } }
+      it { is_expected.to raise_error(Functional::NoSuchElementError, 'Predicate does not hold for `value`') }
+    end
 
-      it { is_expected.to be_kind_of(Failure) }
-      it { expect { selected.get }.to raise_error(RuntimeError, 'Predicate does not hold for 42') }
+    context 'predicate fails with error' do
+      subject { proc { success.detect { fail 'foo' }.get } }
+      it { is_expected.to raise_error(RuntimeError, 'foo') }
     end
   end
 
-  specify '#recover_with returns self' do
-    recovered_success = success.recover_with { |value| value * 2 }
-
-    expect(recovered_success).to eq success
+  describe '#recover_with' do
+    subject { success.recover_with { |v| Success(v * 2) } }
+    it { is_expected.to eq(success) }
   end
 
-  specify '#recover returns self' do
-    recovered_success = success.recover { |value| value * 2 }
-
-    expect(recovered_success).to eq success
+  describe '#recover' do
+    subject { success.recover { |v| v * 2 } }
+    it { is_expected.to eq(success) }
   end
 end

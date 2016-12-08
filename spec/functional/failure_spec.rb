@@ -1,94 +1,78 @@
-include Functional
+RSpec.describe Functional::Failure do
+  let(:failure) { described_class.new(RuntimeError.new('error')) }
 
-RSpec.describe Failure do
   it_behaves_like Functional::RightBiased::Left do
-    let(:left) { described_class.new(error) }
+    let(:left) { failure }
   end
 
-  TestError = Class.new(StandardError)
-  subject(:failure) { Failure(error) }
-  let(:message) { 'something went wrong' }
-  let(:error) { TestError.new(message) }
-
-  specify '#get fail with exception' do
-    expect do
-      failure.get
-    end.to raise_error(error)
+  describe '#success?' do
+    subject { failure }
+    it { is_expected.not_to be_success }
   end
 
-  specify '#get_or_else returns default value' do
-    default = 13
-    val = failure.get_or_else { default }
-
-    expect(val).to eq default
+  describe '#get' do
+    subject { proc { failure.get } }
+    it { is_expected.to raise_error(RuntimeError, 'error') }
   end
 
-  specify '#or_else returns default' do
-    default = Try { 13 }
-    val = failure.or_else { default }
+  describe '#or_else' do
+    context 'default does not fail' do
+      subject { failure.or_else { 'value' } }
+      it { is_expected.to eq(Functional::Success.new('value')) }
+    end
 
-    expect(val).to eq default
+    context 'default fails with error' do
+      subject(:or_else) { failure.or_else { fail 'unexpected error' } }
+      it { is_expected.to be_kind_of(described_class) }
+      it { expect { or_else.get }.to raise_error(RuntimeError, 'unexpected error') }
+    end
   end
 
-  specify '#to_option returns None' do
-    option = failure.to_option
-
-    expect(option).to be_kind_of(None)
+  describe '#flatten' do
+    subject { failure.flatten }
+    it { is_expected.to eq(failure) }
   end
 
-  specify '#flatten returns self' do
-    flatten_failure = failure.flatten
-
-    expect(flatten_failure).to eq failure
-  end
-
-  specify '#each do nothing' do
-    expect do |block|
-      failure.each(&block)
-    end.not_to yield_control
-  end
-
-  specify '#select returns self' do
-    selected_failure = failure.select { |value| value == 42 }
-
-    expect(selected_failure).to eq failure
+  describe '#detect' do
+    subject { failure.detect { |v| v == 'value' } }
+    it { is_expected.to eq(failure) }
   end
 
   context '#recover_with' do
-    specify 'returns failure if block is not failing' do
-      recovered_failure = failure.recover_with(&:message)
-
-      expect(recovered_failure).to eq Success(message)
-    end
-
-    specify 'returns Failure if block is failing' do
-      error = StandardError.new
-      recovered_failure = failure.recover_with { |_| fail error }
-
-      expect(recovered_failure).to eq Failure(error)
-    end
-
-    specify 'flatten 2 levels deep Success' do
-      recovered_failure = failure.recover_with do |error|
-        Success(Failure(error))
+    context 'block does not fail' do
+      subject do
+        failure.recover_with do |error|
+          Functional::Success.new(error.message)
+        end
       end
 
-      expect(recovered_failure).to eq Failure(error)
+      it 'returns result of evaluation of the block against the error' do
+        is_expected.to eq(Functional::Success.new('error'))
+      end
+    end
+
+    context 'block fails' do
+      subject(:recover_with) { failure.recover_with { fail 'unexpected error' } }
+
+      it { is_expected.to be_kind_of(described_class) }
+      it { expect { recover_with.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
   end
 
   context '#recover' do
-    specify 'returns failure if block is not failing' do
-      recovered_failure = failure.recover(&:message)
+    context 'block does not fail' do
+      subject { failure.recover(&:message) }
 
-      expect(recovered_failure).to eq Success(message)
+      it 'returns Success of evaluation of the block against the error' do
+        is_expected.to eq(Functional::Success.new('error'))
+      end
     end
 
-    specify 'returns Failure if block is failing' do
-      error = StandardError.new
-      recovered_failure = failure.recover { |_| fail error }
+    context 'block fails' do
+      subject(:recover) { failure.recover { fail 'unexpected error' } }
 
-      expect(recovered_failure).to eq Failure(error)
+      it { is_expected.to be_kind_of(described_class) }
+      it { expect { recover.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
   end
 end
