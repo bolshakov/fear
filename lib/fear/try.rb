@@ -11,8 +11,8 @@ module Fear
   # might occur.
   #
   # @example
-  #   dividend = Try { params[:dividend].to_i }
-  #   divisor = Try { params[:divisor].to_i }
+  #   dividend = Try { Integer(params[:dividend]) }
+  #   divisor = Try { Integer(params[:divisor]) }
   #   problem = dividend.flat_map { |x| divisor.map { |y| x / y }
   #
   #   if problem.success?

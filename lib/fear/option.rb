@@ -2,10 +2,7 @@ module Fear
   # Represents optional values. Instances of `Option`
   # are either an instance of `Some` or the object `None`.
   #
-  # The most idiomatic way to use an `Option` instance is to treat it
-  # as a collection or monad and use `map`, `flat_map`, `select`, or `each`:
-  #
-  # @example
+  # @example The most idiomatic way to use an `Option` instance is to treat it as a collection
   #   name = Option(params[:name])
   #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
   #   puts upper.get_or_else('')
@@ -13,9 +10,7 @@ module Fear
   # This allows for sophisticated chaining of `Option` values without
   # having to check for the existence of a value.
   #
-  # A less-idiomatic way to use `Option` values is via pattern matching:
-  #
-  # @example
+  # @example A less-idiomatic way to use `Option` values is via pattern matching
   #   name = Option(params[:name])
   #   case name
   #   when Some
@@ -24,9 +19,7 @@ module Fear
   #     puts 'No name value'
   #   end
   #
-  # or manually checking for non emptiness:
-  #
-  # @example
+  # @example or manually checking for non emptiness
   #   name = Option(params[:name])
   #   if name.empty?
   #     puts 'No name value'
