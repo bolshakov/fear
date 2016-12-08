@@ -3,11 +3,11 @@ module Fear
   # are either an instance of `Some` or the object `None`.
   #
   # The most idiomatic way to use an `Option` instance is to treat it
-  # as a collection or monad and use `map`, `flat_map`, `detect`, or `each`:
+  # as a collection or monad and use `map`, `flat_map`, `select`, or `each`:
   #
   # @example
   #   name = Option(params[:name])
-  #   upper = name.map(&:strip).detect { |n| n.length != 0 }.map(&:upcase)
+  #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
   #   puts upper.get_or_else('')
   #
   # This allows for sophisticated chaining of `Option` values without
@@ -34,17 +34,17 @@ module Fear
   #     puts name.strip.upcase
   #   end
   #
-  # @example #detect
-  #   User.find(params[:id]).detect do |user|
+  # @example #select
+  #   User.find(params[:id]).select do |user|
   #     user.posts.count > 0
   #   end #=> Some(User)
   #
-  #   User.find(params[:id]).detect do |user|
+  #   User.find(params[:id]).select do |user|
   #     user.posts.count > 0
   #   end #=> None
   #
   #   User.find(params[:id])
-  #     .detect(&:confirmed?)
+  #     .select(&:confirmed?)
   #     .map(&:posts)
   #     .inject(0, &:count)
   #

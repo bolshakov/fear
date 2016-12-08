@@ -19,8 +19,8 @@ RSpec.describe Fear::None do
     expect(result).to eq nil
   end
 
-  describe '#detect' do
-    subject { none.detect { |value| value > 42 } }
+  describe '#select' do
+    subject { none.select { |value| value > 42 } }
 
     it 'always return None' do
       is_expected.to eq(None())

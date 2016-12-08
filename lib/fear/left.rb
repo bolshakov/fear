@@ -8,7 +8,7 @@ module Fear
     # @param default [Proc, any]
     # @return [Either]
     #
-    def detect(default)
+    def select(default)
       Left.new(Utils.return_or_call_proc(default))
     end
 

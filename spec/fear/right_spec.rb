@@ -5,8 +5,8 @@ RSpec.describe Fear::Right do
 
   let(:right) { described_class.new('value') }
 
-  describe '#detect' do
-    subject { right.detect(default, &predicate) }
+  describe '#select' do
+    subject { right.select(default, &predicate) }
 
     context 'predicate evaluates to true' do
       let(:predicate) { ->(v) { v == 'value' } }

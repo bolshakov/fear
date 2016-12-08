@@ -20,7 +20,7 @@ module Fear
     #   applying the `predicate` to this option's value
     #   returns true. Otherwise, return `None`.
     #
-    def detect
+    def select
       if yield(value)
         self
       else

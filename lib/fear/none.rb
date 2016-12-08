@@ -8,7 +8,7 @@ module Fear
     #
     # @return [None]
     #
-    def detect(*)
+    def select(*)
       self
     end
 

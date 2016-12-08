@@ -17,7 +17,7 @@ module Fear
       end
 
       # Ensures that returned value either left, or right.
-      def detect(*)
+      def select(*)
         super.tap do |result|
           Utils.assert_type!(result, left_class, right_class)
         end

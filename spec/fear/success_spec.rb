@@ -54,19 +54,19 @@ RSpec.describe Fear::Success do
     end
   end
 
-  describe '#detect' do
+  describe '#select' do
     context 'predicate holds for value' do
-      subject { success.detect { |v| v == 'value' } }
+      subject { success.select { |v| v == 'value' } }
       it { is_expected.to eq(success) }
     end
 
     context 'predicate does not hold for value' do
-      subject { proc { success.detect { |v| v != 'value' }.get } }
+      subject { proc { success.select { |v| v != 'value' }.get } }
       it { is_expected.to raise_error(Fear::NoSuchElementError, 'Predicate does not hold for `value`') }
     end
 
     context 'predicate fails with error' do
-      subject { proc { success.detect { fail 'foo' }.get } }
+      subject { proc { success.select { fail 'foo' }.get } }
       it { is_expected.to raise_error(RuntimeError, 'foo') }
     end
   end

@@ -33,8 +33,8 @@ RSpec.describe Fear::Failure do
     it { is_expected.to eq(failure) }
   end
 
-  describe '#detect' do
-    subject { failure.detect { |v| v == 'value' } }
+  describe '#select' do
+    subject { failure.select { |v| v == 'value' } }
     it { is_expected.to eq(failure) }
   end
 

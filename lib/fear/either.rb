@@ -8,7 +8,7 @@ module Fear
   # `Right` takes the place of `Some`. Convention dictates
   # that `Left` is used for failure and `Right` is used for success.
   #
-  # For example, you could use `Either<String, Fixnum>` to detect whether a
+  # For example, you could use `Either<String, Fixnum>` to select whether a
   # received input is a `String` or an `Fixnum`.
   #
   # @example
@@ -26,7 +26,7 @@ module Fear
   #     )
   #   )
   #
-  # `Either` is right-biased, which means that `Right` is assumed to be the default case to
+  # Either is right-biased, which means that `Right` is assumed to be the default case to
   # operate on. If it is `Left`, operations like `#map`, `#flat_map`, ... return the `Left` value
   # unchanged:
   #
@@ -63,11 +63,11 @@ module Fear
   #   Right(12).flat_map { |x| Left('ruby') } #=> Left('ruby')
   #   Left(12).flat_map { |x| Left('ruby') }  #=> Left(12)
   #
-  # @example #detect
-  #   Right(12).detect(-1, &:even?) #=> Right(12))
-  #   Right(7).detect(-1, &:even?) #=> Left(-1)
-  #   Left(12).detect(-1, &:even?) #=> Left(-1)
-  #   Left(12).detect(-> { -1 }, &:even?) #=> Left(-1)
+  # @example #select
+  #   Right(12).select(-1, &:even?) #=> Right(12))
+  #   Right(7).select(-1, &:even?) #=> Left(-1)
+  #   Left(12).select(-1, &:even?) #=> Left(-1)
+  #   Left(12).select(-> { -1 }, &:even?) #=> Left(-1)
   #
   # @example #to_a
   #   Right(12).to_a #=> [12]

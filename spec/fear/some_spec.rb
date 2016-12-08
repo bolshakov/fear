@@ -8,8 +8,8 @@ RSpec.describe Fear::Some do
   subject(:some) { Some(value) }
   let(:value) { 42 }
 
-  describe '#detect' do
-    subject { some.detect(&predicate) }
+  describe '#select' do
+    subject { some.select(&predicate) }
 
     context 'predicate evaluates to true' do
       let(:predicate) { ->(v) { v > 40 } }

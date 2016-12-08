@@ -9,7 +9,7 @@ module Fear
     # @param default [Proc, any]
     # @return [Either]
     #
-    def detect(default)
+    def select(default)
       if yield(value)
         self
       else

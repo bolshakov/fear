@@ -42,7 +42,7 @@ module Fear
     # @yieldreturn [Boolean]
     # @return [Try]
     #
-    def detect
+    def select
       if yield(value)
         self
       else

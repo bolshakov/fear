@@ -53,12 +53,12 @@ module Fear
   #   Success(42).map { |v| v/2 }                 #=> Success(21)
   #   Failure(ArgumentError.new).map { |v| v/2 }  #=> Failure(ArgumentError.new)
   #
-  # @example #detect
-  #   Success(42).detect { |v| v > 40 }
+  # @example #select
+  #   Success(42).select { |v| v > 40 }
   #     #=> Success(21)
-  #   Success(42).detect { |v| v < 40 }
+  #   Success(42).select { |v| v < 40 }
   #     #=> Failure(NoSuchElementError.new("Predicate does not hold for 42"))
-  #   Failure(ArgumentError.new).detect { |v| v < 40 }
+  #   Failure(ArgumentError.new).select { |v| v < 40 }
   #     #=> Failure(ArgumentError.new)
   #
   # @example #recover_with

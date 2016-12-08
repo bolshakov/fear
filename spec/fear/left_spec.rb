@@ -5,9 +5,9 @@ RSpec.describe Fear::Left do
     let(:left) { described_class.new('value') }
   end
 
-  describe '#detect' do
+  describe '#select' do
     subject do
-      described_class.new('value').detect(default) { |v| v == 'value' }
+      described_class.new('value').select(default) { |v| v == 'value' }
     end
 
     context 'proc default' do

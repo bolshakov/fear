@@ -32,8 +32,7 @@ module Fear
     end
 
     # @return [Failure] self
-    # TODO: rename to select
-    def detect
+    def select
       self
     end
 
