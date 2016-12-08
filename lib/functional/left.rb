@@ -9,13 +9,13 @@ module Functional
     # @return [Either]
     #
     def detect(default)
-      Left(Utils.return_or_call_proc(default))
+      Left.new(Utils.return_or_call_proc(default))
     end
 
     # @return [Right] value in `Right`
     #
     def swap
-      Right(value)
+      Right.new(value)
     end
 
     # @param reduce_left [Proc] the function to apply if this is a `Left`

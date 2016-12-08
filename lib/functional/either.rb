@@ -127,5 +127,19 @@ module Functional
 
     attr_reader :value
     protected :value
+
+    module Mixin
+      # @param [any]
+      # @return [Left]
+      def Left(value)
+        Left.new(value)
+      end
+
+      # @param [any]
+      # @return [Right]
+      def Right(value)
+        Right.new(value)
+      end
+    end
   end
 end

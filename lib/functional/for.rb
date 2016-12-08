@@ -91,5 +91,14 @@ module Functional
         end
       end
     end
+
+    module Mixin
+      # @param locals [Hash{Symbol => {#map, #flat_map}}]
+      # @return [{#map, #flat_map}]
+      #
+      def For(**locals, &block)
+        For.new(**locals).call(&block)
+      end
+    end
   end
 end

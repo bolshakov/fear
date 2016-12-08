@@ -1,4 +1,6 @@
 RSpec.describe Functional::Left do
+  include Functional::Either::Mixin
+
   it_behaves_like Functional::RightBiased::Left do
     let(:left) { described_class.new('value') }
   end
@@ -27,7 +29,7 @@ RSpec.describe Functional::Left do
 
   describe '#swap' do
     subject { described_class.new('value').swap }
-    it { is_expected.to eq(Functional::Right.new('value')) }
+    it { is_expected.to eq(Right('value')) }
   end
 
   describe '#reduce' do
@@ -45,7 +47,7 @@ RSpec.describe Functional::Left do
     subject(:join_right) { either.join_right }
 
     context 'value is Either' do
-      let(:either) { described_class.new(Functional::Left('error')) }
+      let(:either) { described_class.new(Left('error')) }
       it { is_expected.to eq(either) }
     end
 
@@ -59,7 +61,7 @@ RSpec.describe Functional::Left do
     context 'value is Either' do
       subject { either.join_left }
       let(:either) { described_class.new(value) }
-      let(:value) { Functional::Left('error') }
+      let(:value) { Left('error') }
 
       it 'it returns value' do
         is_expected.to eq(Left('error'))

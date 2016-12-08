@@ -1,6 +1,6 @@
-include Functional
+RSpec.describe Functional::Some do
+  include Functional::Option::Mixin
 
-RSpec.describe Some do
   it_behaves_like Functional::RightBiased::Right do
     let(:right) { described_class.new('value') }
   end

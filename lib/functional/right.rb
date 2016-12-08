@@ -13,7 +13,7 @@ module Functional
       if yield(value)
         self
       else
-        Left(Utils.return_or_call_proc(default))
+        Left.new(Utils.return_or_call_proc(default))
       end
     end
 

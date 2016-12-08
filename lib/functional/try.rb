@@ -95,5 +95,33 @@ module Functional
     def failure?
       !success?
     end
+
+    module Mixin
+      # Constructs a `Try` using the block. This
+      # method will ensure any non-fatal exception is caught and a
+      # `Failure` object is returned.
+      # @return [Try]
+      #
+      def Try
+        Success.new(yield)
+      rescue StandardError => error
+        Failure.new(error)
+      end
+
+      # @param exception [StandardError]
+      # @return [Failure]
+      #
+      def Failure(exception)
+        fail TypeError, "not an error: #{exception}" unless exception.is_a?(StandardError)
+        Failure.new(exception)
+      end
+
+      # @param value [any]
+      # @return [Success]
+      #
+      def Success(value)
+        Success.new(value)
+      end
+    end
   end
 end

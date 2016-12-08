@@ -6,7 +6,7 @@ module Functional
   IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
 
-  autoload :For, 'functional/For'
+  autoload :For, 'functional/for'
   autoload :Utils, 'functional/utils'
   autoload :RightBiased, 'functional/right_biased'
 
@@ -22,51 +22,10 @@ module Functional
   autoload :Left, 'functional/left'
   autoload :Right, 'functional/right'
 
-  # rubocop: disable Style/MethodName
-  def Option(value)
-    if value.nil?
-      None()
-    else
-      Some(value)
-    end
+  module Mixin
+    include Either::Mixin
+    include For::Mixin
+    include Option::Mixin
+    include Try::Mixin
   end
-
-  def None
-    None.new
-  end
-
-  def Some(value)
-    Some.new(value)
-  end
-
-  # Constructs a `Try` using the block. This
-  # method will ensure any non-fatal exception is caught and a
-  # `Failure` object is returned.
-  #
-  def Try
-    Success(yield)
-  rescue StandardError => error
-    Failure(error)
-  end
-
-  def Failure(exception)
-    Failure.new(exception)
-  end
-
-  def Success(value)
-    Success.new(value)
-  end
-
-  def Future(opts = {}, &block)
-    Future.new(opts, &block)
-  end
-
-  def Left(value)
-    Left.new(value)
-  end
-
-  def Right(value)
-    Right.new(value)
-  end
-  # rubocop: enable Style/MethodName
 end

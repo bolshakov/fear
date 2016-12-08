@@ -85,5 +85,28 @@ module Functional
     def or_nil
       get_or_else { nil }
     end
+
+    module Mixin
+      # @param value [any]
+      # @return [Some, None]
+      def Option(value)
+        if value.nil?
+          None()
+        else
+          Some(value)
+        end
+      end
+
+      # @return [None]
+      def None
+        None.new
+      end
+
+      # @param value [any] except nil
+      # @return [None]
+      def Some(value)
+        Some.new(value)
+      end
+    end
   end
 end

@@ -1,7 +1,5 @@
 RSpec.describe Functional::For do
-  def For(**args, &block) # rubocop: disable Style/MethodName
-    Functional::For.new(**args).call(&block)
-  end
+  include Functional::For::Mixin
 
   context 'unary' do
     context 'Functional::Some' do

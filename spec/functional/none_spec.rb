@@ -1,6 +1,6 @@
-include Functional
+RSpec.describe Functional::None do
+  include Functional::Option::Mixin
 
-RSpec.describe None do
   it_behaves_like Functional::RightBiased::Left do
     let(:left) { described_class.new }
   end
