@@ -1,4 +1,4 @@
-module Functional
+module Fear
   class Failure
     include Try
     include Dry::Equalizer(:value)

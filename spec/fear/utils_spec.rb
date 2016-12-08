@@ -1,4 +1,4 @@
-RSpec.describe Functional::Utils do
+RSpec.describe Fear::Utils do
   describe '.assert_arg_or_block!' do
     def assert_arg_or_block!(*args, &block)
       described_class.assert_arg_or_block!(:the_method, *args, &block)

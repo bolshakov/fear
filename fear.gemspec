@@ -1,10 +1,12 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
+
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+require 'fear/version'
 Gem::Specification.new do |spec|
-  spec.name          = 'functional'
-  spec.version       = '0.0.0'
+  spec.name          = 'fear'
+  spec.version       = Fear::VERSION
   spec.authors       = ['Tema Bolshakov']
   spec.email         = ['abolshakov@spbtv.com']
   spec.summary       = "%q{Ruby port of some Scala's monads.}"
@@ -22,8 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.1'
-  spec.add_development_dependency 'concurrent-ruby', '~> 0.8'
-  spec.add_development_dependency 'concurrent-ruby-ext'
   spec.add_development_dependency 'spbtv_code_style'
   spec.add_development_dependency 'rubocop-rspec'
 end

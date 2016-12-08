@@ -1,4 +1,4 @@
-module Functional
+module Fear
   class None
     include Option
     include Dry::Equalizer()

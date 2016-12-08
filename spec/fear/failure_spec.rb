@@ -1,7 +1,7 @@
-RSpec.describe Functional::Failure do
+RSpec.describe Fear::Failure do
   let(:failure) { described_class.new(RuntimeError.new('error')) }
 
-  it_behaves_like Functional::RightBiased::Left do
+  it_behaves_like Fear::RightBiased::Left do
     let(:left) { failure }
   end
 
@@ -18,7 +18,7 @@ RSpec.describe Functional::Failure do
   describe '#or_else' do
     context 'default does not fail' do
       subject { failure.or_else { 'value' } }
-      it { is_expected.to eq(Functional::Success.new('value')) }
+      it { is_expected.to eq(Fear::Success.new('value')) }
     end
 
     context 'default fails with error' do
@@ -42,12 +42,12 @@ RSpec.describe Functional::Failure do
     context 'block does not fail' do
       subject do
         failure.recover_with do |error|
-          Functional::Success.new(error.message)
+          Fear::Success.new(error.message)
         end
       end
 
       it 'returns result of evaluation of the block against the error' do
-        is_expected.to eq(Functional::Success.new('error'))
+        is_expected.to eq(Fear::Success.new('error'))
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Functional::Failure do
       subject { failure.recover(&:message) }
 
       it 'returns Success of evaluation of the block against the error' do
-        is_expected.to eq(Functional::Success.new('error'))
+        is_expected.to eq(Fear::Success.new('error'))
       end
     end
 

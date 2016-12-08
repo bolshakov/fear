@@ -1,4 +1,4 @@
-module Functional
+module Fear
   module Utils
     extend self
 

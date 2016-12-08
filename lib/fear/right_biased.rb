@@ -1,4 +1,4 @@
-module Functional
+module Fear
   module RightBiased
     # Performs necessary interface and type checks.
     #

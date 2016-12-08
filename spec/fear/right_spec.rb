@@ -1,5 +1,5 @@
-RSpec.describe Functional::Right do
-  it_behaves_like Functional::RightBiased::Right do
+RSpec.describe Fear::Right do
+  it_behaves_like Fear::RightBiased::Right do
     let(:right) { described_class.new('value') }
   end
 
@@ -17,19 +17,19 @@ RSpec.describe Functional::Right do
     context 'predicate evaluates to false and default is a proc' do
       let(:predicate) { ->(v) { v != 'value' } }
       let(:default) { -> { -1 } }
-      it { is_expected.to eq(Functional::Left.new(-1)) }
+      it { is_expected.to eq(Fear::Left.new(-1)) }
     end
 
     context 'predicate evaluates to false and default is not a proc' do
       let(:predicate) { ->(v) { v != 'value' } }
       let(:default) { -1 }
-      it { is_expected.to eq(Functional::Left.new(-1)) }
+      it { is_expected.to eq(Fear::Left.new(-1)) }
     end
   end
 
   describe '#swap' do
     subject { described_class.new('value').swap }
-    it { is_expected.to eq(Functional::Left.new('value')) }
+    it { is_expected.to eq(Fear::Left.new('value')) }
   end
 
   describe '#reduce' do
@@ -46,7 +46,7 @@ RSpec.describe Functional::Right do
   describe '#join_right' do
     context 'value is Either' do
       subject { described_class.new(value).join_right }
-      let(:value) { Functional::Left.new('error') }
+      let(:value) { Fear::Left.new('error') }
 
       it 'returns value' do
         is_expected.to eq(value)
@@ -65,7 +65,7 @@ RSpec.describe Functional::Right do
   describe '#join_left' do
     context 'value is Either' do
       subject { either.join_left }
-      let(:either) { described_class.new(Functional::Left.new('error')) }
+      let(:either) { described_class.new(Fear::Left.new('error')) }
 
       it { is_expected.to eq(either) }
     end

@@ -1,4 +1,4 @@
-module Functional
+module Fear
   class Some
     include Option
     include Dry::Equalizer(:get)

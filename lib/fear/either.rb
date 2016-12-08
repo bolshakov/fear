@@ -1,4 +1,4 @@
-module Functional
+module Fear
   # Represents a value of one of two possible types (a disjoint union.)
   # An instance of `Either` is either an instance of `Left` or `Right`.
   #
@@ -111,7 +111,7 @@ module Functional
   #
   module Either
     include Dry::Equalizer(:value)
-    include Functional
+    include Fear
 
     def left_class
       Left

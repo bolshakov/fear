@@ -1,17 +1,17 @@
-RSpec.describe Functional::Option do
-  include Functional::Option::Mixin
+RSpec.describe Fear::Option do
+  include Fear::Option::Mixin
 
   describe 'Option()' do
     it 'returns Some if value is not nil' do
       option = Option(double)
 
-      expect(option).to be_kind_of(Functional::Some)
+      expect(option).to be_kind_of(Fear::Some)
     end
 
     it 'returns None if value is nil' do
       option = Option(nil)
 
-      expect(option).to be_kind_of(Functional::None)
+      expect(option).to be_kind_of(Fear::None)
     end
   end
 

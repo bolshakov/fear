@@ -1,7 +1,7 @@
-RSpec.describe Functional::Left do
-  include Functional::Either::Mixin
+RSpec.describe Fear::Left do
+  include Fear::Either::Mixin
 
-  it_behaves_like Functional::RightBiased::Left do
+  it_behaves_like Fear::RightBiased::Left do
     let(:left) { described_class.new('value') }
   end
 

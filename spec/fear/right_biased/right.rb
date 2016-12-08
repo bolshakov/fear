@@ -1,4 +1,4 @@
-RSpec.shared_examples Functional::RightBiased::Right do
+RSpec.shared_examples Fear::RightBiased::Right do
   describe '#include?' do
     context 'contains value' do
       subject { right.include?('value') }
@@ -74,7 +74,7 @@ RSpec.shared_examples Functional::RightBiased::Right do
 
   describe '#to_option' do
     subject { right.to_option }
-    it { is_expected.to eq(Functional::Some.new('value')) }
+    it { is_expected.to eq(Fear::Some.new('value')) }
   end
 
   describe '#any?' do

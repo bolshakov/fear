@@ -1,7 +1,7 @@
-RSpec.describe Functional::Some do
-  include Functional::Option::Mixin
+RSpec.describe Fear::Some do
+  include Fear::Option::Mixin
 
-  it_behaves_like Functional::RightBiased::Right do
+  it_behaves_like Fear::RightBiased::Right do
     let(:right) { described_class.new('value') }
   end
 

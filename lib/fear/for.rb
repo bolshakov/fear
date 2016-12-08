@@ -1,4 +1,4 @@
-module Functional
+module Fear
   # This class provides syntactic sugar for composition of
   # multiple monadic operations. It supports two such
   # operations - `flat_map` and `map`. Any class providing them

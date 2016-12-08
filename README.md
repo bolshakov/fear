@@ -1,5 +1,5 @@
-# Functional
-[![Build Status](https://travis-ci.org/bolshakov/functional.svg?branch=master)](https://travis-ci.org/bolshakov/functional)
+# Fear
+[![Build Status](https://travis-ci.org/bolshakov/fear.svg?branch=master)](https://travis-ci.org/bolshakov/fear)
 
 TODO: Write a gem description
 
@@ -8,7 +8,7 @@ TODO: Write a gem description
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'functional'
+gem 'fear'
 ```
 
 And then execute:
@@ -17,7 +17,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install functional
+    $ gem install fear
 
 ## Usage
 
@@ -25,7 +25,7 @@ TODO: Write usage instructions here
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/functional/fork )
+1. Fork it ( https://github.com/bolshakov/fear/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

@@ -1,4 +1,4 @@
-module Functional
+module Fear
   class Left
     include Either
     include RightBiased::Left

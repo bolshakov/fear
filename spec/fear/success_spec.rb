@@ -1,20 +1,20 @@
-RSpec.describe Functional::Success do
+RSpec.describe Fear::Success do
   let(:success) { described_class.new('value') }
 
-  it_behaves_like Functional::RightBiased::Right do
+  it_behaves_like Fear::RightBiased::Right do
     let(:right) { success }
 
     describe '#map', 'block fails' do
       subject(:map) { right.map { fail 'unexpected error' } }
 
-      it { is_expected.to be_kind_of(Functional::Failure) }
+      it { is_expected.to be_kind_of(Fear::Failure) }
       it { expect { map.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
 
     describe '#flat_map', 'block fails' do
       subject(:flat_map) { right.flat_map { fail 'unexpected error' } }
 
-      it { is_expected.to be_kind_of(Functional::Failure) }
+      it { is_expected.to be_kind_of(Fear::Failure) }
       it { expect { flat_map.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe Functional::Success do
     end
 
     context 'value is a Success of Failure' do
-      let(:failure) { Functional::Failure.new(RuntimeError.new) }
+      let(:failure) { Fear::Failure.new(RuntimeError.new) }
       let(:value) { described_class.new(failure) }
       it { is_expected.to eq(failure) }
     end
@@ -62,7 +62,7 @@ RSpec.describe Functional::Success do
 
     context 'predicate does not hold for value' do
       subject { proc { success.detect { |v| v != 'value' }.get } }
-      it { is_expected.to raise_error(Functional::NoSuchElementError, 'Predicate does not hold for `value`') }
+      it { is_expected.to raise_error(Fear::NoSuchElementError, 'Predicate does not hold for `value`') }
     end
 
     context 'predicate fails with error' do
