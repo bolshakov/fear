@@ -5,6 +5,16 @@ RSpec.describe Fear::Right do
 
   let(:right) { described_class.new('value') }
 
+  describe '#right?' do
+    subject { right }
+    it { is_expected.to be_right }
+  end
+
+  describe '#left?' do
+    subject { right }
+    it { is_expected.not_to be_left }
+  end
+
   describe '#select' do
     subject { right.select(default, &predicate) }
 
@@ -28,13 +38,13 @@ RSpec.describe Fear::Right do
   end
 
   describe '#swap' do
-    subject { described_class.new('value').swap }
+    subject { right.swap }
     it { is_expected.to eq(Fear::Left.new('value')) }
   end
 
   describe '#reduce' do
     subject do
-      described_class.new('value').reduce(
+      right.reduce(
         ->(left) { "Left: #{left}" },
         ->(right) { "Right: #{right}" },
       )

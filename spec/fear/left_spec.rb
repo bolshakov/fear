@@ -5,9 +5,21 @@ RSpec.describe Fear::Left do
     let(:left) { described_class.new('value') }
   end
 
+  let(:left) { described_class.new('value') }
+
+  describe '#right?' do
+    subject { left }
+    it { is_expected.not_to be_right }
+  end
+
+  describe '#left?' do
+    subject { left }
+    it { is_expected.to be_left }
+  end
+
   describe '#select' do
     subject do
-      described_class.new('value').select(default) { |v| v == 'value' }
+      left.select(default) { |v| v == 'value' }
     end
 
     context 'proc default' do
@@ -28,13 +40,13 @@ RSpec.describe Fear::Left do
   end
 
   describe '#swap' do
-    subject { described_class.new('value').swap }
+    subject { left.swap }
     it { is_expected.to eq(Right('value')) }
   end
 
   describe '#reduce' do
     subject do
-      described_class.new('value').reduce(
+      left.reduce(
         ->(left) { "Left: #{left}" },
         ->(right) { "Right: #{right}" },
       )
@@ -69,7 +81,7 @@ RSpec.describe Fear::Left do
     end
 
     context 'value is not Either' do
-      subject { proc { described_class.new('error').join_left } }
+      subject { proc { left.join_left } }
 
       it 'fails with type error' do
         is_expected.to raise_error(TypeError)

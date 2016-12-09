@@ -111,7 +111,6 @@ module Fear
   #
   module Either
     include Dry::Equalizer(:value)
-    include Fear
 
     def left_class
       Left
@@ -124,6 +123,20 @@ module Fear
     def initialize(value)
       @value = value
     end
+
+    # @return [Boolean]
+    def right?
+      is_a?(Right)
+    end
+
+    alias success? right?
+
+    # @return [Boolean]
+    def left?
+      !right?
+    end
+
+    alias failure? left?
 
     attr_reader :value
     protected :value
