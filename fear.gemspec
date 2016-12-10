@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['abolshakov@spbtv.com']
   spec.summary       = "%q{Ruby port of some Scala's monads.}"
   spec.description   = "Ruby port of some Scala's monads."
-  spec.homepage      = 'https://github.com/bolshakov/functional'
+  spec.homepage      = 'https://github.com/bolshakov/fear'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

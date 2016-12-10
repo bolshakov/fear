@@ -8,7 +8,7 @@ module Fear
   # `Right` takes the place of `Some`. Convention dictates
   # that `Left` is used for failure and `Right` is used for success.
   #
-  # For example, you could use `Either<String, Fixnum>` to select whether a
+  # For example, you could use `Either<String, Fixnum>` to select_or_else whether a
   # received input is a `String` or an `Fixnum`.
   #
   # @example
@@ -63,11 +63,17 @@ module Fear
   #   Right(12).flat_map { |x| Left('ruby') } #=> Left('ruby')
   #   Left(12).flat_map { |x| Left('ruby') }  #=> Left(12)
   #
+  # @example #select_or_else
+  #   Right(12).select_or_else(-1, &:even?) #=> Right(12))
+  #   Right(7).select_or_else(-1, &:even?) #=> Left(-1)
+  #   Left(12).select_or_else(-1, &:even?) #=> Left(-1)
+  #   Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(-1)
+  #
   # @example #select
-  #   Right(12).select(-1, &:even?) #=> Right(12))
-  #   Right(7).select(-1, &:even?) #=> Left(-1)
-  #   Left(12).select(-1, &:even?) #=> Left(-1)
-  #   Left(12).select(-> { -1 }, &:even?) #=> Left(-1)
+  #   Right(12).select(&:even?) #=> Right(12))
+  #   Right(7).select(&:even?)  #=> Left(7)
+  #   Left(12).select(&:even?)  #=> Left(12)
+  #   Left(7).select(&:even?)   #=> Left(7)
   #
   # @example #to_a
   #   Right(12).to_a #=> [12]

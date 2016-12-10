@@ -9,11 +9,23 @@ module Fear
     # @param default [Proc, any]
     # @return [Either]
     #
-    def select(default)
+    def select_or_else(default)
       if yield(value)
         self
       else
         Left.new(Utils.return_or_call_proc(default))
+      end
+    end
+
+    # Returns `Left` of value if the given predicate
+    # does not hold for the right value, otherwise, returns `Right`.
+    #
+    # @return [Either]
+    def select
+      if yield(value)
+        self
+      else
+        Left.new(value)
       end
     end
 

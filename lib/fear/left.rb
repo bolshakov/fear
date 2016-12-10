@@ -3,13 +3,18 @@ module Fear
     include Either
     include RightBiased::Left
 
-    # Returns `Left` or `default`.
+    # Returns `Left` of `default`.
     #
     # @param default [Proc, any]
     # @return [Either]
     #
-    def select(default)
+    def select_or_else(default)
       Left.new(Utils.return_or_call_proc(default))
+    end
+
+    # @return [Left]
+    def select
+      self
     end
 
     # @return [Right] value in `Right`

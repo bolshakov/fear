@@ -15,8 +15,8 @@ RSpec.describe Fear::Right do
     it { is_expected.not_to be_left }
   end
 
-  describe '#select' do
-    subject { right.select(default, &predicate) }
+  describe '#select_or_else' do
+    subject { right.select_or_else(default, &predicate) }
 
     context 'predicate evaluates to true' do
       let(:predicate) { ->(v) { v == 'value' } }
@@ -34,6 +34,20 @@ RSpec.describe Fear::Right do
       let(:predicate) { ->(v) { v != 'value' } }
       let(:default) { -1 }
       it { is_expected.to eq(Fear::Left.new(-1)) }
+    end
+  end
+
+  describe '#select' do
+    subject { right.select(&predicate) }
+
+    context 'predicate evaluates to true' do
+      let(:predicate) { ->(v) { v == 'value' } }
+      it { is_expected.to eq(right) }
+    end
+
+    context 'predicate evaluates to false' do
+      let(:predicate) { ->(v) { v != 'value' } }
+      it { is_expected.to eq(Fear::Left.new('value')) }
     end
   end
 

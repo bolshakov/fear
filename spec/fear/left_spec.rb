@@ -17,9 +17,9 @@ RSpec.describe Fear::Left do
     it { is_expected.to be_left }
   end
 
-  describe '#select' do
+  describe '#select_or_else' do
     subject do
-      left.select(default) { |v| v == 'value' }
+      left.select_or_else(default) { |v| v == 'value' }
     end
 
     context 'proc default' do
@@ -36,6 +36,16 @@ RSpec.describe Fear::Left do
       it 'return Left of default' do
         is_expected.to eq(described_class.new(-1))
       end
+    end
+  end
+
+  describe '#select' do
+    subject do
+      left.select { |v| v == 'value' }
+    end
+
+    it 'return self' do
+      is_expected.to eq(left)
     end
   end
 
