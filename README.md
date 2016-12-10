@@ -162,6 +162,11 @@ would be translated to:
 end
 ```
 
+## Testing
+
+To simplify testing, you may use [fear-rspec](https://github.com/bolshakov/fear-rspec) gem. It
+provides a bunch of rspec matchers.
+
 ## Contributing
 
 1. Fork it ( https://github.com/bolshakov/fear/fork )
