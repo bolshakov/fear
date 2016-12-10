@@ -1,16 +1,16 @@
 module Fear
-  # Represents optional values. Instances of `Option`
-  # are either an instance of `Some` or the object `None`.
+  # Represents optional values. Instances of +Option+
+  # are either an instance of +Some+ or the object +None+.
   #
-  # @example The most idiomatic way to use an `Option` instance is to treat it as a collection
+  # @example The most idiomatic way to use an +Option+ instance is to treat it as a collection
   #   name = Option(params[:name])
   #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
   #   puts upper.get_or_else('')
   #
-  # This allows for sophisticated chaining of `Option` values without
+  # This allows for sophisticated chaining of +Option+ values without
   # having to check for the existence of a value.
   #
-  # @example A less-idiomatic way to use `Option` values is via pattern matching
+  # @example A less-idiomatic way to use +Option+ values is via pattern matching
   #   name = Option(params[:name])
   #   case name
   #   when Some
@@ -27,61 +27,144 @@ module Fear
   #     puts name.strip.upcase
   #   end
   #
-  # @example #select
-  #   User.find(params[:id]).select do |user|
-  #     user.posts.count > 0
-  #   end #=> Some(User)
+  # @!method get_or_else(*args)
+  #   Returns the value from this +Some+ or evaluates the given
+  #   default argument if this is a +None+.
+  #   @overload get_or_else(&default)
+  #     @yieldreturn [any]
+  #     @return [any]
+  #     @example
+  #       Some(42).get_or_else { 24/2 } #=> 42
+  #       None().get_or_else { 24/2 }   #=> 12
+  #   @overload get_or_else(default)
+  #     @return [any]
+  #     @example
+  #       Some(42).get_or_else(12)  #=> 42
+  #       None().get_or_else(12)    #=> 12
   #
-  #   User.find(params[:id]).select do |user|
-  #     user.posts.count > 0
-  #   end #=> None
+  # @!method include?(other_value)
+  #   Returns +true+ if it has an element that is equal
+  #   (as determined by +==+) to +other_value+, +false+ otherwise.
+  #   @param [any]
+  #   @return [Boolean]
+  #   @example
+  #     Some(17).include?(17) #=> true
+  #     Some(17).include?(7)  #=> false
+  #     None().include?(17)   #=> false
   #
-  #   User.find(params[:id])
-  #     .select(&:confirmed?)
-  #     .map(&:posts)
-  #     .inject(0, &:count)
+  # @!method each(&block)
+  #   Performs the given block if this is a +Some+.
+  #   @yieldparam [any] value
+  #   @yieldreturn [void]
+  #   @return [Option] itself
+  #   @example
+  #     Some(17).each do |value|
+  #       puts value
+  #     end #=> prints 17
   #
-  # @example #reject
-  #   Some(42).reject { |v| v > 0 } #=> None
-  #   Some(42).reject { |v| v < 0 } #=> Some(42)
-  #   None().reject { |v| v > 0 }   #=> None
+  #     None().each do |value|
+  #       puts value
+  #     end #=> does nothing
+  #
+  # @!method map(&block)
+  #   Maps the given block to the value from this +Some+ or
+  #   returns this if this is a +None+
+  #   @yieldparam [any] value
+  #   @yieldreturn [any]
+  #   @example
+  #     Some(42).map { |v| v/2 } #=> Some(21)
+  #     None().map { |v| v/2 }   #=> None()
+  #
+  # @!method flat_map(&block)
+  #   Returns the given block applied to the value from this +Some+
+  #   or returns this if this is a +None+
+  #   @yieldparam [any] value
+  #   @yieldreturn [Option]
+  #   @return [Option]
+  #   @example
+  #     Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
+  #     None().flat_map { |v| Some(v/2) }     #=> None()
+  #
+  # @!method to_a
+  #   Returns an +Array+ containing the +Some+ value or an
+  #   empty +Array+ if this is a +None+
+  #   @return [Array]
+  #   @example
+  #     Some(42).to_a #=> [21]
+  #     None().to_a   #=> []
+  #
+  # @!method any?(&predicate)
+  #   Returns +false+ if +None+ or returns the result of the
+  #   application of the given predicate to the +Some+ value.
+  #   @yieldparam [any] value
+  #   @yieldreturn [Boolean]
+  #   @return [Boolean]
+  #   @example
+  #     Some(12).any?( |v| v > 10)  #=> true
+  #     Some(7).any?( |v| v > 10)   #=> false
+  #     None().any?( |v| v > 10)    #=> false
+  #
+  # @!method select(&predicate)
+  #   Returns self if it is nonempty and applying the predicate to this
+  #   +Option+'s value returns +true+. Otherwise, return +None+.
+  #   @yieldparam [any] value
+  #   @yieldreturn [Boolean]
+  #   @return [Option]
+  #   @example
+  #     Some(42).select { |v| v > 40 } #=> Success(21)
+  #     Some(42).select { |v| v < 40 } #=> None()
+  #     None().select { |v| v < 40 }   #=> None()
+  #
+  # @!method reject(&predicate)
+  #   Returns +Some+ if applying the predicate to this
+  #   +Option+'s value returns +false+. Otherwise, return +None+.
+  #   @yieldparam [any] value
+  #   @yieldreturn [Boolean]
+  #   @return [Option]
+  #   @example
+  #     Some(42).reject { |v| v > 40 } #=> None
+  #     Some(42).reject { |v| v < 40 } #=> Some(42)
+  #     None().reject { |v| v < 40 }   #=> None
+  #
+  # @!method get
+  #   @return [any] the +Option+'s value.
+  #   @raise [NoSuchElementError] if the option is empty.
+  #
+  # @!method empty?
+  #   Returns +true+ if the +Option+ is +None+, +false+ otherwise.
+  #   @return [Boolean]
+  #   @example
+  #     Some(42).empty? #=> false
+  #     None().empty?   #=> true
   #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
   #
   module Option
+    # @private
     def left_class
       None
     end
 
+    # @private
     def right_class
       Some
     end
 
-    # @return [true, false] true if the option is `None`,
-    #   false otherwise.
-    #
-    def empty?
-      is_a?(None)
-    end
-
-    # Returns the option's value if it is nonempty,
-    # or `nil` if it is empty. Useful for unwrapping
-    # option's value.
-    #
-    # @return [Object, nil] the option's value if it is
-    #   nonempty or `nil` if it is empty
-    #
+    # Include this mixin to access convenient factory methods.
     # @example
-    #   Option(24).or_nil  #=> 24
-    #   Option(nil).or_nil #=> nil
+    #   include Fear::Option::Mixin
     #
-    def or_nil
-      get_or_else { nil }
-    end
-
+    #   Option(17)  #=> #<Fear::Some value=17>
+    #   Option(nil) #=> #<Fear::None>
+    #   Some(17)    #=> #<Fear::Some value=17>
+    #   None()      #=> #<Fear::None>
+    #
     module Mixin
+      # An +Option+ factory which creates +Some+ if the argument is
+      # not +nil+, and +None+ if it is +nil+.
       # @param value [any]
       # @return [Some, None]
+      #
       def Option(value)
         if value.nil?
           None()

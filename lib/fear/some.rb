@@ -11,15 +11,22 @@ module Fear
       @value = value
     end
 
-    # @return option's value
+    # @return [any]
     def get
       @value
     end
 
-    # @return [Option] self if this `Option` is nonempty and
-    #   applying the `predicate` to this option's value
-    #   returns true. Otherwise, return `None`.
-    #
+    # @return [any]
+    def or_nil
+      @value
+    end
+
+    # @return [false]
+    def empty?
+      false
+    end
+
+    # @return [Option]
     def select
       if yield(value)
         self
@@ -28,9 +35,7 @@ module Fear
       end
     end
 
-    # @return [Option] if applying the `predicate` to this
-    #   option's value returns false. Otherwise, return `None`.
-    #
+    # @return [Option]
     def reject
       if yield(value)
         None.new

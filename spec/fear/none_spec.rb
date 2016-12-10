@@ -7,16 +7,19 @@ RSpec.describe Fear::None do
 
   subject(:none) { None() }
 
-  specify '#get fails with exception' do
-    expect do
-      none.get
-    end.to raise_error(NoMethodError)
+  describe '#get' do
+    subject { proc { none.get } }
+    it { is_expected.to raise_error(Fear::NoSuchElementError) }
   end
 
-  specify '#or_nil returns nil' do
-    result = none.or_nil
+  describe '#or_nil' do
+    subject { none.or_nil }
+    it { is_expected.to eq(nil) }
+  end
 
-    expect(result).to eq nil
+  describe '#empty?' do
+    subject { none.empty? }
+    it { is_expected.to eq(true) }
   end
 
   describe '#select' do

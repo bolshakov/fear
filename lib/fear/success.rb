@@ -7,27 +7,27 @@ module Fear
     attr_reader :value
     protected :value
 
+    # @param [any]
     def initialize(value)
       @value = value
     end
 
+    # @return [any]
     def get
       @value
     end
 
+    # @return [Boolean]
     def success?
       true
     end
 
-    # @return [Success] self
+    # @return [Success]
     def or_else
       self
     end
 
-    # Transforms a nested `Try`, ie, a `Success` of `Success``,
-    # into an un-nested `Try`, ie, a `Success`.
     # @return [Try]
-    #
     def flatten
       if value.is_a?(Try)
         value.flatten
@@ -36,12 +36,9 @@ module Fear
       end
     end
 
-    # Converts this to a `Failure` if the predicate
-    # is not satisfied.
     # @yieldparam [any] value
     # @yieldreturn [Boolean]
     # @return [Try]
-    #
     def select
       if yield(value)
         self
@@ -52,14 +49,12 @@ module Fear
       Failure.new(error)
     end
 
-    # @return [Success] self
-    #
+    # @return [Success]
     def recover_with
       self
     end
 
-    # @return [Success] self
-    #
+    # @return [Success]
     def recover
       self
     end

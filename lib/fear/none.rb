@@ -4,18 +4,27 @@ module Fear
     include Dry::Equalizer()
     include RightBiased::Left
 
-    # Ignores the given block and return self.
-    #
+    # @raise [NoSuchElementError]
+    def get
+      fail NoSuchElementError
+    end
+
+    # @return [nil]
+    def or_nil
+      nil
+    end
+
+    # @return [true]
+    def empty?
+      true
+    end
+
     # @return [None]
-    #
     def select(*)
       self
     end
 
-    # Ignores the given block and return self.
-    #
     # @return [None]
-    #
     def reject(*)
       self
     end

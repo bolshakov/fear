@@ -32,6 +32,8 @@ The most idiomatic way to use an `Option` instance is to treat it
 as a collection and use `map`, `flat_map`, `select`, or `each`:
 
 ```ruby
+include Fear::Option::Mixin
+
 name = Option(params[:name])
 upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
 puts upper.get_or_else('')
@@ -53,6 +55,8 @@ without the need to do explicit exception-handling in all of the places
 that an exception might occur.
 
 ```ruby
+include Fear::Try::Mixin
+
 dividend = Try { Integer(params[:dividend]) }
 divisor = Try { Integer(params[:divisor]) }
 
@@ -83,6 +87,8 @@ For example, you could use `Either<String, Fixnum>` to select whether a
 received input is a `String` or an `Fixnum`.
 
 ```ruby
+include Fear::Either::Mixin
+
 input = Readline.readline('Type Either a string or an Int: ', true)
 result = begin
   Right(Integer(input))
@@ -107,6 +113,8 @@ It supports two such operations - `flat_map` and `map`. Any class providing them
 is supported by `For`.
 
 ```ruby
+include Fear::For::Mixin
+
 For(a: Some(2), b: Some(3)) do 
   a * b 
 end #=> Some(6)

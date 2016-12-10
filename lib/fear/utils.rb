@@ -1,4 +1,5 @@
 module Fear
+  # @private
   module Utils
     extend self
 

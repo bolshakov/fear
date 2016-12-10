@@ -1,32 +1,15 @@
 RSpec.describe Fear::Option do
   include Fear::Option::Mixin
 
-  describe 'Option()' do
-    it 'returns Some if value is not nil' do
-      option = Option(double)
-
-      expect(option).to be_kind_of(Fear::Some)
+  describe '#Option()' do
+    context 'value is nil' do
+      subject { Option(nil) }
+      it { is_expected.to eq(None()) }
     end
 
-    it 'returns None if value is nil' do
-      option = Option(nil)
-
-      expect(option).to be_kind_of(Fear::None)
-    end
-  end
-
-  let(:some) { Some(42) }
-  let(:none) { None() }
-
-  describe '#empty?' do
-    context 'Some' do
-      subject { some.empty? }
-      it { is_expected.to eq(false) }
-    end
-
-    context 'None' do
-      subject { none.empty? }
-      it { is_expected.to eq(true) }
+    context 'value is not nil' do
+      subject { Option(42) }
+      it { is_expected.to eq(Some(42)) }
     end
   end
 end

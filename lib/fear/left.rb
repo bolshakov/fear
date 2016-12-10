@@ -3,11 +3,20 @@ module Fear
     include Either
     include RightBiased::Left
 
-    # Returns `Left` of `default`.
-    #
+    # @return [false]
+    def right?
+      false
+    end
+    alias success? right?
+
+    # @return [true]
+    def left?
+      true
+    end
+    alias failure? left?
+
     # @param default [Proc, any]
     # @return [Either]
-    #
     def select_or_else(default)
       Left.new(Utils.return_or_call_proc(default))
     end
@@ -18,36 +27,23 @@ module Fear
     end
 
     # @return [Right] value in `Right`
-    #
     def swap
       Right.new(value)
     end
 
-    # @param reduce_left [Proc] the function to apply if this is a `Left`
-    # @return [any] Applies `reduce_left` to the value.
-    #
+    # @param reduce_left [Proc]
+    # @return [any]
     def reduce(reduce_left, _)
       reduce_left.call(value)
     end
 
-    # Joins an `Either` through `Right`.
-    #
     # @return [self]
-    #
     def join_right
       self
     end
 
-    # Joins an `Either` through `Left`.
-    #
-    # This method requires that the left side of this `Either` is itself an
-    # Either type.
-    #
-    # This method, and `join_right`, are analogous to `Option#flatten`
-    #
     # @return [Either]
-    # @raise [TypeError] if it does not contain `Either`.
-    #
+    # @raise [TypeError]
     def join_left
       value.tap do |v|
         Utils.assert_type!(v, Either)

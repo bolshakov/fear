@@ -4,6 +4,7 @@ module Fear
     include Dry::Equalizer(:value)
     include RightBiased::Left
 
+    # @param [StandardError]
     def initialize(exception)
       @value = exception
     end
@@ -11,10 +12,12 @@ module Fear
     attr_reader :value
     protected :value
 
+    # @return [Boolean]
     def success?
       false
     end
 
+    # @raise
     def get
       fail value
     end
@@ -36,13 +39,9 @@ module Fear
       self
     end
 
-    # Applies the given block to exception.
-    # This is like `flat_map` for the exception.
-    #
     # @yieldparam [Exception]
     # @yieldreturn [Try]
     # @return [Try]
-    #
     def recover_with
       yield(value).tap do |result|
         Utils.assert_type!(result, Success, Failure)
@@ -51,10 +50,9 @@ module Fear
       Failure.new(error)
     end
 
-    # Applies the given block to exception.
-    # This is like map for the exception.
+    # @yieldparam [Exception]
+    # @yieldreturn [any]
     # @return [Try]
-    #
     def recover
       Success.new(yield(value))
     rescue => error

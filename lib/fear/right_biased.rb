@@ -1,4 +1,5 @@
 module Fear
+  # @private
   module RightBiased
     # Performs necessary interface and type checks.
     #
@@ -31,11 +32,11 @@ module Fear
         end
       end
 
-      # @!method get_or_else(default)
+      # @overload get_or_else(default)
       #   @param default [any]
       #   @return [any] the `#value`.
       #
-      # @!method get_or_else
+      # @overload get_or_else(&default)
       #   @return [any] the `#value`.
       #
       def get_or_else(*_args)
@@ -43,17 +44,12 @@ module Fear
       end
 
       # @param [any]
-      # @return [Boolean] `true` if it has an element that is equal
-      #   (as determined by `==`) to `other_value`, `false` otherwise.
-      #
+      # @return [Boolean]
       def include?(other_value)
         value == other_value
       end
 
-      # Executes the given side-effecting block.
-      #
       # @return [self]
-      #
       def each
         yield(value)
         self
@@ -98,7 +94,7 @@ module Fear
       #   @param default [any]
       #   @return [any] default value
       #
-      # @!method get_or_else
+      # @!method get_or_else(&default)
       #   @return [any] result of evaluating a block.
       #
       def get_or_else(*args)

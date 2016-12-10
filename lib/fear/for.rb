@@ -1,14 +1,15 @@
 module Fear
   # This class provides syntactic sugar for composition of
   # multiple monadic operations. It supports two such
-  # operations - `flat_map` and `map`. Any class providing them
-  # is supported by `For`.
+  # operations - +flat_map+ and +map+. Any class providing them
+  # is supported by +For+.
   #
-  # @example Option
-  #   For(a: Some(2), b: Some(3)) { a * b } #=> Some(6)
-  #   # If one of operands is None, the result is None
-  #   For(a: Some(2), b: None()) { a * b } #=> None()
-  #   For(a: None(), b: Some(2)) { a * b } #=> None()
+  #     For(a: Some(2), b: Some(3)) { a * b } #=> Some(6)
+  #
+  # If one of operands is None, the result is None
+  #
+  #     For(a: Some(2), b: None()) { a * b } #=> None()
+  #     For(a: None(), b: Some(2)) { a * b } #=> None()
   #
   # Lets look at first example:
   #
@@ -71,6 +72,7 @@ module Fear
       @variables = variables
     end
     attr_reader :variables
+    private :variables
 
     def call(&block)
       variable_name_and_monad, *tail = *variables
@@ -92,6 +94,19 @@ module Fear
       end
     end
 
+    # Include this mixin to access convenient factory method for +For+.
+    # @example
+    #   include Fear::For::Mixin
+    #
+    #   For(a: Some(2), b: Some(3)) { a * b }   #=> Some(6)
+    #   For(a: Some(2), b: None()) { a * b }    #=> None()
+    #
+    #   For(a: Right(2), b: Right(3)) { a * b } #=> Right(6)
+    #   For(a: Right(2), b: Left(3)) { a * b }  #=> Left(3)
+    #
+    #   For(a: Success(2), b: Success(3)) { a * b }    #=> Success(3)
+    #   For(a: Success(2), b: Failure(...)) { a * b }  #=> Failure(...)
+    #
     module Mixin
       # @param locals [Hash{Symbol => {#map, #flat_map}}]
       # @return [{#map, #flat_map}]

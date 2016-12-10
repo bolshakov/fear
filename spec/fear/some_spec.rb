@@ -5,8 +5,7 @@ RSpec.describe Fear::Some do
     let(:right) { described_class.new('value') }
   end
 
-  subject(:some) { Some(value) }
-  let(:value) { 42 }
+  subject(:some) { Some(42) }
 
   describe '#select' do
     subject { some.select(&predicate) }
@@ -36,13 +35,18 @@ RSpec.describe Fear::Some do
     end
   end
 
-  specify '#get returns value' do
-    expect(some.get).to eq value
+  describe '#get' do
+    subject { some.get }
+    it { is_expected.to eq(42) }
   end
 
-  specify '#or_nil returns value' do
-    result = some.or_nil
+  describe '#or_nil' do
+    subject { some.or_nil }
+    it { is_expected.to eq(42) }
+  end
 
-    expect(result).to eq value
+  describe '#empty?' do
+    subject { some.empty? }
+    it { is_expected.to eq(false) }
   end
 end
