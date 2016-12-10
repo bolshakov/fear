@@ -1,5 +1,6 @@
 RSpec.describe Fear::Failure do
-  let(:failure) { described_class.new(RuntimeError.new('error')) }
+  let(:exception) { RuntimeError.new('error') }
+  let(:failure) { described_class.new(exception) }
 
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { failure }
@@ -74,5 +75,10 @@ RSpec.describe Fear::Failure do
       it { is_expected.to be_kind_of(described_class) }
       it { expect { recover.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
+  end
+
+  describe '#to_either' do
+    subject { failure.to_either }
+    it { is_expected.to eq(Fear::Left.new(exception)) }
   end
 end

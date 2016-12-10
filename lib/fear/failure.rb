@@ -17,6 +17,11 @@ module Fear
       false
     end
 
+    # @return [true]
+    def failure?
+      true
+    end
+
     # @raise
     def get
       fail value
@@ -57,6 +62,11 @@ module Fear
       Success.new(yield(value))
     rescue => error
       Failure.new(error)
+    end
+
+    # @return [Left]
+    def to_either
+      Left.new(value)
     end
   end
 end

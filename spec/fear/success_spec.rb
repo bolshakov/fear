@@ -80,4 +80,9 @@ RSpec.describe Fear::Success do
     subject { success.recover { |v| v * 2 } }
     it { is_expected.to eq(success) }
   end
+
+  describe '#to_either' do
+    subject { success.to_either }
+    it { is_expected.to eq(Fear::Right.new('value')) }
+  end
 end

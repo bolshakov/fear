@@ -22,6 +22,11 @@ module Fear
       true
     end
 
+    # @return [false]
+    def failure?
+      false
+    end
+
     # @return [Success]
     def or_else
       self
@@ -71,6 +76,11 @@ module Fear
       super
     rescue => error
       Failure.new(error)
+    end
+
+    # @return [Right]
+    def to_either
+      Right.new(value)
     end
   end
 end

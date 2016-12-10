@@ -203,6 +203,14 @@ module Fear
   #     Failure(ArgumentError.new).recover { |e| fail }
   #       #=> Failure(RuntimeError)
   #
+  # @!method to_either
+  #   Returns +Left+ with exception if this is a +Failure+, otherwise
+  #   returns +Right+ with +Success+ value.
+  #   @return [Right<any>, Left<StandardError>]
+  #   @example
+  #     Success(42).to_either                #=> Right(42)
+  #     Failure(ArgumentError.new).to_either #=> Left(ArgumentError.new)
+  #
   # @author based on Twitter's original implementation.
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/util/Try.scala
   #
@@ -215,11 +223,6 @@ module Fear
     # @private
     def right_class
       Success
-    end
-
-    # @return [true, false]
-    def failure?
-      !success?
     end
 
     # Include this mixin to access convenient factory methods.
