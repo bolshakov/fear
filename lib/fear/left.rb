@@ -26,6 +26,11 @@ module Fear
       self
     end
 
+    # @return [Left]
+    def reject
+      self
+    end
+
     # @return [Right] value in `Right`
     def swap
       Right.new(value)

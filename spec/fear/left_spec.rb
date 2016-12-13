@@ -49,6 +49,16 @@ RSpec.describe Fear::Left do
     end
   end
 
+  describe '#reject' do
+    subject do
+      left.reject { |v| v == 'value' }
+    end
+
+    it 'return self' do
+      is_expected.to eq(left)
+    end
+  end
+
   describe '#swap' do
     subject { left.swap }
     it { is_expected.to eq(Right('value')) }

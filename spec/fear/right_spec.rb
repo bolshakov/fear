@@ -51,6 +51,20 @@ RSpec.describe Fear::Right do
     end
   end
 
+  describe '#reject' do
+    subject { right.reject(&predicate) }
+
+    context 'predicate evaluates to true' do
+      let(:predicate) { ->(v) { v == 'value' } }
+      it { is_expected.to eq(Fear::Left.new('value')) }
+    end
+
+    context 'predicate evaluates to false' do
+      let(:predicate) { ->(v) { v != 'value' } }
+      it { is_expected.to eq(right) }
+    end
+  end
+
   describe '#swap' do
     subject { right.swap }
     it { is_expected.to eq(Fear::Left.new('value')) }

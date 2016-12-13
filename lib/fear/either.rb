@@ -158,6 +158,18 @@ module Fear
   #     Left(12).select(&:even?)  #=> Left(12)
   #     Left(7).select(&:even?)   #=> Left(7)
   #
+  # @!method reject(&predicate)
+  #   Returns +Left+ of value if the given predicate holds for the
+  #   right value, otherwise, returns +Right+.
+  #   @yieldparam value [Object]
+  #   @yieldreturn [Boolean]
+  #   @return [Either]
+  #   @example
+  #     Right(12).reject(&:even?) #=> Left(12)
+  #     Right(7).reject(&:even?)  #=> Right(7)
+  #     Left(12).reject(&:even?)  #=> Left(12)
+  #     Left(7).reject(&:even?)   #=> Left(7)
+  #
   # @!method swap
   #   If this is a +Left+, then return the left value in +Right+ or vice versa.
   #   @return [Either]

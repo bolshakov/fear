@@ -34,6 +34,15 @@ module Fear
       end
     end
 
+    # @return [Either]
+    def reject
+      if yield(value)
+        Left.new(value)
+      else
+        self
+      end
+    end
+
     # @return [Left] value in `Left`
     def swap
       Left.new(value)
