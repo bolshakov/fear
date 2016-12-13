@@ -2,7 +2,7 @@ RSpec.describe Fear::Some do
   include Fear::Option::Mixin
 
   it_behaves_like Fear::RightBiased::Right do
-    let(:right) { described_class.new('value') }
+    let(:right) { Some('value') }
   end
 
   subject(:some) { Some(42) }

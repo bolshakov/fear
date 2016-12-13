@@ -1,6 +1,6 @@
 RSpec.describe Fear::Failure do
   let(:exception) { RuntimeError.new('error') }
-  let(:failure) { described_class.new(exception) }
+  let(:failure) { Failure(exception) }
 
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { failure }
@@ -9,6 +9,11 @@ RSpec.describe Fear::Failure do
   describe '#success?' do
     subject { failure }
     it { is_expected.not_to be_success }
+  end
+
+  describe '#failure?' do
+    subject { failure }
+    it { is_expected.to be_failure }
   end
 
   describe '#get' do
@@ -43,7 +48,7 @@ RSpec.describe Fear::Failure do
     context 'block does not fail' do
       subject do
         failure.recover_with do |error|
-          Fear::Success.new(error.message)
+          Success(error.message)
         end
       end
 
@@ -65,7 +70,7 @@ RSpec.describe Fear::Failure do
       subject { failure.recover(&:message) }
 
       it 'returns Success of evaluation of the block against the error' do
-        is_expected.to eq(Fear::Success.new('error'))
+        is_expected.to eq(Success('error'))
       end
     end
 
@@ -79,6 +84,6 @@ RSpec.describe Fear::Failure do
 
   describe '#to_either' do
     subject { failure.to_either }
-    it { is_expected.to eq(Fear::Left.new(exception)) }
+    it { is_expected.to eq(Left(exception)) }
   end
 end

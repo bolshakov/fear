@@ -1,21 +1,19 @@
 RSpec.describe Fear::For do
-  include Fear::For::Mixin
-
   context 'unary' do
     context 'Some' do
       subject do
-        For(a: Fear::Some.new(2)) { a * 2 }
+        For(a: Some(2)) { a * 2 }
       end
 
-      it { is_expected.to eq(Fear::Some.new(4)) }
+      it { is_expected.to eq(Some(4)) }
     end
 
     context 'None' do
       subject do
-        For(a: Fear::None.new) { a * 2 }
+        For(a: None()) { a * 2 }
       end
 
-      it { is_expected.to eq(Fear::None.new) }
+      it { is_expected.to eq(None()) }
     end
   end
 
@@ -36,35 +34,35 @@ RSpec.describe Fear::For do
     end
 
     context 'all Same' do
-      let(:first) { Fear::Some.new(2) }
-      let(:second) { Fear::Some.new(3) }
-      let(:third) { Fear::Some.new(4) }
+      let(:first) { Some(2) }
+      let(:second) { Some(3) }
+      let(:third) { Some(4) }
 
-      it { is_expected.to eq(Fear::Some.new(24)) }
+      it { is_expected.to eq(Some(24)) }
     end
 
     context 'first None' do
-      let(:first) { Fear::None.new }
-      let(:second) { Fear::Some.new(3) }
-      let(:third) { Fear::Some.new(4) }
+      let(:first) { None() }
+      let(:second) { Some(3) }
+      let(:third) { Some(4) }
 
-      it { is_expected.to eq(Fear::None.new) }
+      it { is_expected.to eq(None()) }
     end
 
     context 'second None' do
-      let(:first) { Fear::Some.new(2) }
-      let(:second) { Fear::None.new }
-      let(:third) { Fear::Some.new(4) }
+      let(:first) { Some(2) }
+      let(:second) { None() }
+      let(:third) { Some(4) }
 
-      it { is_expected.to eq(Fear::None.new) }
+      it { is_expected.to eq(None()) }
     end
 
     context 'last None' do
-      let(:first) { Fear::Some.new(2) }
-      let(:second) { Fear::Some.new(3) }
-      let(:third) { Fear::None.new }
+      let(:first) { Some(2) }
+      let(:second) { Some(3) }
+      let(:third) { None() }
 
-      it { is_expected.to eq(Fear::None.new) }
+      it { is_expected.to eq(None()) }
     end
   end
 end

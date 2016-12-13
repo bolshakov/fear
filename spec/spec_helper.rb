@@ -6,6 +6,7 @@ require File.expand_path('spec/fear/right_biased/right')
 require File.expand_path('spec/fear/right_biased/left')
 
 RSpec.configure do |config|
+  config.include Fear::Mixin
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

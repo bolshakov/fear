@@ -1,5 +1,5 @@
 RSpec.describe Fear::Success do
-  let(:success) { described_class.new('value') }
+  let(:success) { Success('value') }
 
   it_behaves_like Fear::RightBiased::Right do
     let(:right) { success }
@@ -27,6 +27,11 @@ RSpec.describe Fear::Success do
   describe '#success?' do
     subject { success }
     it { is_expected.to be_success }
+  end
+
+  describe '#failure?' do
+    subject { success }
+    it { is_expected.not_to be_failure }
   end
 
   describe '#or_else' do
@@ -83,6 +88,6 @@ RSpec.describe Fear::Success do
 
   describe '#to_either' do
     subject { success.to_either }
-    it { is_expected.to eq(Fear::Right.new('value')) }
+    it { is_expected.to eq(Right('value')) }
   end
 end

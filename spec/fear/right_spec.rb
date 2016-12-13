@@ -1,9 +1,9 @@
 RSpec.describe Fear::Right do
   it_behaves_like Fear::RightBiased::Right do
-    let(:right) { described_class.new('value') }
+    let(:right) { Right('value') }
   end
 
-  let(:right) { described_class.new('value') }
+  let(:right) { Right('value') }
 
   describe '#right?' do
     subject { right }
@@ -27,13 +27,13 @@ RSpec.describe Fear::Right do
     context 'predicate evaluates to false and default is a proc' do
       let(:predicate) { ->(v) { v != 'value' } }
       let(:default) { -> { -1 } }
-      it { is_expected.to eq(Fear::Left.new(-1)) }
+      it { is_expected.to eq(Left(-1)) }
     end
 
     context 'predicate evaluates to false and default is not a proc' do
       let(:predicate) { ->(v) { v != 'value' } }
       let(:default) { -1 }
-      it { is_expected.to eq(Fear::Left.new(-1)) }
+      it { is_expected.to eq(Left(-1)) }
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.describe Fear::Right do
 
     context 'predicate evaluates to false' do
       let(:predicate) { ->(v) { v != 'value' } }
-      it { is_expected.to eq(Fear::Left.new('value')) }
+      it { is_expected.to eq(Left('value')) }
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe Fear::Right do
 
     context 'predicate evaluates to true' do
       let(:predicate) { ->(v) { v == 'value' } }
-      it { is_expected.to eq(Fear::Left.new('value')) }
+      it { is_expected.to eq(Left('value')) }
     end
 
     context 'predicate evaluates to false' do
@@ -67,7 +67,7 @@ RSpec.describe Fear::Right do
 
   describe '#swap' do
     subject { right.swap }
-    it { is_expected.to eq(Fear::Left.new('value')) }
+    it { is_expected.to eq(Left('value')) }
   end
 
   describe '#reduce' do
@@ -84,7 +84,7 @@ RSpec.describe Fear::Right do
   describe '#join_right' do
     context 'value is Either' do
       subject { described_class.new(value).join_right }
-      let(:value) { Fear::Left.new('error') }
+      let(:value) { Left('error') }
 
       it 'returns value' do
         is_expected.to eq(value)
@@ -103,7 +103,7 @@ RSpec.describe Fear::Right do
   describe '#join_left' do
     context 'value is Either' do
       subject { either.join_left }
-      let(:either) { described_class.new(Fear::Left.new('error')) }
+      let(:either) { described_class.new(Left('error')) }
 
       it { is_expected.to eq(either) }
     end

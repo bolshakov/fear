@@ -2,10 +2,10 @@ RSpec.describe Fear::Left do
   include Fear::Either::Mixin
 
   it_behaves_like Fear::RightBiased::Left do
-    let(:left) { described_class.new('value') }
+    let(:left) { Left('value') }
   end
 
-  let(:left) { described_class.new('value') }
+  let(:left) { Left('value') }
 
   describe '#right?' do
     subject { left }

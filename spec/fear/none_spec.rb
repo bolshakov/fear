@@ -2,7 +2,7 @@ RSpec.describe Fear::None do
   include Fear::Option::Mixin
 
   it_behaves_like Fear::RightBiased::Left do
-    let(:left) { described_class.new }
+    let(:left) { None() }
   end
 
   subject(:none) { None() }
