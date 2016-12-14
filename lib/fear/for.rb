@@ -38,59 +38,61 @@ module Fear
   #       end
   #     end
   #
+  # If you pass lambda as a variable value, it would be evaluated
+  # only on demand.
+  #
+  #     For(a: -> { None() }, b: -> { fail 'kaboom' } ) { a * b }
+  #       #=> None()
+  #
+  # It does not fail since `b` is not evaluated.
+  # You can refer to previously defined variables from within lambdas.
+  #
+  #     maybe_user = find_user('Paul') #=> <#Option value=<#User ...>>
+  #
+  #     For(user: maybe_user, birthday: -> { user.birthday }) do
+  #       "#{user.name} was born on #{birthday}"
+  #     end #=> Some('Paul was born on 1987-06-17')
+  #
   class For
-    # Context of block evaluation. It respond to passed locals.
-    #
-    # @example
-    #   context = EvaluationContext.new(foo: 'bar')
-    #   context.foo #=> 'bar'
-    #
-    class EvaluationContext < BasicObject
-      # @param locals [Hash{Symbol => any}]
-      #
-      def initialize(locals)
-        @locals = locals
-      end
-
-      def method_missing(name, *args, &block)
-        if @locals.include?(name) && args.empty? && block.nil?
-          @locals[name]
-        else
-          super
-        end
-      end
-
-      def respond_to_missing?(name, _)
-        @locals.key?(name)
-      end
-    end
-    private_constant(:EvaluationContext)
+    require_relative 'for/evaluation_context'
 
     # @param variables [Hash{Symbol => any}]
     #
     def initialize(**variables)
       @variables = variables
+      @evaluation_context = EvaluationContext.new
     end
-    attr_reader :variables
-    private :variables
 
     def call(&block)
       variable_name_and_monad, *tail = *variables
-      execute({}, *variable_name_and_monad, tail, &block)
+      execute(*variable_name_and_monad, tail, &block)
     end
 
     private
 
-    def execute(locals, variable_name, monad, monads, &block)
+    attr_reader :variables
+    attr_reader :evaluation_context
+
+    def execute(variable_name, monad, monads, &block) # rubocop:disable Metrics/MethodLength
       if monads.empty?
-        monad.map do |value|
-          EvaluationContext.new(locals.merge(variable_name => value)).instance_eval(&block)
+        resolve(monad).map do |value|
+          evaluation_context.assign(variable_name, value)
+          evaluation_context.instance_exec(&block)
         end
       else
-        monad.flat_map do |value|
+        resolve(monad).flat_map do |value|
+          evaluation_context.assign(variable_name, value)
           variable_name_and_monad, *tail = *monads
-          execute(locals.merge(variable_name => value), *variable_name_and_monad, tail, &block)
+          execute(*variable_name_and_monad, tail, &block)
         end
+      end
+    end
+
+    def resolve(monad_or_proc)
+      if monad_or_proc.respond_to?(:call)
+        evaluation_context.instance_exec(&monad_or_proc)
+      else
+        monad_or_proc
       end
     end
 
@@ -98,8 +100,16 @@ module Fear
     # @example
     #   include Fear::For::Mixin
     #
-    #   For(a: Some(2), b: Some(3)) { a * b }   #=> Some(6)
-    #   For(a: Some(2), b: None()) { a * b }    #=> None()
+    #   For(a: Some(2), b: Some(3)) { a * b } #=> Some(6)
+    #   For(a: Some(2), b: None()) { a * b }  #=> None()
+    #
+    #   For(a: -> { Some(2) }, b: -> { Some(3) }) do
+    #     a * b
+    #   end #=> Some(6)
+    #
+    #   For(a: -> { None() }, b: -> { fail }) do
+    #     a * b
+    #   end #=> None()
     #
     #   For(a: Right(2), b: Right(3)) { a * b } #=> Right(6)
     #   For(a: Right(2), b: Left(3)) { a * b }  #=> Left(3)
