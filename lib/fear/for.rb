@@ -58,9 +58,9 @@ module Fear
 
     # @param variables [Hash{Symbol => any}]
     #
-    def initialize(**variables)
+    def initialize(outer_context, **variables)
       @variables = variables
-      @evaluation_context = EvaluationContext.new
+      @evaluation_context = EvaluationContext.new(outer_context)
     end
 
     def call(&block)
@@ -76,12 +76,12 @@ module Fear
     def execute(variable_name, monad, monads, &block) # rubocop:disable Metrics/MethodLength
       if monads.empty?
         resolve(monad).map do |value|
-          evaluation_context.assign(variable_name, value)
+          evaluation_context.__assign__(variable_name, value)
           evaluation_context.instance_exec(&block)
         end
       else
         resolve(monad).flat_map do |value|
-          evaluation_context.assign(variable_name, value)
+          evaluation_context.__assign__(variable_name, value)
           variable_name_and_monad, *tail = *monads
           execute(*variable_name_and_monad, tail, &block)
         end
@@ -122,7 +122,7 @@ module Fear
       # @return [{#map, #flat_map}]
       #
       def For(**locals, &block)
-        For.new(**locals).call(&block)
+        For.new(self, **locals).call(&block)
       end
     end
   end

@@ -17,6 +17,18 @@ RSpec.describe Fear::For do
     end
   end
 
+  context 'access method from outer scope' do
+    def two
+      2
+    end
+
+    subject do
+      For(a: Some(2)) { a * two }
+    end
+
+    it { is_expected.to eq(Some(4)) }
+  end
+
   context 'arrays' do
     subject do
       For(a: [1, 2], b: [2, 3], c: [3, 4]) do
