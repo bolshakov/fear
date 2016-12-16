@@ -21,6 +21,7 @@ RSpec.describe Fear::For do
     def two
       2
     end
+    private :two
 
     subject do
       For(a: Some(2)) { a * two }

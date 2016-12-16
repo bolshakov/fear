@@ -75,7 +75,7 @@ module Fear
       def method_missing(name, *args, &block)
         if @assigns.include?(name) && args.empty? && block.nil?
           @assigns[name]
-        elsif @outer_context.respond_to?(name)
+        elsif @outer_context.respond_to?(name, true)
           @outer_context.__send__(name, *args, &block)
         else
           super
