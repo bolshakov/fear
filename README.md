@@ -162,6 +162,23 @@ would be translated to:
 end
 ```
 
+### Pattern Matching
+
+`Option`, `Either`, and `Try` contains enhanced version of `#===` method. It performs matching not 
+only on container itself, but on enclosed value as well. I'm writing all the options in a one 
+case statement in sake of simplicity.
+ 
+```ruby
+case Some(42)
+when Some(42)                #=> matches
+when Some(41)                #=> does not match
+when Some(Fixnum)            #=> matches
+when Some(String)            #=> does not match
+when Some((40..43))          #=> matches
+when Some(-> (x) { x > 40 }) #=> matches
+end  
+```
+
 ## Testing
 
 To simplify testing, you may use [fear-rspec](https://github.com/bolshakov/fear-rspec) gem. It

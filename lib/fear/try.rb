@@ -249,7 +249,6 @@ module Fear
       # @return [Failure]
       #
       def Failure(exception)
-        fail TypeError, "not an error: #{exception}" unless exception.is_a?(StandardError)
         Failure.new(exception)
       end
 

@@ -68,5 +68,16 @@ module Fear
     def to_either
       Left.new(value)
     end
+
+    # Used in case statement
+    # @param other [any]
+    # @return [Boolean]
+    def ===(other)
+      if other.is_a?(Failure)
+        value === other.value
+      else
+        super
+      end
+    end
   end
 end
