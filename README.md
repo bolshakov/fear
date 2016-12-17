@@ -174,3 +174,12 @@ provides a bunch of rspec matchers.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Alternatives
+
+* [dry-monads](https://github.com/dry-rb/dry-monads)
+* [deterministic](https://github.com/pzol/deterministic)
+* [ruby-possibly](https://github.com/rap1ds/ruby-possibly)
+* [kleisli](https://github.com/txus/kleisli)
+* [rumonade](https://github.com/ms-ati/rumonade)
+
