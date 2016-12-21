@@ -143,8 +143,8 @@ module Fear
   #   @example
   #     Right(12).select_or_else(-1, &:even?)       #=> Right(12)
   #     Right(7).select_or_else(-1, &:even?)        #=> Left(-1)
-  #     Left(12).select_or_else(-1, &:even?)        #=> Left(-1)
-  #     Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(-1)
+  #     Left(12).select_or_else(-1, &:even?)        #=> Left(12)
+  #     Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(12)
   #
   # @!method select(&predicate)
   #   Returns +Left+ of value if the given predicate

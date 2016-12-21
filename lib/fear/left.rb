@@ -15,10 +15,9 @@ module Fear
     end
     alias failure? left?
 
-    # @param default [Proc, any]
     # @return [Either]
-    def select_or_else(default)
-      Left.new(Utils.return_or_call_proc(default))
+    def select_or_else(*)
+      self
     end
 
     # @return [Left]

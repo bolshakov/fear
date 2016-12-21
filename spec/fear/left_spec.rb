@@ -25,16 +25,16 @@ RSpec.describe Fear::Left do
     context 'proc default' do
       let(:default) { -> { -1 } }
 
-      it 'returns Left of evaluated default' do
-        is_expected.to eq(described_class.new(-1))
+      it 'returns itself' do
+        is_expected.to eq(left)
       end
     end
 
     context 'default' do
       let(:default) { -1 }
 
-      it 'return Left of default' do
-        is_expected.to eq(described_class.new(-1))
+      it 'returns itself' do
+        is_expected.to eq(left)
       end
     end
   end
