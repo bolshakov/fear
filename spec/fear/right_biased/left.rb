@@ -64,4 +64,13 @@ RSpec.shared_examples Fear::RightBiased::Left do
     subject { left.any? { |v| v == 'value' } }
     it { is_expected.to eq(false) }
   end
+
+  describe '#===' do
+    subject { match === left }
+
+    context 'the same object' do
+      let(:match) { left }
+      it { is_expected.to eq(true) }
+    end
+  end
 end

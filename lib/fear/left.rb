@@ -54,5 +54,16 @@ module Fear
         Utils.assert_type!(v, Either)
       end
     end
+
+    # Used in case statement
+    # @param other [any]
+    # @return [Boolean]
+    def ===(other)
+      if other.is_a?(Left)
+        value === other.value
+      else
+        super
+      end
+    end
   end
 end

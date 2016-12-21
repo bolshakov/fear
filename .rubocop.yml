@@ -6,3 +6,6 @@ Style/MethodName:
 
 Style/Documentation:
   Enabled: false
+
+Style/CaseEquality:
+  Enabled: false

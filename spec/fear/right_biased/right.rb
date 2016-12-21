@@ -90,4 +90,33 @@ RSpec.shared_examples Fear::RightBiased::Right do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#===' do
+    subject { match === right }
+
+    context 'matches erectly' do
+      let(:match) { described_class.new('value') }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'the same object' do
+      let(:match) { right }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'value does not match' do
+      let(:match) { described_class.new('error') }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'matches by class' do
+      let(:match) { described_class.new(String) }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'does not matches by class' do
+      let(:match) { described_class.new(Integer) }
+      it { is_expected.to eq(false) }
+    end
+  end
 end
