@@ -1,16 +1,15 @@
 module Fear
   class Failure
     include Try
-    include Dry::Equalizer(:value)
+    include Dry::Equalizer(:exception)
     include RightBiased::Left
 
     # @param [StandardError]
     def initialize(exception)
-      @value = exception
+      @exception = exception
     end
 
-    attr_reader :value
-    protected :value
+    attr_reader :exception
 
     # @return [Boolean]
     def success?
@@ -24,7 +23,7 @@ module Fear
 
     # @raise
     def get
-      fail value
+      fail exception
     end
 
     # @return [Try] of calling block
@@ -48,7 +47,7 @@ module Fear
     # @yieldreturn [Try]
     # @return [Try]
     def recover_with
-      yield(value).tap do |result|
+      yield(exception).tap do |result|
         Utils.assert_type!(result, Success, Failure)
       end
     rescue => error
@@ -59,14 +58,14 @@ module Fear
     # @yieldreturn [any]
     # @return [Try]
     def recover
-      Success.new(yield(value))
+      Success.new(yield(exception))
     rescue => error
       Failure.new(error)
     end
 
     # @return [Left]
     def to_either
-      Left.new(value)
+      Left.new(exception)
     end
 
     # Used in case statement
@@ -74,7 +73,7 @@ module Fear
     # @return [Boolean]
     def ===(other)
       if other.is_a?(Failure)
-        value === other.value
+        exception === other.exception
       else
         super
       end

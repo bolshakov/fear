@@ -6,6 +6,11 @@ RSpec.describe Fear::Failure do
     let(:left) { failure }
   end
 
+  describe '#exception' do
+    subject { failure.exception }
+    it { is_expected.to eq(exception) }
+  end
+
   describe '#success?' do
     subject { failure }
     it { is_expected.not_to be_success }
