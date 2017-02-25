@@ -198,5 +198,5 @@ provides a bunch of rspec matchers.
 * [deterministic](https://github.com/pzol/deterministic)
 * [ruby-possibly](https://github.com/rap1ds/ruby-possibly)
 * [kleisli](https://github.com/txus/kleisli)
+* [maybe](https://github.com/bhb/maybe)
 * [rumonade](https://github.com/ms-ati/rumonade)
-
