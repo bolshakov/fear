@@ -95,7 +95,7 @@ RSpec.describe Fear::Left do
       let(:either) { described_class.new(value) }
       let(:value) { Left('error') }
 
-      it 'it returns value' do
+      it 'returns value' do
         is_expected.to eq(Left('error'))
       end
     end
