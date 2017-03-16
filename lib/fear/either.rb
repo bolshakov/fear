@@ -206,7 +206,7 @@ module Fear
   #     Left("flower").join_right        #=> Left("flower")
   #     Left(Right("flower")).join_right #=> Left(Right("flower"))
   #
-  # # @!method join_right
+  # @!method join_right
   #   Joins an +Either+ through +Left+. This method requires
   #   that the left side of this +Either+ is itself an
   #   +Either+ type.
