@@ -131,8 +131,8 @@ divide(dividend, divisor) #=> Try(2)
 It would be translated to 
 
 ```ruby
-Success(2).flat_map do |x|
-  Success(3).map do |y|
+Success(4).flat_map do |x|
+  Success(2).map do |y|
     x / y
   end
 end
