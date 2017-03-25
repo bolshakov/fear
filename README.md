@@ -23,9 +23,9 @@ Or install it yourself as:
 
 ## Usage
 
-### Option
+### Option ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
 
-Represents optional values. Instances of `Option` are either an instance of 
+Represents optional (nullable) values. Instances of `Option` are either an instance of 
 `Some` or the object `None`.
 
 The most idiomatic way to use an `Option` instance is to treat it
@@ -34,17 +34,22 @@ as a collection and use `map`, `flat_map`, `select`, or `each`:
 ```ruby
 include Fear::Option::Mixin
 
-name = Option(params[:name])
-upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
-puts upper.get_or_else('')
+def normalize_name(name)
+  Option(name)
+    .map(&:strip)
+    .select { |n| n.length != 0 }
+    .map(&:upcase)
+    .get_or_else('NONAME')
+end
+
+normalize_name('robert paulson ') #=> 'ROBERT PAULSON'
+normalize_name(nil) #=> 'NONAME' 
 ```
 
 This allows for sophisticated chaining of `Option` values without
 having to check for the existence of a value.
 
-See full documentation [Fear::Option](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option)
-
-### Try
+### Try ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Try))
 
 The `Try` represents a computation that may either result in an exception, 
 or return a successfully computed value.  Instances of `Try`, are either 
@@ -60,19 +65,17 @@ include Fear::Try::Mixin
 dividend = Try { Integer(params[:dividend]) }
 divisor = Try { Integer(params[:divisor]) }
 
-problem = dividend.flat_map { |x| divisor.map { |y| x / y }
+result = dividend.flat_map { |x| divisor.map { |y| x / y }
 
-if problem.success?
-  puts "Result of #{dividend.get} / #{divisor.get} is: #{problem.get}"
+if result.success?
+  puts "Result of #{dividend.get} / #{divisor.get} is: #{result.get}"
 else
   puts "You must've divided by zero or entered something wrong. Try again"
-  puts "Info from the exception: #{problem.exception.message}"
+  puts "Info from the exception: #{result.exception.message}"
 end
 ```
 
-See full documentation [Fear::Try](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Try)
-
-### Either
+### Either ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Either))
 
 Represents a value of one of two possible types (a disjoint union.)
 An instance of `Either` is either an instance of `Left` or `Right`.
@@ -102,9 +105,7 @@ puts(
     -> (x) { "You passed me the String: #{x}" }
   )
 )
-```
-  
-See full documentation [Fear::Either](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Either)
+``` 
   
 ### For composition
 
@@ -115,31 +116,36 @@ is supported by `For`.
 ```ruby
 include Fear::For::Mixin
 
-For(a: Some(2), b: Some(3)) do 
-  a * b 
-end #=> Some(6)
+def divide(dividend, divisor)
+  For(x: dividend, y: divisor) do 
+    x / y
+  end
+end
+
+dividend = Try { Integer(params[:dividend]) } #=> Try(4)
+divisor = Try { Integer(params[:divisor]) } #=> Try(2)
+
+divide(dividend, divisor) #=> Try(2)
 ```
 
 It would be translated to 
 
 ```ruby
-Some(2).flat_map do |a|
-  Some(3).map do |b|
-    a * b
+Success(2).flat_map do |x|
+  Success(3).map do |y|
+    x / y
   end
 end
 ```
 
-If one of operands is None, the result is None
+If one of operands is Failure, the result is Failure
 
 ```ruby
-For(a: Some(2), b: None()) do
-  a * b
-end  #=> None()
 
-For(a: None(), b: Some(2)) do 
-  a * b 
-end #=> None()
+dividend = Try { 42 }
+divisor = Try { Integer('ehuton') }
+
+divide(dividend, divisor) #=> Failure(<ArgumentError: invalid value for Integer(): "ehuton">)
 ```
 
 `For` works with arrays as well
@@ -194,9 +200,9 @@ provides a bunch of rspec matchers.
 
 ## Alternatives
 
-* [dry-monads](https://github.com/dry-rb/dry-monads)
 * [deterministic](https://github.com/pzol/deterministic)
-* [ruby-possibly](https://github.com/rap1ds/ruby-possibly)
+* [dry-monads](https://github.com/dry-rb/dry-monads)
 * [kleisli](https://github.com/txus/kleisli)
 * [maybe](https://github.com/bhb/maybe)
+* [ruby-possibly](https://github.com/rap1ds/ruby-possibly)
 * [rumonade](https://github.com/ms-ati/rumonade)
