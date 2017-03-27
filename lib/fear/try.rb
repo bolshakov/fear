@@ -13,7 +13,7 @@ module Fear
   #
   #   dividend = Try { Integer(params[:dividend]) }
   #   divisor = Try { Integer(params[:divisor]) }
-  #   problem = dividend.flat_map { |x| divisor.map { |y| x / y }
+  #   problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
   #
   #   if problem.success?
   #     puts "Result of #{dividend.get} / #{divisor.get} is: #{problem.get}"
