@@ -65,7 +65,7 @@ include Fear::Try::Mixin
 dividend = Try { Integer(params[:dividend]) }
 divisor = Try { Integer(params[:divisor]) }
 
-result = dividend.flat_map { |x| divisor.map { |y| x / y }
+result = dividend.flat_map { |x| divisor.map { |y| x / y } }
 
 if result.success?
   puts "Result of #{dividend.get} / #{divisor.get} is: #{result.get}"
