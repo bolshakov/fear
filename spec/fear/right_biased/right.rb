@@ -41,6 +41,16 @@ RSpec.shared_examples Fear::RightBiased::Right do
     end
   end
 
+  describe '#or_else' do
+    it 'does not call block' do
+      expect { |probe| right.or_else(&probe) }.not_to yield_control
+    end
+
+    it 'returns the same object' do
+      expect(right.or_else { 42 }).to eql(right)
+    end
+  end
+
   describe '#map' do
     subject { right.map(&:length) }
 

@@ -45,6 +45,14 @@ module Fear
   #       Right(42).get_or_else(12)         #=> 42
   #       Left('undefined').get_or_else(12) #=> 12
   #
+  # @!method or_else(&alternative)
+  #   Returns this +Right+ or the given alternative if this is a +Left+.
+  #   @return [Either]
+  #   @example
+  #     Right(42).or_else { Right(21) }           #=> Right(42)
+  #     Left('unknown').or_else { Right(21) }     #=> Right(21)
+  #     Left('unknown').or_else { Left('empty') } #=> Left('empty')
+  #
   # @!method include?(other_value)
   #   Returns +true+ if +Right+ has an element that is equal
   #   (as determined by +==+) to +other_value+, +false+ otherwise.

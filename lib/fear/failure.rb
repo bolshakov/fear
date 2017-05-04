@@ -27,8 +27,8 @@ module Fear
     end
 
     # @return [Try] of calling block
-    def or_else
-      Success.new(yield)
+    def or_else(*args)
+      super
     rescue => error
       Failure.new(error)
     end

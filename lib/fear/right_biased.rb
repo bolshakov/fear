@@ -11,6 +11,15 @@ module Fear
         super
       end
 
+      # Returns this `RightBiased::Right` or the given alternative if
+      # this is a `RightBiased::Left`.
+      def or_else(*args, &block)
+        Utils.assert_arg_or_block!('or_else', *args, &block)
+        super.tap do |result|
+          Utils.assert_type!(result, left_class, right_class)
+        end
+      end
+
       def flat_map
         super.tap do |result|
           Utils.assert_type!(result, left_class, right_class)
@@ -41,6 +50,11 @@ module Fear
       #
       def get_or_else(*_args)
         value
+      end
+
+      # @return [self]
+      def or_else
+        self
       end
 
       # @param [any]
@@ -110,6 +124,13 @@ module Fear
       #
       def get_or_else(*args)
         args.fetch(0) { yield }
+      end
+
+      # @!method get_or_else(&alternative)
+      #   @return [RightBiased] result of evaluating a block.
+      #
+      def or_else(*_args)
+        yield
       end
 
       # @param [any]

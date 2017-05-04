@@ -42,6 +42,14 @@ module Fear
   #       Some(42).get_or_else(12)  #=> 42
   #       None().get_or_else(12)    #=> 12
   #
+  # @!method or_else(&alternative)
+  #   Returns this +Some+ or the given alternative if this is a +None+.
+  #   @return [Option]
+  #   @example
+  #     Some(42).or_else { Some(21) } #=> Some(42)
+  #     None().or_else { Some(21) }   #=> Some(21)
+  #     None().or_else { None() }     #=> None()
+  #
   # @!method include?(other_value)
   #   Returns +true+ if it has an element that is equal
   #   (as determined by +==+) to +other_value+, +false+ otherwise.
