@@ -17,6 +17,15 @@ RSpec.describe Fear::None do
     it { is_expected.to eq(nil) }
   end
 
+  describe '#or_else' do
+    subject { none.or_else { alternative } }
+    let(:alternative) { Some(42) }
+
+    it 'returns alternative' do
+      is_expected.to eq(alternative)
+    end
+  end
+
   describe '#empty?' do
     subject { none.empty? }
     it { is_expected.to eq(true) }

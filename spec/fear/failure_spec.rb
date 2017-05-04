@@ -28,7 +28,7 @@ RSpec.describe Fear::Failure do
 
   describe '#or_else' do
     context 'default does not fail' do
-      subject { failure.or_else { 'value' } }
+      subject { failure.or_else { Fear::Success.new('value') } }
       it { is_expected.to eq(Fear::Success.new('value')) }
     end
 
