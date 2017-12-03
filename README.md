@@ -1,5 +1,7 @@
 # Fear
 [![Build Status](https://travis-ci.org/bolshakov/fear.svg?branch=master)](https://travis-ci.org/bolshakov/fear)
+[![Maintainability](https://api.codeclimate.com/v1/badges/dbdcfb770918c425e5e4/maintainability)](https://codeclimate.com/github/bolshakov/functional/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/dbdcfb770918c425e5e4/test_coverage)](https://codeclimate.com/github/bolshakov/functional/test_coverage)
 [![Gem Version](https://badge.fury.io/rb/fear.svg)](https://badge.fury.io/rb/fear)
 
 This gem provides `Option`, `Either`, and `Try` monads implemented an idiomatic way. 
