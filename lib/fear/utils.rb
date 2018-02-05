@@ -11,7 +11,7 @@ module Fear
 
     def assert_type!(value, *types)
       if types.none? { |type| value.is_a?(type) }
-        fail TypeError, "expected `#{value}` to be of #{types.join(', ')} class"
+        fail TypeError, "expected `#{value.inspect}` to be of #{types.join(', ')} class"
       end
     end
 
