@@ -6,9 +6,10 @@ module Fear
   IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
 
+  autoload :Done, 'fear/done'
   autoload :For, 'fear/for'
-  autoload :Utils, 'fear/utils'
   autoload :RightBiased, 'fear/right_biased'
+  autoload :Utils, 'fear/utils'
 
   autoload :Option, 'fear/option'
   autoload :Some, 'fear/some'

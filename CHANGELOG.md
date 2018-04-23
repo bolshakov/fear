@@ -1,3 +1,7 @@
+## 0.8.0
+
+* Add `Fear::Done` to represent successful completion without a value. ([@bolshakov][])
+
 ## 0.7.0
 
 * Better errors for types assertions ([@bolshakov][])
