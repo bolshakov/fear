@@ -21,8 +21,8 @@ module Fear
   #
   #   puts(
   #     result.reduce(
-  #       -> (x) { "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" },
-  #       -> (x) { "You passed me the String: #{x}" }
+  #       -> (x) { "You passed me the String: #{x}" },
+  #       -> (x) { "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" }
   #     )
   #   )
   #
