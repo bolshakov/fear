@@ -27,6 +27,22 @@ RSpec.shared_examples Fear::RightBiased::Right do
         is_expected.to eq('value')
       end
     end
+
+    context 'with false argument' do
+      subject { right.get_or_else(false) }
+
+      it 'returns value' do
+        is_expected.to eq('value')
+      end
+    end
+
+    context 'with nil argument' do
+      subject { right.get_or_else(nil) }
+
+      it 'returns value' do
+        is_expected.to eq('value')
+      end
+    end
   end
 
   describe '#each' do
