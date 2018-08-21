@@ -4,7 +4,7 @@ module Fear
     extend self
 
     def assert_arg_or_block!(method_name, *args)
-      unless block_given? ^ args.any?
+      unless block_given? ^ !args.empty?
         fail ArgumentError, "##{method_name} accepts either one argument or block"
       end
     end

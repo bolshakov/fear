@@ -1,3 +1,7 @@
+## 0.8.x
+
+* Make possible to pass to `#get_or_else` nil and false values ([@bolshakov][])
+
 ## 0.8.0
 
 * Add `Fear::Done` to represent successful completion without a value. ([@bolshakov][])
