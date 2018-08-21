@@ -1,5 +1,6 @@
 ## 0.8.x
 
+* Test against last supported ruby versions: 2.3.7, 2.4.4, 2.5.1 ([@bolshakov][])
 * Make possible to pass to `#get_or_else` nil and false values ([@bolshakov][])
 
 ## 0.8.0
