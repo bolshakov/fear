@@ -1,3 +1,8 @@
+## 0.10.0
+
+* Test against last supported ruby versions: 2.4.5, 2.5.3, 2.6.1 ([@bolshakov][])
+* You can use `fear` with any `dry-equalizer` version (up to 0.2.1) ([@bolshakov][])
+
 ## 0.9.0
 
 * Test against last supported ruby versions: 2.3.7, 2.4.4, 2.5.1 ([@bolshakov][])
