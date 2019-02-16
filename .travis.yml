@@ -1,9 +1,17 @@
+---
 language: ruby
 rvm:
-  - 2.4.5
-  - 2.5.3
-  - 2.6.1
+- 2.4.5
+- 2.5.3
+- 2.6.1
+before_script:
+- bundle install
 script:
- - rubocop -D
- - bundle exec rspec spec
-env: CODECLIMATE_REPO_TOKEN=548312a77df2507c49494d3c6e78cc62631517c39440644c38217d9be1f47e26
+- bundle exec rspec
+- bundle exec rubocop --fail-level C
+gemfile:
+- gemfiles/dry_equalizer_0.2.1.gemfile
+- gemfiles/dry_equalizer_0.1.0.gemfile
+addons:
+  code_climate:
+    repo_token: c326cca5984d0e32d2c6b5d9b985756ee9312f63fc6a9480fc9cfa55c454d68a
