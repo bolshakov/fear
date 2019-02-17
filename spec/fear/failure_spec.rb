@@ -115,4 +115,41 @@ RSpec.describe Fear::Failure do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#match' do
+    context 'matched' do
+      subject do
+        failure.match do |m|
+          m.failure(->(e) { e.message == 'error' }) { |v| "Failure: #{v}" }
+          m.success { |v| "Success: #{v}" }
+        end
+      end
+
+      it { is_expected.to eq('Failure: error') }
+    end
+
+    context 'nothing matched and no else given' do
+      subject do
+        proc do
+          failure.match do |m|
+            m.failure(->(e) { e.message != 'error' }) { |v| "Failure: #{v}" }
+            m.success { |v| "Success: #{v}" }
+          end
+        end
+      end
+
+      it { is_expected.to raise_error(Fear::MatchError) }
+    end
+
+    context 'nothing matched and else given' do
+      subject do
+        failure.match do |m|
+          m.success { |v| "Success: #{v}" }
+          m.else { :default }
+        end
+      end
+
+      it { is_expected.to eq(:default) }
+    end
+  end
 end

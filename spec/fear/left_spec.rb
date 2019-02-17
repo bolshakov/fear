@@ -141,4 +141,41 @@ RSpec.describe Fear::Left do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#match' do
+    context 'matched' do
+      subject do
+        left.match do |m|
+          m.left(->(x) { x == 'value' }) { |v| "Left: #{v}" }
+          m.right { |v| "Right: #{v}" }
+        end
+      end
+
+      it { is_expected.to eq('Left: value') }
+    end
+
+    context 'nothing matched and no else given' do
+      subject do
+        proc do
+          left.match do |m|
+            m.left(->(x) { x != 'value' }) { |v| "Left: #{v}" }
+            m.right { |v| "Right: #{v}" }
+          end
+        end
+      end
+
+      it { is_expected.to raise_error(Fear::MatchError) }
+    end
+
+    context 'nothing matched and else given' do
+      subject do
+        left.match do |m|
+          m.right { |v| "Right: #{v}" }
+          m.else { :default }
+        end
+      end
+
+      it { is_expected.to eq(:default) }
+    end
+  end
 end

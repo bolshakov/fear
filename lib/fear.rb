@@ -5,11 +5,13 @@ module Fear
   Error = Class.new(StandardError)
   IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
+  MatchError = Class.new(Error)
 
   autoload :Done, 'fear/done'
   autoload :For, 'fear/for'
   autoload :RightBiased, 'fear/right_biased'
   autoload :Utils, 'fear/utils'
+  autoload :ExhaustivePatternMatch, 'fear/exhaustive_pattern_match'
 
   autoload :Option, 'fear/option'
   autoload :Some, 'fear/some'

@@ -1,3 +1,5 @@
+require 'fear/option/pattern_match'
+
 module Fear
   # Represents optional values. Instances of +Option+
   # are either an instance of +Some+ or the object +None+.
@@ -11,13 +13,11 @@ module Fear
   # having to check for the existence of a value.
   #
   # @example A less-idiomatic way to use +Option+ values is via pattern matching
-  #   name = Option(params[:name])
-  #   case name
-  #   when Some
-  #     puts name.strip.upcase
-  #   when None
-  #     puts 'No name value'
+  #   message = Option(params[:name]).match do |m|
+  #     m.some { |name| name.strip.upcase }
+  #     m.none { 'No name value' }
   #   end
+  #   puts message
   #
   # @example or manually checking for non emptiness
   #   name = Option(params[:name])
@@ -145,9 +145,42 @@ module Fear
   #     Some(42).empty? #=> false
   #     None().empty?   #=> true
   #
+  # @!method match(&patterns)
+  #   Pattern match against the +Option+
+  #   @yieldparam matcher [Fear::Option::PatternMatch]
+  #   @raise [Fear::MatchError] if nothing matched
+  #   @see https://github.com/baweaver/qo for full API
+  #
+  #   @example #some and #none
+  #     Some(42).match do |m|
+  #       m.some { |x| x * 2 }
+  #       m.none { 'none' }
+  #     end #=> 84
+  #
+  #   @example #some with condition
+  #     Some(41).match do |m|
+  #       m.some(:even?) { |x| x / 2 }
+  #       m.some(:odd?) { |x| x * 2 }
+  #       m.none { 'none' }
+  #     end #=> 82
+  #
+  #   @example not exhaustive match
+  #     Some(42).match do |m|
+  #       m.some(:odd?) { |x| x * 2 }
+  #       m.none { 'none' }
+  #     end #=> raises Fear::MatchError
+  #
+  #   @example else branch
+  #     Some(42).match do |m|
+  #       m.some(:odd?) { |x| x * 2 }
+  #       m.else { nil }
+  #     end #=> nil
+  #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
   #
   module Option
+    include PatternMatch.mixin
+
     # @private
     def left_class
       None

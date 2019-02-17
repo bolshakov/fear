@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "qo", github: "baweaver/qo", branch: "baweaver/exhaustive_match", ref: "60362f1b2e8cb3ccbc1bf80dfb67faf20b1d2c51"
 gem "dry-equalizer", "0.1.0"
 
 gemspec path: "../"

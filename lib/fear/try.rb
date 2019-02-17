@@ -1,3 +1,5 @@
+require 'fear/try/pattern_match'
+
 module Fear
   # The +Try+ represents a computation that may either result
   # in an exception, or return a successfully computed value. Instances of +Try+,
@@ -210,10 +212,43 @@ module Fear
   #     Success(42).to_either                #=> Right(42)
   #     Failure(ArgumentError.new).to_either #=> Left(ArgumentError.new)
   #
+  # @!method match(&patterns)
+  #   Pattern match against the +Try+
+  #   @yieldparam matcher [Fear::Try::PatternMatch]
+  #   @raise [Fear::MatchError] if nothing matched
+  #   @see https://github.com/baweaver/qo for full API
+  #
+  #   @example #success and #failurre
+  #     Success(42).match do |m|
+  #       m.success { |x| x * 2 }
+  #       m.failure { |error| raise error }
+  #     end #=> 84
+  #
+  #   @example #some with condition
+  #     Success(41).match do |m|
+  #       m.success(:even?) { |x| x / 2 }
+  #       m.success(:odd?) { |x| x * 2 }
+  #       m.failure { |error| raise error }
+  #     end #=> 82
+  #
+  #   @example not exhaustive match
+  #     Some(42).match do |m|
+  #       m.success(:odd?) { |x| x * 2 }
+  #       m.failure { |error| raise error }
+  #     end #=> raises Fear::MatchError
+  #
+  #   @example else branch
+  #     Some(42).match do |m|
+  #       m.success(:odd?) { |x| x * 2 }
+  #       m.else { nil }
+  #     end #=> nil
+  #
   # @author based on Twitter's original implementation.
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/util/Try.scala
   #
   module Try
+    include PatternMatch.mixin
+
     # @private
     def left_class
       Failure

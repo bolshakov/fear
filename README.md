@@ -48,13 +48,12 @@ having to check for the existence of a value.
 A less-idiomatic way to use `Option` values is via pattern matching
 
 ```ruby
-name = Option(params[:name])
-case name
-when Some
- puts name.strip.upcase
-when None
- puts 'No name value'
+message = Option(params[:name]).match do |m|
+  m.some { |name| name.strip.upcase }
+  m.none { 'No name value' }
 end
+puts message
+
 ```
 
 or manually checking for non emptiness
@@ -180,7 +179,7 @@ Some(42).empty? #=> false
 None().empty?   #=> true
 ```
 
-@see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
+Read more about matching option in [Qo documentation](https://github.com/baweaver/qo)
  
 
 ### Try ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Try))
@@ -690,20 +689,69 @@ end #=> Some('Paul was born on 1987-06-17')
 
 ### Pattern Matching
 
-`Option`, `Either`, and `Try` contains enhanced version of `#===` method. It performs matching not 
-only on container itself, but on enclosed value as well. I'm writing all the options in a one 
-case statement in sake of simplicity.
- 
+You can use `Option#match`, `Either#match`, and `Try#match` method. It performs matching not 
+only on container itself, but on enclosed value as well. 
+
+Pattern match against the `Option`
+
 ```ruby
-case Some(42)
-when Some(42)                #=> matches
-when Some(41)                #=> does not match
-when Some(Fixnum)            #=> matches
-when Some(String)            #=> does not match
-when Some((40..43))          #=> matches
-when Some(-> (x) { x > 40 }) #=> matches
-end  
+Some(42).match do |m|
+  m.some { |x| x * 2 }
+  m.none { 'none' }
+end #=> 84
 ```
+
+pattern match on enclosed value
+
+```ruby
+Some(41).match do |m|
+  m.some(:even?) { |x| x / 2 }
+  m.some(:odd?, ->(v) { v > 0 }) { |x| x * 2 }
+  m.none { 'none' }
+end #=> 82
+``` 
+
+it raises `Fear::MatchError` error if nothing matched
+
+```ruby
+Some(42).match do |m|
+  m.some(:odd?) { |x| x * 2 }
+  m.none { 'none' }
+end #=> raises Fear::MatchError
+```
+
+to avoid exception, you can pass `#else` branch
+
+```ruby
+Some(42).match do |m|
+  m.some(:odd?) { |x| x * 2 }
+  m.else { 'nothing' }
+end #=> nothing
+```
+
+It works the similar way for `Either` and `Try` monads:
+
+```ruby
+dividend = Try { Integer(params[:dividend]) }
+divisor = Try { Integer(params[:divisor]) }
+result = dividend.flat_map { |x| divisor.map { |y| x / y } }
+
+message = result.match do |m|
+  m.success do |x|
+    "Result of #{params[:dividend]} / #{params[:divisor]} is: #{x}"
+  end
+
+  m.failure do |error| 
+    "You must've divided by zero or entered something wrong. Try again" \
+    "Info from the exception: #{error.message}"
+  end
+end
+
+puts message
+```
+
+Pattern matching implemented using [Qo](https://github.com/baweaver/qo) gem, see its documentation for 
+full list of options.
 
 ## Testing
 

@@ -1,3 +1,5 @@
+require 'fear/either/pattern_match'
+
 module Fear
   # Represents a value of one of two possible types (a disjoint union.)
   # An instance of +Either+ is either an instance of +Left+ or +Right+.
@@ -19,12 +21,11 @@ module Fear
   #     Left(in)
   #   end
   #
-  #   puts(
-  #     result.reduce(
-  #       -> (x) { "You passed me the String: #{x}" },
-  #       -> (x) { "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" }
-  #     )
-  #   )
+  #   message = result.match do |m|
+  #     m.left { |x| "You passed me the String: #{x}" },
+  #     m.right { |x| "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" }
+  #   end
+  #   puts message
   #
   # Either is right-biased, which means that +Right+ is assumed to be the default case to
   # operate on. If it is +Left+, operations like +#map+, +#flat_map+, ... return the +Left+ value
@@ -227,9 +228,39 @@ module Fear
   #     Right("daisy").join_left        #=> Right("daisy")
   #     Right(Left("daisy")).join_left  #=> Right(Left("daisy"))
   #
+  # @!method match(&patterns)
+  #   Pattern match against the +Either+
+  #   @yieldparam matcher [Fear::Either::PatternMatch]
+  #   @raise [Fear::MatchError] if nothing matched
+  #   @see https://github.com/baweaver/qo for full API
+  #
+  #   @example #right and #left
+  #     Right(42).match do |m|
+  #       m.right { |x| x * 2 }
+  #       m.left { |x| x.to_i * 2 }
+  #     end #=> 84
+  #
+  #   @example #right with condition
+  #     Right(41).match do |m|
+  #       m.right(:even?) { |x| x / 2 }
+  #       m.right(:odd?) { |x| x * 2 }
+  #     end #=> 82
+  #
+  #   @example not exhaustive match
+  #     Right(42).match do |m|
+  #       m.right(:odd?) { |x| x * 2 }
+  #     end #=> raises Fear::MatchError
+  #
+  #   @example else branch
+  #     Right(42).match do |m|
+  #       m.right(:odd?) { |x| x * 2 }
+  #       m.else { nil }
+  #     end #=> nil
+  #
   # @see https://github.com/scala/scala/blob/2.12.x/src/library/scala/util/Either.scala
   #
   module Either
+    include PatternMatch.mixin
     include Dry::Equalizer(:value)
 
     # @private

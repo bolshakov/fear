@@ -1,12 +1,23 @@
+GIT
+  remote: git://github.com/baweaver/qo.git
+  revision: 60362f1b2e8cb3ccbc1bf80dfb67faf20b1d2c51
+  ref: 60362f1b2e8cb3ccbc1bf80dfb67faf20b1d2c51
+  branch: baweaver/exhaustive_match
+  specs:
+    qo (0.99.1)
+      any (= 0.1.0)
+
 PATH
   remote: ..
   specs:
     fear (0.10.0)
       dry-equalizer (<= 0.2.1)
+      qo (>= 0.99.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    any (0.1.0)
     appraisal (2.2.0)
       bundler
       rake
@@ -58,6 +69,7 @@ DEPENDENCIES
   bundler
   dry-equalizer (= 0.2.1)
   fear!
+  qo!
   rake (~> 10.0)
   rspec (~> 3.1)
   rubocop (= 0.65.0)
