@@ -615,23 +615,32 @@ It supports two such operations - `flat_map` and `map`. Any class providing them
 is supported by `For`.
 
 ```ruby
-For(a: Some(2), b: Some(3)) { a * b } #=> Some(6)
+For(Some(2), Some(3)) do |a, b|
+  a * b
+end #=> Some(6)
 ```
 
 If one of operands is None, the result is None
 
 ```ruby
-For(a: Some(2), b: None()) { a * b } #=> None()
-For(a: None(), b: Some(2)) { a * b } #=> None()
+For(Some(2), None()) do |a, b| 
+  a * b 
+end #=> None()
+
+For(None(), Some(2)) do |a, b| 
+  a * b 
+end #=> None()
 ```
 
 Lets look at first example:
 
 ```ruby
-For(a: Some(2), b: Some(3)) { a * b }
+For(Some(2), None()) do |a, b| 
+  a * b 
+end #=> None()
 ```
 
-would be translated to:
+it is translated to:
 
 ```ruby
 Some(2).flat_map do |a|
@@ -644,7 +653,7 @@ end
 It works with arrays as well
 
 ```ruby
-For(a: [1, 2], b: [2, 3], c: [3, 4]) { a * b * c }
+For([1, 2], [2, 3], [3, 4]) { |a, b, c| a * b * c }
   #=> [6, 8, 9, 12, 12, 16, 18, 24]
 
 ```
@@ -665,8 +674,9 @@ If you pass lambda as a variable value, it would be evaluated
 only on demand.
 
 ```ruby
-For(a: -> { None() }, b: -> { fail 'kaboom' } ) { a * b }
-  #=> None()
+For(proc { None() }, proc { fail 'kaboom' } ) do |a, b|
+  a * b
+end #=> None()
 ```
 
 It does not fail since `b` is not evaluated.
@@ -675,7 +685,7 @@ You can refer to previously defined variables from within lambdas.
 ```ruby
 maybe_user = find_user('Paul') #=> <#Option value=<#User ...>>
 
-For(user: maybe_user, birthday: -> { user.birthday }) do
+For(maybe_user, ->(user) { user.birthday }) do |user, birthday|
   "#{user.name} was born on #{birthday}"
 end #=> Some('Paul was born on 1987-06-17')
 ```
