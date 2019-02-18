@@ -1,3 +1,6 @@
+
+* `For` syntax changed. See [diff](https://github.com/bolshakov/fear/pull/22/files#diff-04c6e90faac2675aa89e2176d2eec7d8) ([@bolshakov][])
+
 ## 0.10.0
 
 * Test against last supported ruby versions: 2.4.5, 2.5.3, 2.6.1 ([@bolshakov][])
