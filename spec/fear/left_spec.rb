@@ -118,30 +118,6 @@ RSpec.describe Fear::Left do
     end
   end
 
-  describe '#===' do
-    subject { match === left }
-
-    context 'matches erectly' do
-      let(:match) { Left('value') }
-      it { is_expected.to eq(true) }
-    end
-
-    context 'value does not match' do
-      let(:match) { Left('error') }
-      it { is_expected.to eq(false) }
-    end
-
-    context 'matches by class' do
-      let(:match) { Left(String) }
-      it { is_expected.to eq(true) }
-    end
-
-    context 'does not matches by class' do
-      let(:match) { Left(Integer) }
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#match' do
     context 'matched' do
       subject do

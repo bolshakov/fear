@@ -99,17 +99,6 @@ module Fear
       def any?
         yield(value)
       end
-
-      # Used in case statement
-      # @param other [any]
-      # @return [Boolean]
-      def ===(other)
-        if other.is_a?(right_class)
-          value === other.value
-        else
-          super
-        end
-      end
     end
 
     module Left

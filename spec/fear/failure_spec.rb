@@ -92,30 +92,6 @@ RSpec.describe Fear::Failure do
     it { is_expected.to eq(Left(exception)) }
   end
 
-  describe '#===' do
-    subject { match === failure }
-
-    context 'matches erectly' do
-      let(:match) { Failure(exception) }
-      it { is_expected.to eq(true) }
-    end
-
-    context 'value does not match' do
-      let(:match) { Failure(ArgumentError.new) }
-      it { is_expected.to eq(false) }
-    end
-
-    context 'matches by class' do
-      let(:match) { Failure(RuntimeError) }
-      it { is_expected.to eq(true) }
-    end
-
-    context 'does not matches by class' do
-      let(:match) { Failure(ArgumentError) }
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#match' do
     context 'matched' do
       subject do
