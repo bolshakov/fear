@@ -2,7 +2,7 @@ AllCops:
   Exclude:
   - 'gemfiles/**/*'
 
-Style/MethodName:
+Naming/MethodName:
   Enabled: false
 
 Style/Documentation:
@@ -24,6 +24,9 @@ Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
 Metrics/BlockLength:
