@@ -362,7 +362,7 @@ Success(42).recover_with { |e| Success(e.massage) }
   #=> Success(42)
 Failure(ArgumentError.new).recover_with { |e| Success(e.massage) }
   #=> Success('ArgumentError')
-Failure(ArgumentError.new).recover_with { |e| fail }
+Failure(ArgumentError.new).recover_with { |e| raise }
   #=> Failure(RuntimeError)
 ```
 
@@ -375,7 +375,7 @@ Success(42).recover { |e| e.massage }
   #=> Success(42)
 Failure(ArgumentError.new).recover { |e| e.massage }
   #=> Success('ArgumentError')
-Failure(ArgumentError.new).recover { |e| fail }
+Failure(ArgumentError.new).recover { |e| raise }
   #=> Failure(RuntimeError)
 ```
 
@@ -674,7 +674,7 @@ If you pass lambda as a variable value, it would be evaluated
 only on demand.
 
 ```ruby
-For(proc { None() }, proc { fail 'kaboom' } ) do |a, b|
+For(proc { None() }, proc { raise 'kaboom' } ) do |a, b|
   a * b
 end #=> None()
 ```

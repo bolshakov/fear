@@ -43,7 +43,7 @@ module Fear
   # If you pass lambda instead of monad, it would be evaluated
   # only on demand.
   #
-  #     For(proc { None() }, proc { fail 'kaboom' } ) do |a, b|
+  #     For(proc { None() }, proc { raise 'kaboom' } ) do |a, b|
   #       a * b
   #     end #=> None()
   #
@@ -57,7 +57,7 @@ module Fear
   #     end #=> Some('Paul was born on 1987-06-17')
   #
   module For
-    module_function
+    module_function # rubocop: disable Style/AccessModifierDeclarations
 
     # @param monads [<Fear::Option, Fear::Either, Fear::Try, Proc>]
     #
@@ -102,7 +102,7 @@ module Fear
     #     a * b
     #   end #=> Some(6)
     #
-    #   For(proc { None() }, proc { fail }) do |a, b|
+    #   For(proc { None() }, proc { raise }) do |a, b|
     #     a * b
     #   end #=> None()
     #

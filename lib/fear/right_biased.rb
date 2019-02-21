@@ -136,7 +136,7 @@ module Fear
       # @param [any]
       # @return [false]
       #
-      def include?(_)
+      def include?(_value)
         false
       end
 

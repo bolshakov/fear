@@ -5,14 +5,14 @@ RSpec.describe Fear::Success do
     let(:right) { success }
 
     describe '#map', 'block fails' do
-      subject(:map) { right.map { fail 'unexpected error' } }
+      subject(:map) { right.map { raise 'unexpected error' } }
 
       it { is_expected.to be_kind_of(Fear::Failure) }
       it { expect { map.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
 
     describe '#flat_map', 'block fails' do
-      subject(:flat_map) { right.flat_map { fail 'unexpected error' } }
+      subject(:flat_map) { right.flat_map { raise 'unexpected error' } }
 
       it { is_expected.to be_kind_of(Fear::Failure) }
       it { expect { flat_map.get }.to raise_error(RuntimeError, 'unexpected error') }
@@ -66,12 +66,12 @@ RSpec.describe Fear::Success do
     end
 
     context 'predicate does not hold for value' do
-      subject { proc { success.select { |v| v != 'value' }.get } }
+      subject { proc { success.select { |v| v != 'value' }.get } } # rubocop: disable Style/InverseMethods
       it { is_expected.to raise_error(Fear::NoSuchElementError, 'Predicate does not hold for `value`') }
     end
 
     context 'predicate fails with error' do
-      subject { proc { success.select { fail 'foo' }.get } }
+      subject { proc { success.select { raise 'foo' }.get } }
       it { is_expected.to raise_error(RuntimeError, 'foo') }
     end
   end

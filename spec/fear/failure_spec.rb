@@ -33,7 +33,7 @@ RSpec.describe Fear::Failure do
     end
 
     context 'default fails with error' do
-      subject(:or_else) { failure.or_else { fail 'unexpected error' } }
+      subject(:or_else) { failure.or_else { raise 'unexpected error' } }
       it { is_expected.to be_kind_of(described_class) }
       it { expect { or_else.get }.to raise_error(RuntimeError, 'unexpected error') }
     end
@@ -63,7 +63,7 @@ RSpec.describe Fear::Failure do
     end
 
     context 'block fails' do
-      subject(:recover_with) { failure.recover_with { fail 'unexpected error' } }
+      subject(:recover_with) { failure.recover_with { raise 'unexpected error' } }
 
       it { is_expected.to be_kind_of(described_class) }
       it { expect { recover_with.get }.to raise_error(RuntimeError, 'unexpected error') }
@@ -80,7 +80,7 @@ RSpec.describe Fear::Failure do
     end
 
     context 'block fails' do
-      subject(:recover) { failure.recover { fail 'unexpected error' } }
+      subject(:recover) { failure.recover { raise 'unexpected error' } }
 
       it { is_expected.to be_kind_of(described_class) }
       it { expect { recover.get }.to raise_error(RuntimeError, 'unexpected error') }
