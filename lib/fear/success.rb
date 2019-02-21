@@ -48,9 +48,9 @@ module Fear
       if yield(value)
         self
       else
-        fail NoSuchElementError, "Predicate does not hold for `#{value}`"
+        raise NoSuchElementError, "Predicate does not hold for `#{value}`"
       end
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 
@@ -67,14 +67,14 @@ module Fear
     # @return [Try]
     def map
       super
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 
     # @return [Try]
     def flat_map
       super
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 

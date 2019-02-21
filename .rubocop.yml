@@ -1,6 +1,3 @@
-inherit_gem:
-  spbtv_code_style: .strict_rubocop.yml
-
 AllCops:
   Exclude:
   - 'gemfiles/**/*'
@@ -14,6 +11,24 @@ Style/Documentation:
 Style/CaseEquality:
   Enabled: false
 
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+
+Metrics/LineLength:
+  Max: 120

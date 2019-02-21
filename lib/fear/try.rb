@@ -186,7 +186,7 @@ module Fear
   #       #=> Success(42)
   #     Failure(ArgumentError.new).recover_with { |e| Success(e.massage) }
   #       #=> Success('ArgumentError')
-  #     Failure(ArgumentError.new).recover_with { |e| fail }
+  #     Failure(ArgumentError.new).recover_with { |e| raise }
   #       #=> Failure(RuntimeError)
   #
   # @!method recover(&block)
@@ -199,7 +199,7 @@ module Fear
   #       #=> Success(42)
   #     Failure(ArgumentError.new).recover { |e| e.massage }
   #       #=> Success('ArgumentError')
-  #     Failure(ArgumentError.new).recover { |e| fail }
+  #     Failure(ArgumentError.new).recover { |e| raise }
   #       #=> Failure(RuntimeError)
   #
   # @!method to_either
@@ -240,7 +240,7 @@ module Fear
       #
       def Try
         Success.new(yield)
-      rescue => error
+      rescue StandardError => error
         Failure.new(error)
       end
 

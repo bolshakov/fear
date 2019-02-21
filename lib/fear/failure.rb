@@ -23,13 +23,13 @@ module Fear
 
     # @raise
     def get
-      fail exception
+      raise exception
     end
 
     # @return [Try] of calling block
     def or_else(*args)
       super
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 
@@ -50,7 +50,7 @@ module Fear
       yield(exception).tap do |result|
         Utils.assert_type!(result, Success, Failure)
       end
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 
@@ -59,7 +59,7 @@ module Fear
     # @return [Try]
     def recover
       Success.new(yield(exception))
-    rescue => error
+    rescue StandardError => error
       Failure.new(error)
     end
 

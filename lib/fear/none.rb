@@ -6,7 +6,7 @@ module Fear
 
     # @raise [NoSuchElementError]
     def get
-      fail NoSuchElementError
+      raise NoSuchElementError
     end
 
     # @return [nil]

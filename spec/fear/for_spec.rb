@@ -76,7 +76,7 @@ RSpec.describe Fear::For do
 
     context 'first is None in lambda, second is failure in lambda' do
       let(:first) { proc { None() } }
-      let(:second) { proc { fail 'kaboom' } }
+      let(:second) { proc { raise 'kaboom' } }
       let(:third) { proc {} }
 
       it 'returns None without evaluating second and third' do
@@ -87,7 +87,7 @@ RSpec.describe Fear::For do
     context 'second is None in lambda, third is failure in lambda' do
       let(:first) { Some(2) }
       let(:second) { proc { None() } }
-      let(:third) { proc { fail 'kaboom' } }
+      let(:third) { proc { raise 'kaboom' } }
 
       it 'returns None without evaluating third' do
         is_expected.to eq(None())

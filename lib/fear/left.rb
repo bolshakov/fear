@@ -37,7 +37,7 @@ module Fear
 
     # @param reduce_left [Proc]
     # @return [any]
-    def reduce(reduce_left, _)
+    def reduce(reduce_left, _reduce_right)
       reduce_left.call(value)
     end
 
