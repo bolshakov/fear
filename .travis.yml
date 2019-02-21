@@ -1,4 +1,6 @@
 ---
+cache:
+  bundler: true
 language: ruby
 rvm:
 - 2.4.5
@@ -12,6 +14,3 @@ script:
 gemfile:
 - gemfiles/dry_equalizer_0.2.1.gemfile
 - gemfiles/dry_equalizer_0.1.0.gemfile
-addons:
-  code_climate:
-    repo_token: c326cca5984d0e32d2c6b5d9b985756ee9312f63fc6a9480fc9cfa55c454d68a

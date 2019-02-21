@@ -11,6 +11,9 @@ end
 
 Dir.glob('gemfiles/*.gemfile').tap do |gemfiles|
   travis = ::YAML.dump(
+    'cache' => {
+      'bundler' => true,
+    },
     'language' => 'ruby',
     'rvm' => ruby_versions,
     'before_script' => [
@@ -21,11 +24,6 @@ Dir.glob('gemfiles/*.gemfile').tap do |gemfiles|
       'bundle exec rubocop --fail-level C',
     ],
     'gemfile' => gemfiles,
-    'addons' => {
-      'code_climate' => {
-        'repo_token' => 'c326cca5984d0e32d2c6b5d9b985756ee9312f63fc6a9480fc9cfa55c454d68a'
-      }
-    },
   )
 
   ::File.open('.travis.yml', 'w+') do |file|
