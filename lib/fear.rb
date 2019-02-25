@@ -13,6 +13,7 @@ module Fear
 
   autoload :Option, 'fear/option'
   autoload :Some, 'fear/some'
+  autoload :NoneClass, 'fear/none'
   autoload :None, 'fear/none'
 
   autoload :Try, 'fear/try'

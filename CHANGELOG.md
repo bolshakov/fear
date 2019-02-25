@@ -1,5 +1,9 @@
+## 0.11.0
 
 * `For` syntax changed. See [diff](https://github.com/bolshakov/fear/pull/22/files#diff-04c6e90faac2675aa89e2176d2eec7d8) ([@bolshakov][])
+* `Fear::None` is singleton object now and could not be instantiated ([@bolshakov][])
+
+  You have to change all `Fear::None.new` invocations to `Fear::None`.
 
 ## 0.10.0
 

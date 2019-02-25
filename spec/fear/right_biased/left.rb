@@ -73,7 +73,7 @@ RSpec.shared_examples Fear::RightBiased::Left do
 
   describe '#to_option' do
     subject { left.to_option }
-    it { is_expected.to eq(Fear::None.new) }
+    it { is_expected.to eq(Fear::None) }
   end
 
   describe '#any?' do

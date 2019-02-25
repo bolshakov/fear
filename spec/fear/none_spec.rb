@@ -46,4 +46,28 @@ RSpec.describe Fear::None do
       is_expected.to eq(None())
     end
   end
+
+  describe '.new' do
+    subject { Fear::None.class.new }
+
+    it { is_expected.to eq(Fear::None) }
+  end
+
+  describe '.inherited' do
+    subject { -> { Class.new(Fear::None.class) } }
+
+    it { is_expected.to raise_error }
+  end
+
+  describe '#to_s' do
+    subject { none.to_s }
+
+    it { is_expected.to eq('Fear::None') }
+  end
+
+  describe '#inspect' do
+    subject { none.inspect }
+
+    it { is_expected.to eq('Fear::None') }
+  end
 end

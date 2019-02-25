@@ -150,7 +150,7 @@ module Fear
   module Option
     # @private
     def left_class
-      None
+      NoneClass
     end
 
     # @private
@@ -183,7 +183,7 @@ module Fear
 
       # @return [None]
       def None
-        None.new
+        Fear::None
       end
 
       # @param value [any] except nil
