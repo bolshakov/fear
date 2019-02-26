@@ -74,10 +74,10 @@ Returns the value from this `Some` or evaluates the given default argument if th
 
 ```ruby
 Some(42).get_or_else { 24/2 } #=> 42
-None().get_or_else { 24/2 }   #=> 12
+None.get_or_else { 24/2 }   #=> 12
 
 Some(42).get_or_else(12)  #=> 42
-None().get_or_else(12)    #=> 12
+None.get_or_else(12)    #=> 12
 ```
 
 #### Option#or_else
@@ -86,8 +86,8 @@ returns self `Some` or the given alternative if this is a `None`.
 
 ```ruby
 Some(42).or_else { Some(21) } #=> Some(42)
-None().or_else { Some(21) }   #=> Some(21)
-None().or_else { None() }     #=> None()
+None.or_else { Some(21) }   #=> Some(21)
+None.or_else { None }     #=> None
 ```
 
 #### Option#inlude?
@@ -97,7 +97,7 @@ Checks if `Option` has an element that is equal (as determined by `==`) to given
 ```ruby
 Some(17).include?(17) #=> true
 Some(17).include?(7)  #=> false
-None().include?(17)   #=> false
+None.include?(17)   #=> false
 ```
 
 #### Option#each
@@ -106,7 +106,7 @@ Performs the given block if this is a `Some`.
 
 ```ruby
 Some(17).each { |value| puts value } #=> prints 17
-None().each { |value| puts value } #=> does nothing
+None.each { |value| puts value } #=> does nothing
 ```
 
 #### Option#map 
@@ -115,7 +115,7 @@ Maps the given block to the value from this `Some` or returns self if this is a 
 
 ```ruby
 Some(42).map { |v| v/2 } #=> Some(21)
-None().map { |v| v/2 }   #=> None()
+None.map { |v| v/2 }   #=> None
 ```
 
 #### Option#flat_map
@@ -124,7 +124,7 @@ Returns the given block applied to the value from this `Some` or returns self if
 
 ```ruby
 Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
-None().flat_map { |v| Some(v/2) }     #=> None()
+None.flat_map { |v| Some(v/2) }     #=> None
 ```
 
 #### Option#to_a
@@ -133,7 +133,7 @@ Returns an `Array` containing the `Some` value or an empty `Array` if this is a 
 
 ```ruby
 Some(42).to_a #=> [21]
-None().to_a   #=> []
+None.to_a   #=> []
 ```
 
 #### Option#any?
@@ -143,7 +143,7 @@ Returns `false` if `None` or returns the result of the application of the given 
 ```ruby 
 Some(12).any?( |v| v > 10)  #=> true
 Some(7).any?( |v| v > 10)   #=> false
-None().any?( |v| v > 10)    #=> false
+None.any?( |v| v > 10)    #=> false
 ```
 
 #### Option#select
@@ -153,8 +153,8 @@ return `None`.
 
 ```ruby 
 Some(42).select { |v| v > 40 } #=> Success(21)
-Some(42).select { |v| v < 40 } #=> None()
-None().select { |v| v < 40 }   #=> None()
+Some(42).select { |v| v < 40 } #=> None
+None.select { |v| v < 40 }   #=> None
 ```
 
 #### Option#reject
@@ -164,7 +164,7 @@ Returns `Some` if applying the predicate to this `Option`'s value returns `false
 ```ruby 
 Some(42).reject { |v| v > 40 } #=> None
 Some(42).reject { |v| v < 40 } #=> Some(42)
-None().reject { |v| v < 40 }   #=> None
+None.reject { |v| v < 40 }   #=> None
 ```
 
 #### Option#get
@@ -177,7 +177,7 @@ Returns `true` if the `Option` is `None`, `false` otherwise.
 
 ```ruby
 Some(42).empty? #=> false
-None().empty?   #=> true
+None.empty?   #=> true
 ```
 
 @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
@@ -284,7 +284,7 @@ Returns an `Some` containing the `Success` value or a `None` if this is a `Failu
 
 ```ruby
 Success(42).to_option                 #=> Some(21)
-Failure(ArgumentError.new).to_option  #=> None()
+Failure(ArgumentError.new).to_option  #=> None
 ```
 
 #### Try#any?
@@ -494,7 +494,7 @@ Returns an `Some` containing the `Right` value or a `None` if this is a `Left`.
 
 ```ruby
 Right(42).to_option          #=> Some(21)
-Left('undefined').to_option  #=> None()
+Left('undefined').to_option  #=> None
 ```
 
 #### Either#any?
@@ -621,21 +621,21 @@ end #=> Some(6)
 If one of operands is None, the result is None
 
 ```ruby
-For(Some(2), None()) do |a, b| 
+For(Some(2), None) do |a, b| 
   a * b 
-end #=> None()
+end #=> None
 
-For(None(), Some(2)) do |a, b| 
+For(None, Some(2)) do |a, b| 
   a * b 
-end #=> None()
+end #=> None
 ```
 
 Lets look at first example:
 
 ```ruby
-For(Some(2), None()) do |a, b| 
+For(Some(2), None) do |a, b| 
   a * b 
-end #=> None()
+end #=> None
 ```
 
 it is translated to:
@@ -672,9 +672,9 @@ If you pass lambda as a variable value, it would be evaluated
 only on demand.
 
 ```ruby
-For(proc { None() }, proc { raise 'kaboom' } ) do |a, b|
+For(proc { None }, proc { raise 'kaboom' } ) do |a, b|
   a * b
-end #=> None()
+end #=> None
 ```
 
 It does not fail since `b` is not evaluated.

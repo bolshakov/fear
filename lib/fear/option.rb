@@ -15,7 +15,7 @@ module Fear
   #   case name
   #   when Some
   #     puts name.strip.upcase
-  #   when None
+  #   when NoneClass
   #     puts 'No name value'
   #   end
   #
@@ -35,20 +35,20 @@ module Fear
   #     @return [any]
   #     @example
   #       Some(42).get_or_else { 24/2 } #=> 42
-  #       None().get_or_else { 24/2 }   #=> 12
+  #       None.get_or_else { 24/2 }   #=> 12
   #   @overload get_or_else(default)
   #     @return [any]
   #     @example
   #       Some(42).get_or_else(12)  #=> 42
-  #       None().get_or_else(12)    #=> 12
+  #       None.get_or_else(12)    #=> 12
   #
   # @!method or_else(&alternative)
   #   Returns this +Some+ or the given alternative if this is a +None+.
   #   @return [Option]
   #   @example
   #     Some(42).or_else { Some(21) } #=> Some(42)
-  #     None().or_else { Some(21) }   #=> Some(21)
-  #     None().or_else { None() }     #=> None()
+  #     None.or_else { Some(21) }   #=> Some(21)
+  #     None.or_else { None }     #=> None
   #
   # @!method include?(other_value)
   #   Returns +true+ if it has an element that is equal
@@ -58,7 +58,7 @@ module Fear
   #   @example
   #     Some(17).include?(17) #=> true
   #     Some(17).include?(7)  #=> false
-  #     None().include?(17)   #=> false
+  #     None.include?(17)   #=> false
   #
   # @!method each(&block)
   #   Performs the given block if this is a +Some+.
@@ -70,7 +70,7 @@ module Fear
   #       puts value
   #     end #=> prints 17
   #
-  #     None().each do |value|
+  #     None.each do |value|
   #       puts value
   #     end #=> does nothing
   #
@@ -81,7 +81,7 @@ module Fear
   #   @yieldreturn [any]
   #   @example
   #     Some(42).map { |v| v/2 } #=> Some(21)
-  #     None().map { |v| v/2 }   #=> None()
+  #     None.map { |v| v/2 }   #=> None
   #
   # @!method flat_map(&block)
   #   Returns the given block applied to the value from this +Some+
@@ -91,7 +91,7 @@ module Fear
   #   @return [Option]
   #   @example
   #     Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
-  #     None().flat_map { |v| Some(v/2) }     #=> None()
+  #     None.flat_map { |v| Some(v/2) }     #=> None
   #
   # @!method to_a
   #   Returns an +Array+ containing the +Some+ value or an
@@ -99,7 +99,7 @@ module Fear
   #   @return [Array]
   #   @example
   #     Some(42).to_a #=> [21]
-  #     None().to_a   #=> []
+  #     None.to_a   #=> []
   #
   # @!method any?(&predicate)
   #   Returns +false+ if +None+ or returns the result of the
@@ -110,7 +110,7 @@ module Fear
   #   @example
   #     Some(12).any?( |v| v > 10)  #=> true
   #     Some(7).any?( |v| v > 10)   #=> false
-  #     None().any?( |v| v > 10)    #=> false
+  #     None.any?( |v| v > 10)    #=> false
   #
   # @!method select(&predicate)
   #   Returns self if it is nonempty and applying the predicate to this
@@ -120,8 +120,8 @@ module Fear
   #   @return [Option]
   #   @example
   #     Some(42).select { |v| v > 40 } #=> Success(21)
-  #     Some(42).select { |v| v < 40 } #=> None()
-  #     None().select { |v| v < 40 }   #=> None()
+  #     Some(42).select { |v| v < 40 } #=> None
+  #     None.select { |v| v < 40 }   #=> None
   #
   # @!method reject(&predicate)
   #   Returns +Some+ if applying the predicate to this
@@ -132,7 +132,7 @@ module Fear
   #   @example
   #     Some(42).reject { |v| v > 40 } #=> None
   #     Some(42).reject { |v| v < 40 } #=> Some(42)
-  #     None().reject { |v| v < 40 }   #=> None
+  #     None.reject { |v| v < 40 }   #=> None
   #
   # @!method get
   #   @return [any] the +Option+'s value.
@@ -143,7 +143,7 @@ module Fear
   #   @return [Boolean]
   #   @example
   #     Some(42).empty? #=> false
-  #     None().empty?   #=> true
+  #     None.empty?   #=> true
   #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
   #
@@ -165,9 +165,11 @@ module Fear
     #   Option(17)  #=> #<Fear::Some value=17>
     #   Option(nil) #=> #<Fear::None>
     #   Some(17)    #=> #<Fear::Some value=17>
-    #   None()      #=> #<Fear::None>
+    #   None      #=> #<Fear::None>
     #
     module Mixin
+      None = Fear::None
+
       # An +Option+ factory which creates +Some+ if the argument is
       # not +nil+, and +None+ if it is +nil+.
       # @param value [any]
@@ -175,7 +177,7 @@ module Fear
       #
       def Option(value)
         if value.nil?
-          None()
+          None
         else
           Some(value)
         end
