@@ -31,14 +31,14 @@ module Fear
       if yield(value)
         self
       else
-        None.new
+        None
       end
     end
 
     # @return [Option]
     def reject
       if yield(value)
-        None.new
+        None
       else
         self
       end

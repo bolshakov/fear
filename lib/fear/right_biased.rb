@@ -171,7 +171,7 @@ module Fear
 
       # @return [None]
       def to_option
-        None.new
+        None
       end
 
       # @return [false]
