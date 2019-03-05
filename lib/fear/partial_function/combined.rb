@@ -1,5 +1,6 @@
 module Fear
   module PartialFunction
+    # Composite function produced by +PartialFunction#and_then+ method
     # @api private
     class Combined
       include PartialFunction
@@ -10,36 +11,27 @@ module Fear
         @f1 = f1
         @f2 = f2
       end
+      # @!attribute f1
+      #   @return [Fear::PartialFunction]
+      # @!attribute f2
+      #   @return [Fear::PartialFunction]
+      attr_reader :f1, :f2
+      private :f1
+      private :f2
 
       # @param arg [any]
       # @return [any ]
       def call(arg)
-        @f2.call(@f1.call(arg))
+        f2.call(f1.call(arg))
       end
 
-      # FIXME: optimize calling defined_at on @f1 twise
       # @param arg [any]
       # @return [Boolean]
       def defined_at?(arg)
-        if @f1.defined_at?(arg)
-          @f2.defined_at?(@f1.call(arg))
-        else
-          false
+        result = f1.call_or_else(arg) do
+          return false
         end
-      end
-
-      # FIXME: optimize calling defined_at on @f1 twise
-      # @param arg [any]
-      # @param fallback [Proc]
-      # @return [any]
-      def call_or_else(arg)
-        if @f1.defined_at?(arg)
-          @f2.call_or_else(@f1.call(arg)) do |_|
-            yield arg
-          end
-        else
-          yield arg
-        end
+        f2.defined_at?(result)
       end
     end
 

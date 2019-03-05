@@ -11,7 +11,7 @@ module Fear
   #
   # It is the responsibility of the caller to call +defined_at?+ before
   # calling +call+, because if +defined_at?+ is false, it is not guaranteed
-  # +call+ will throw an exception to indicate an error condition. If an
+  # +call+ will throw an exception to indicate an error guard. If an
   # exception is not thrown, evaluation may result in an arbitrary arg.
   #
   # The main distinction between +PartialFunction+ and +Proc+ is
@@ -38,6 +38,10 @@ module Fear
     autoload :OrElse, 'fear/partial_function/or_else'
     autoload :AndThen, 'fear/partial_function/and_then'
     autoload :Combined, 'fear/partial_function/combined'
+    autoload :EMPTY, 'fear/partial_function/empty'
+    autoload :Guard, 'fear/partial_function/guard'
+    autoload :GuardAnd, 'fear/partial_function/guard_and'
+    autoload :GuardOr, 'fear/partial_function/guard_or'
 
     # @param condition [#call] describes the domain of partial function
     # @param function [Proc] function definition
@@ -57,17 +61,12 @@ module Fear
       condition === arg
     end
 
+    # @!method call(arg)
     # @param arg [any]
     # @return [any] Calls this partial function with the given argument when it
     #   is contained in the function domain.
     # @raise [MatchError] when this partial function is not defined.
-    def call(arg)
-      if defined_at?(arg)
-        function.call(arg)
-      else
-        raise MatchError, "partial function not defined at: #{arg}"
-      end
-    end
+    # @abstract
 
     # Converts this partial function to other
     #
@@ -79,12 +78,13 @@ module Fear
     # Calls this partial function with the given argument when it is contained in the function domain.
     # Calls fallback function where this partial function is not defined.
     #
+    # @param arg [any]
+    # @yield [arg] if partial function not defined for this +arg+
+    #
     # @note that expression +pf.call_or_else(arg, &fallback)+ is equivalent to
     #   +pf.defined_at?(arg) ? pf.(arg) : fallback.(arg)+
     #   except that +call_or_else+ method can be implemented more efficiently to avoid calling +defined_at?+ twice.
     #
-    # @param arg [any]
-    # @yield [arg] if partial function not defined for this +arg+
     def call_or_else(arg)
       if defined_at?(arg)
         call(arg)
@@ -108,29 +108,28 @@ module Fear
       or_else(other)
     end
 
-    UNDEFINED = Object.new.freeze
-
+    # @overload and_then(other)
+    #   @param other [Fear::PartialFunction]
+    #   @return [Fear::PartialFunction] a partial function with the same domain as this partial function, which maps
+    #     argument +x+ to +other.(self.call(x))+.
+    #   @note calling +#defined_at?+ on the resulting partial function may call the first
+    #     partial function and execute its side effect. It is highly recommended to call +#call_or_else+
+    #     instead of +#defined_at?+/+#call+ for efficiency.
     # @overload and_then(other)
     #   @param other [Proc]
-    #   @return [PartialFunction] a partial function with the same domain as this partial function, which maps
+    #   @return [Fear::PartialFunction] a partial function with the same domain as this partial function, which maps
     #     argument +x+ to +other.(self.call(x))+.
     # @overload and_then(&other)
     #   @param other [Proc]
-    #   @return [PartialFunction]
+    #   @return [Fear::PartialFunction]
     #
-    # @note Note that calling +#defined_at?+ on the resulting partial function may call the first
-    #   partial function and execute its side effect. It is highly recommended to call +#call_or_else+
-    #   instead of +#defined_at?+/+#call+ for efficiency.
-    def and_then(other = UNDEFINED, &block)
-      if block_given? ^ (other != UNDEFINED)
-        fun = block || other
+    def and_then(other = Utils::UNDEFINED, &block)
+      Utils.with_block_or_argument('Fear::PartialFunction#and_then', other, block) do |fun|
         if fun.is_a?(Fear::PartialFunction)
           Combined.new(self, fun)
         else
-          AndThen.new(self, &block)
+          AndThen.new(self, &fun)
         end
-      else
-        raise ArgumentError, 'Fear::PartialFunction#and_then accepts either block or partial function'
       end
     end
 
@@ -139,9 +138,51 @@ module Fear
       and_then(other)
     end
 
+    class << self
+      # Creates partial function guarded by several condition.
+      # All conditions should match.
+      # @param guards [<#===, symbol>]
+      # @param function [Proc]
+      # @return [Fear::PartialFunction]
+      def and(*guards, &function)
+        PartialFunctionClass.new(Guard.and(guards), &function)
+      end
+
+      # Creates partial function guarded by several condition.
+      # Any condition should match.
+      # @param guards [<#===, symbol>]
+      # @param function [Proc]
+      # @return [Fear::PartialFunction]
+      def or(*guards, &function)
+        PartialFunctionClass.new(Guard.or(guards), &function)
+      end
+    end
+
     module Mixin
-      def PartialFunction(condition, &function)
-        PartialFunctionClass.new(condition, &function)
+      PartialFunction = Fear::PartialFunction
+
+      # Creates partial function defined on domain described with guards
+      # @example
+      #   pf = PartialFunction(Integer) { |x| x / 2 }
+      #   pf.defined_at?(4) #=> true
+      #   pf.defined_at?('Foo') #=> false
+      #
+      # @example multiple guards combined using logical and
+      #   pf = PartialFunction(Integer, :even?) { |x| x / 2 }
+      #   pf.defined_at?(4) #=> true
+      #   pf.defined_at?(3) #=> false
+      #
+      # @note to make more complex matches, you are encouraged to
+      #   use Qo gem.
+      # @see Qo https://github.com/baweaver/qo
+      # @example
+      #   PartialFunction(Qo[age: 20..30]) { |_| 'old enough' }
+      #
+      # @param guards [<#===, symbol>]
+      # @param function [Proc]
+      # @return [Fear::PartialFunction]
+      def PartialFunction(*guards, &function)
+        PartialFunction.and(*guards, &function)
       end
     end
   end
