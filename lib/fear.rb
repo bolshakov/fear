@@ -5,6 +5,10 @@ module Fear
   Error = Class.new(StandardError)
   IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
+  MatchError = Class.new(Error)
+
+  autoload :PartialFunction, 'fear/partial_function'
+  autoload :PartialFunctionClass, 'fear/partial_function_class'
 
   autoload :Done, 'fear/done'
   autoload :For, 'fear/for'
