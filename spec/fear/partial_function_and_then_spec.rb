@@ -4,7 +4,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
   context 'proc' do
     subject(:pf_and_f) { partial_function.and_then(&function) }
 
-    let(:partial_function) { PartialFunction(->(x) { x % 2 == 0 }) { |x| "pf: #{x}" } }
+    let(:partial_function) { PartialFunction(->(x) { x.even? }) { |x| "pf: #{x}" } }
     let(:function) { ->(x) { "f: #{x}" } }
 
     describe '#defined_at?' do
@@ -59,7 +59,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second defined on result of first' do
         subject { first_and_then_second.defined_at?(6) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to eq(true) }
@@ -68,7 +68,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second not defined on result of first' do
         subject { first_and_then_second.defined_at?(4) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to eq(false) }
@@ -77,7 +77,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first not defined' do
         subject { first_and_then_second.defined_at?(3) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| "first: #{x}" } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| "first: #{x}" } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }
 
         it { is_expected.to eq(false) }
@@ -88,7 +88,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second defined on result of first' do
         subject { first_and_then_second.call(6) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to eq(1) }
@@ -97,7 +97,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second not defined on result of first' do
         subject { -> { first_and_then_second.call(4) } }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to raise_error(Fear::MatchError, 'partial function not defined at: 2') }
@@ -106,7 +106,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first not defined' do
         subject { -> { first_and_then_second.call(3) } }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| "first: #{x}" } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| "first: #{x}" } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }
 
         it { is_expected.to raise_error(Fear::MatchError, 'partial function not defined at: 3') }
@@ -119,7 +119,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second defined on result of first' do
         subject { first_and_then_second.call_or_else(6, &fallback) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to eq(1) }
@@ -128,7 +128,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first defined, second not defined on result of first' do
         subject { first_and_then_second.call_or_else(4, &fallback) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| x / 2 } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| x / 3 } }
 
         it { is_expected.to eq('fallback: 4') }
@@ -137,7 +137,7 @@ RSpec.describe Fear::PartialFunction, '#and_then' do
       context 'first not defined' do
         subject { first_and_then_second.call_or_else(3, &fallback) }
 
-        let(:first) { PartialFunction(->(x) { x % 2 == 0 }) { |x| "first: #{x}" } }
+        let(:first) { PartialFunction(->(x) { x.even? }) { |x| "first: #{x}" } }
         let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }
 
         it { is_expected.to eq('fallback: 3') }

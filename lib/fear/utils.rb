@@ -1,10 +1,20 @@
 module Fear
   # @private
   module Utils
+    UNDEFINED = Object.new.freeze
+
     class << self
       def assert_arg_or_block!(method_name, *args)
         unless block_given? ^ !args.empty?
           raise ArgumentError, "##{method_name} accepts either one argument or block"
+        end
+      end
+
+      def with_block_or_argument(method_name, arg = UNDEFINED, block = nil)
+        if (!block.nil?) ^ (arg != UNDEFINED)
+          yield(block || arg)
+        else
+          raise ArgumentError, "#{method_name} accepts either block or partial function"
         end
       end
 
