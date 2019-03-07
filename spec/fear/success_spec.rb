@@ -90,4 +90,41 @@ RSpec.describe Fear::Success do
     subject { success.to_either }
     it { is_expected.to eq(Right('value')) }
   end
+
+  describe '#match' do
+    context 'matched' do
+      subject do
+        success.match do |m|
+          m.success(->(x) { x.length > 2 }) { |x| x * 2 }
+          m.failure { 'noop' }
+        end
+      end
+
+      it { is_expected.to eq('valuevalue') }
+    end
+
+    context 'nothing matched and no else given' do
+      subject do
+        proc do
+          success.match do |m|
+            m.success(->(x) { x.length < 2 }) { |x| x * 2 }
+            m.failure { 'noop' }
+          end
+        end
+      end
+
+      it { is_expected.to raise_error(Fear::MatchError) }
+    end
+
+    context 'nothing matched and else given' do
+      subject do
+        success.match do |m|
+          m.failure { |x| x * 2 }
+          m.else { :default }
+        end
+      end
+
+      it { is_expected.to eq(:default) }
+    end
+  end
 end

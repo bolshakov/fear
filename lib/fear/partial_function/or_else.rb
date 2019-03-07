@@ -25,6 +25,9 @@ module Fear
         f1.call_or_else(arg, &f2)
       end
 
+      alias === call
+      alias [] call
+
       # @param other [Fear::PartialFunction]
       # @return [Fear::PartialFunction]
       def or_else(other)
@@ -34,11 +37,7 @@ module Fear
       # @see Fear::PartialFunction#and_then
       def and_then(other = Utils::UNDEFINED, &block)
         Utils.with_block_or_argument('Fear::PartialFunction::OrElse#and_then', other, block) do |fun|
-          if fun.is_a?(Fear::PartialFunction)
-            Combined.new(self, fun)
-          else
-            OrElse.new(f1.and_then(&fun), f2.and_then(&fun))
-          end
+          OrElse.new(f1.and_then(&fun), f2.and_then(&fun))
         end
       end
 

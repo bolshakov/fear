@@ -25,6 +25,17 @@ module Fear
         f2.call(f1.call(arg))
       end
 
+      alias === call
+      alias [] call
+
+      # @param arg [any]
+      # @yieldparam arg [any]
+      # @return [any]
+      def call_or_else(arg)
+        result = f1.call_or_else(arg) { return yield(arg) }
+        f2.call_or_else(result) { |_| return yield(arg) }
+      end
+
       # @param arg [any]
       # @return [Boolean]
       def defined_at?(arg)

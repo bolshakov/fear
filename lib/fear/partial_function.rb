@@ -1,13 +1,13 @@
 module Fear
   # A partial function is a unary function defined on subset of all possible inputs.
-  # The method +defined_at?+ allows to test dynamically if a arg is in
+  # The method +defined_at?+ allows to test dynamically if an arg is in
   # the domain of the function.
   #
-  #  Even if +defined_at?+ returns true for given arg, calling +call+ may
-  #  still throw an exception, so the following code is legal:
+  # Even if +defined_at?+ returns true for given arg, calling +call+ may
+  # still throw an exception, so the following code is legal:
   #
   #  @example
-  #    PartialFunction(->(_) { true }) { 1/0 }
+  #    Fear.case(->(_) { true }) { 1/0 }
   #
   # It is the responsibility of the caller to call +defined_at?+ before
   # calling +call+, because if +defined_at?+ is false, it is not guaranteed
@@ -21,27 +21,27 @@ module Fear
   # @example
   #   sample = 1...10
   #
-  #   is-even = PartialFunction(->(arg) { arg % 2 == 0}) do |arg|
+  #   is_even = Fear.case(->(arg) { arg % 2 == 0}) do |arg|
   #     "#{arg} is even"
   #   end
   #
-  #   is_odd = PartialFunction(->(arg) { arg % 2 == 1}) do
+  #   is_odd = Fear.case(->(arg) { arg % 2 == 1}) do |arg|
   #     "#{arg} is odd"
   #   end
   #
-  #   # The method or_else allows chaining another partial function to handle
-  #   # input outside the declared domain
-  #   numbers = sample.map(is_even.or_else(is_odd).to_proc)
+  # The method or_else allows chaining another partial function to handle
+  # input outside the declared domain
+  #
+  #    numbers = sample.map(is_even.or_else(is_odd).to_proc)
   #
   # @see https://github.com/scala/scala/commit/5050915eb620af3aa43d6ddaae6bbb83ad74900d
   module PartialFunction
-    autoload :OrElse, 'fear/partial_function/or_else'
     autoload :AndThen, 'fear/partial_function/and_then'
     autoload :Combined, 'fear/partial_function/combined'
     autoload :EMPTY, 'fear/partial_function/empty'
     autoload :Guard, 'fear/partial_function/guard'
-    autoload :GuardAnd, 'fear/partial_function/guard_and'
-    autoload :GuardOr, 'fear/partial_function/guard_or'
+    autoload :Lifted, 'fear/partial_function/lifted'
+    autoload :OrElse, 'fear/partial_function/or_else'
 
     # @param condition [#call] describes the domain of partial function
     # @param function [Proc] function definition
@@ -108,6 +108,9 @@ module Fear
       or_else(other)
     end
 
+    # Composes this partial function with a fallback partial function (or Proc) which
+    # gets applied where this partial function is not defined.
+    #
     # @overload and_then(other)
     #   @param other [Fear::PartialFunction]
     #   @return [Fear::PartialFunction] a partial function with the same domain as this partial function, which maps
@@ -138,9 +141,15 @@ module Fear
       and_then(other)
     end
 
+    # Turns this partial function in Proc-like object, returning +Option+
+    # @return [#call]
+    def lift
+      Lifted.new(self)
+    end
+
     class << self
       # Creates partial function guarded by several condition.
-      # All conditions should match.
+      # All guards should match.
       # @param guards [<#===, symbol>]
       # @param function [Proc]
       # @return [Fear::PartialFunction]
@@ -155,34 +164,6 @@ module Fear
       # @return [Fear::PartialFunction]
       def or(*guards, &function)
         PartialFunctionClass.new(Guard.or(guards), &function)
-      end
-    end
-
-    module Mixin
-      PartialFunction = Fear::PartialFunction
-
-      # Creates partial function defined on domain described with guards
-      # @example
-      #   pf = PartialFunction(Integer) { |x| x / 2 }
-      #   pf.defined_at?(4) #=> true
-      #   pf.defined_at?('Foo') #=> false
-      #
-      # @example multiple guards combined using logical and
-      #   pf = PartialFunction(Integer, :even?) { |x| x / 2 }
-      #   pf.defined_at?(4) #=> true
-      #   pf.defined_at?(3) #=> false
-      #
-      # @note to make more complex matches, you are encouraged to
-      #   use Qo gem.
-      # @see Qo https://github.com/baweaver/qo
-      # @example
-      #   PartialFunction(Qo[age: 20..30]) { |_| 'old enough' }
-      #
-      # @param guards [<#===, symbol>]
-      # @param function [Proc]
-      # @return [Fear::PartialFunction]
-      def PartialFunction(*guards, &function)
-        PartialFunction.and(*guards, &function)
       end
     end
   end

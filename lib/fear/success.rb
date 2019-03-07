@@ -3,6 +3,7 @@ module Fear
     include Try
     include Dry::Equalizer(:value)
     include RightBiased::Right
+    include SuccessPatternMatch.mixin
 
     attr_reader :value
     protected :value

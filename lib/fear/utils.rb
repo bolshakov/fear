@@ -11,7 +11,7 @@ module Fear
       end
 
       def with_block_or_argument(method_name, arg = UNDEFINED, block = nil)
-        if (!block.nil?) ^ (arg != UNDEFINED)
+        if block.nil? ^ arg.equal?(UNDEFINED)
           yield(block || arg)
         else
           raise ArgumentError, "#{method_name} accepts either block or partial function"

@@ -1,10 +1,8 @@
 RSpec.describe Fear::PartialFunction, '#or_else' do
-  include Fear::PartialFunction::Mixin
-
   subject(:first_or_else_second) { first.or_else(second) }
 
-  let(:first) { PartialFunction(->(x) { x.even? }) { |x| "first: #{x}" } }
-  let(:second) { PartialFunction(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }
+  let(:first) { Fear.case(->(x) { x.even? }) { |x| "first: #{x}" } }
+  let(:second) { Fear.case(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }
 
   describe '#defined_at?' do
     context 'first defined, second not' do
@@ -88,7 +86,7 @@ RSpec.describe Fear::PartialFunction, '#or_else' do
 
   describe '#or_else' do
     let(:first_or_else_second_or_else_third) { first_or_else_second.or_else(third) }
-    let(:third) { PartialFunction(->(x) { x % 7 == 0 }) { |x| "third: #{x}" } }
+    let(:third) { Fear.case(->(x) { x % 7 == 0 }) { |x| "third: #{x}" } }
 
     describe '#defined_at?' do
       context 'first defined, second not' do

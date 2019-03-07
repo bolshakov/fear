@@ -56,6 +56,15 @@ RSpec.describe Fear::PartialFunction::Guard do
       it { is_expected.to eq(false) }
     end
 
+    context 'empty array' do
+      subject { guard === 4 }
+      let(:guard) { Fear::PartialFunction::Guard.and([]) }
+
+      it 'matches any values' do
+        is_expected.to eq(true)
+      end
+    end
+
     context 'short circuit' do
       let(:guard) { Fear::PartialFunction::Guard.and([first, second, third]) }
       let(:first) { ->(_) { false } }

@@ -3,9 +3,12 @@ module Fear
     include Option
     include Dry::Equalizer(:get)
     include RightBiased::Right
+    include SomePatternMatch.mixin
 
     attr_reader :value
     protected :value
+
+    # FIXME: nice inspect
 
     def initialize(value)
       @value = value

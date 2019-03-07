@@ -1,9 +1,7 @@
 RSpec.describe Fear::PartialFunction do
-  include Fear::PartialFunction::Mixin
-
-  describe 'PartialFunction()' do
+  describe 'Fear.case()' do
     context 'condition as symbol' do
-      subject { PartialFunction(:even?) { |x| x } }
+      subject { Fear.case(:even?) { |x| x } }
 
       it 'converted to proc' do
         is_expected.to be_defined_at(4)
@@ -12,7 +10,7 @@ RSpec.describe Fear::PartialFunction do
     end
 
     context 'condition as Class' do
-      subject { PartialFunction(Integer) { |x| x } }
+      subject { Fear.case(Integer) { |x| x } }
 
       it do
         is_expected.to be_defined_at(4)
@@ -21,7 +19,7 @@ RSpec.describe Fear::PartialFunction do
     end
 
     context 'condition as Proc' do
-      subject { PartialFunction(->(x) { x.even? }) { |x| x } }
+      subject { Fear.case(->(x) { x.even? }) { |x| x } }
 
       it do
         is_expected.to be_defined_at(4)
@@ -30,7 +28,7 @@ RSpec.describe Fear::PartialFunction do
     end
 
     context 'multiple condition' do
-      subject { PartialFunction(Integer, :even?, ->(x) { x % 3 == 0 }) { |x| x } }
+      subject { Fear.case(Integer, :even?, ->(x) { x % 3 == 0 }) { |x| x } }
 
       it do
         is_expected.to be_defined_at(12)
@@ -40,10 +38,37 @@ RSpec.describe Fear::PartialFunction do
         is_expected.not_to be_defined_at(4)
       end
     end
+
+    context 'multiple condition 2' do
+      subject { Fear.case(Integer, 4) { |x| x } }
+
+      it do
+        is_expected.to be_defined_at(4)
+        is_expected.not_to be_defined_at(3)
+      end
+    end
   end
 
-  describe '#defined?' do
-    let(:partial_function) { PartialFunction(->(v) { v == 42 }) {} }
+  describe '#lift' do
+    let(:lifted) { partial_function.lift }
+
+    let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x } }
+
+    context 'defined' do
+      subject { lifted.call(2) }
+
+      it { is_expected.to eq(Fear::Some.new(2)) }
+    end
+
+    context 'not defined' do
+      subject { lifted.call(0) }
+
+      it { is_expected.to eq(Fear::None) }
+    end
+  end
+
+  describe '#defined_at?' do
+    let(:partial_function) { Fear.case(->(v) { v == 42 }) {} }
 
     it 'defined at' do
       expect(partial_function.defined_at?(42)).to eq(true)
@@ -55,7 +80,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   describe '#call' do
-    let(:partial_function) { PartialFunction(->(v) { v != 0 }) { |x| 4 / x } }
+    let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x } }
 
     context 'defined' do
       subject { partial_function.call(2) }
@@ -71,7 +96,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   describe '#to_proc', '#call' do
-    let(:partial_function) { PartialFunction(->(v) { v != 0 }) { |x| 4 / x }.to_proc }
+    let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x }.to_proc }
 
     context 'defined' do
       subject { partial_function.call(2) }
@@ -88,7 +113,7 @@ RSpec.describe Fear::PartialFunction do
 
   describe '#call_or_else' do
     let(:default) { ->(x) { "division by #{x} impossible" } }
-    let(:partial_function) { PartialFunction(->(x) { x != 0 }) { |x| 4 / x } }
+    let(:partial_function) { Fear.case(->(x) { x != 0 }) { |x| 4 / x } }
 
     context 'defined' do
       subject { partial_function.call_or_else(2, &default) }
@@ -104,7 +129,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   describe '#and_then' do
-    let(:partial_function) { PartialFunction(->(v) { v == 42 }) {} }
+    let(:partial_function) { Fear.case(->(v) { v == 42 }) {} }
     let(:and_then) { ->(x) { x } }
 
     context 'block given, arguments not given' do

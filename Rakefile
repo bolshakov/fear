@@ -4,198 +4,80 @@ require_relative 'lib/fear'
 require 'any'
 
 namespace :perf do
-  namespace :and_then do
-    task :call_or_else_proc do
-      class NotOptimized < Fear::PartialFunction::AndThen
-        def call_or_else(arg)
-          if partial_function.defined_at?(arg)
-            function.call(partial_function.call(arg))
-          else
-            yield arg
-          end
-        end
-      end
-
-      class OptimizedScalish < Fear::PartialFunction::AndThen
-        FALLBACK = ->(*) { FALLBACK }
-        class << self
-          def fallback_occurred(x)
-            x.__id__ == FALLBACK.__id__
-          end
-        end
-
-        def call_or_else(arg)
-          result = partial_function.call_or_else(arg, &FALLBACK)
-          if OptimizedScalish.fallback_occurred(result)
-            yield arg
-          else
-            function.call(result)
-          end
-        end
-      end
-
-      class OptimizedRubish < Fear::PartialFunction::AndThen
-        TAG = Object.new.freeze
-
-        def call_or_else(arg)
-          catch(TAG) do
-            result = partial_function.call_or_else(arg) { throw(TAG, yield(arg)) }
-            function.call(result)
-          end
-        end
-      end
-
-      class OptimizedReturn < Fear::PartialFunction::AndThen
-        def call_or_else(arg)
-          result = partial_function.call_or_else(arg) do
-            return yield(arg)
-          end
-          function.call(result)
-        end
-      end
-
-      pf = Fear::PartialFunctionClass.new(->(x) { x.odd? }) { |x| x }
-      default = ->(*) { 'default' }
-      fallback = ->(*) { 'fallback' }
-
-      not_optimized = NotOptimized.new(pf, &default)
-      optimized_scalish = OptimizedScalish.new(pf, &default)
-      optimized_rubish = OptimizedRubish.new(pf, &default)
-      optimized_return = OptimizedReturn.new(pf, &default)
+  namespace :guard do
+    task :and1 do
+      condition = Integer
 
       Benchmark.ips do |x|
-        x.report('AndThen#call_or_else optimized return') do |n|
-          n.times do |t|
-            optimized_return.call_or_else(t, &fallback)
-          end
+        x.report('Guard.new') do |n|
+          Fear::PartialFunction::Guard.new(condition) === n
         end
 
-        x.report('AndThen#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
-          end
-        end
-
-        x.compare!
-      end
-
-      Benchmark.ips do |x|
-        x.report('AndThen#call_or_else optimized scalish') do |n|
-          n.times do |t|
-            optimized_scalish.call_or_else(t, &fallback)
-          end
-        end
-
-        x.report('AndThen#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
-          end
-        end
-
-        x.compare!
-      end
-
-      Benchmark.ips do |x|
-        x.report('AndThen#call_or_else optimized rubish') do |n|
-          n.times do |t|
-            optimized_rubish.call_or_else(t, &fallback)
-          end
-        end
-
-        x.report('AndThen#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
-          end
+        x.report('Guard.single') do |n|
+          Fear::PartialFunction::Guard.and1(condition) === n
         end
 
         x.compare!
       end
     end
 
-    task :call_or_else_partial_function do
-      class NotOptimized < Fear::PartialFunction::Combined
-        def call_or_else(arg)
-          if f1.defined_at?(arg)
-            f2.call_or_else(f1.call(arg)) do |_|
-              yield arg
-            end
-          else
-            yield arg
-          end
-        end
-      end
+    task :and1 do
+      first = Integer
 
-      class Optimized < Fear::PartialFunction::Combined
-        def call_or_else(arg)
-          result = f1.call_or_else(arg) { yield arg }
-
-          f2.call_or_else(result) do |_|
-            return yield(arg)
-          end
-        end
-      end
-
-      pf1 = Fear::PartialFunctionClass.new(->(x) { x.even? }) { |x| x }
-      pf2 = Fear::PartialFunctionClass.new(->(x) { x % 3 == 0 }) { |x| x }
-      fallback = ->(*) { 'fallback' }
-
-      optimized = Optimized.new(pf1, pf2)
-      not_optimized = NotOptimized.new(pf1, pf2)
+      and1 = Fear::PartialFunction::Guard.and1(first)
+      guard = Fear::PartialFunction::Guard.new(first)
 
       Benchmark.ips do |x|
-        x.report('Combined#call_or_else optimized') do |n|
-          n.times do |t|
-            optimized.call_or_else(t, &fallback)
-          end
+        x.report('guard') do |n|
+          and1 === n
         end
 
-        x.report('Combined#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
-          end
+        x.report('single') do |n|
+          guard === n
         end
 
         x.compare!
       end
     end
 
-    task :defined_at_partial_function do
-      class NotOptimized < Fear::PartialFunction::Combined
-        def defined_at?(arg)
-          if f1.defined_at?(arg)
-            f2.defined_at?(f1.call(arg))
-          else
-            false
-          end
-        end
-      end
+    task :and2 do
+      first = Integer
+      second = ->(x) { x > 2 }
 
-      class Optimized < Fear::PartialFunction::Combined
-        def defined_at?(arg)
-          result = f1.call_or_else(arg) do
-            return false
-          end
-          f2.defined_at?(result)
-        end
-      end
-
-      pf1 = Fear::PartialFunctionClass.new(->(x) { x.odd? }) { |x| x }
-      pf2 = Fear::PartialFunctionClass.new(->(x) { x.even? }) { |x| x }
-
-      optimized = Optimized.new(pf1, pf2)
-      not_optimized = NotOptimized.new(pf1, pf2)
+      and2 = Fear::PartialFunction::Guard.and2(first, second)
+      and_and = Fear::PartialFunction::Guard.new(first).and(Fear::PartialFunction::Guard.new(second))
 
       Benchmark.ips do |x|
-        x.report('Combined#defined_at? optimized') do |n|
-          n.times do |t|
-            optimized.defined_at?(t)
-          end
+        x.report('and2') do |n|
+          and2 === n
         end
 
-        x.report('Combined#defined_at? not optimized') do |n|
-          n.times do |t|
-            not_optimized.defined_at?(t)
-          end
+        x.report('Guard#and') do |n|
+          and_and === n
+        end
+
+        x.compare!
+      end
+    end
+
+    task :and3 do
+      first = Integer
+      second = ->(x) { x > 2 }
+      third = ->(x) {  x < 10 }
+
+      and3 = Fear::PartialFunction::Guard.and3(first, second, third)
+
+      and_and_and = Fear::PartialFunction::Guard.new(first)
+                                                .and(Fear::PartialFunction::Guard.new(second))
+                                                .and(Fear::PartialFunction::Guard.new(third))
+
+      Benchmark.ips do |x|
+        x.report('Guard.and3') do |n|
+          and3 === n
+        end
+
+        x.report('Guard#and') do |n|
+          and_and_and === n
         end
 
         x.compare!
@@ -203,46 +85,71 @@ namespace :perf do
     end
   end
 
-  namespace :or_else do
-    task :call_or_else do
-      class NotOptimized < Fear::PartialFunction::OrElse
-        def call_or_else(arg)
-          if f1.defined_at?(arg)
-            f1.call(arg)
-          elsif f2.defined_at?(arg)
-            f2.call(arg)
-          else
-            yield arg
-          end
+  require 'qo'
+  require 'dry/matcher'
+
+  namespace :pattern_matching do
+    task :try do
+      module ExhaustivePatternMatch
+        def initialize(*)
+          super
+          @default ||= self.else { raise Fear::MatchError }
         end
       end
 
-      class Optimized < Fear::PartialFunction::OrElse
-        def call_or_else(arg, &fallback)
-          f1.call_or_else(arg) do
-            return f2.call_or_else(arg, &fallback)
-          end
-        end
-      end
+      SuccessBranch = Qo.create_branch(name: 'success', precondition: Fear::Success, extractor: :get)
+      FailureBranch = Qo.create_branch(name: 'failure', precondition: Fear::Failure, extractor: :exception)
 
-      pf1 = Fear::PartialFunctionClass.new(->(x) { x.odd? }) { |x| x }
-      pf2 = Fear::PartialFunctionClass.new(->(x) { x.even? }) { |x| x }
+      PatternMatch = Qo.create_pattern_match(
+        branches: [
+          SuccessBranch,
+          FailureBranch,
+        ],
+      ).prepend(ExhaustivePatternMatch)
 
-      fallback = ->(*) { 'fallback' }
+      Fear::Success.include(PatternMatch.mixin(as: :qo_match))
 
-      optimized = Optimized.new(pf1, pf2)
-      not_optimized = NotOptimized.new(pf1, pf2)
+      success_case = Dry::Matcher::Case.new(
+        match: lambda { |try, *pattern|
+          try.is_a?(Fear::Success) && pattern.all? { |p| p === try.get }
+        },
+        resolve: ->(try) { try.get },
+      )
+
+      failure_case = Dry::Matcher::Case.new(
+        match: lambda { |try, *pattern|
+          try.is_a?(Fear::Failure) && pattern.all? { |p| p === try.exception }
+        },
+        resolve: ->(value) { value.exception },
+      )
+
+      # Build the matcher
+      matcher = Dry::Matcher.new(success: success_case, failure: failure_case)
+
+      success = Fear::Success.new(4)
 
       Benchmark.ips do |x|
-        x.report('OrElse#call_or_else optimized') do |n|
-          n.times do |t|
-            optimized.call_or_else(t, &fallback)
+        x.report('Qo') do
+          success.qo_match do |m|
+            m.failure { |y| y }
+            m.success(->(y) { y % 4 == 0 }) { |y| y }
+            m.success { 'else' }
           end
         end
 
-        x.report('OrElse#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
+        x.report('Fear') do
+          success.match do |m|
+            m.failure { |y| y }
+            m.success(->(y) { y % 4 == 0 }) { |y| y }
+            m.success { 'else' }
+          end
+        end
+
+        x.report('Dr::Matcher') do
+          matcher.call(success) do |m|
+            m.failure { |_y| 'failure' }
+            m.success(->(y) { y % 4 == 0 }) { |y| "2: #{y}" }
+            m.success { 'else' }
           end
         end
 
@@ -250,38 +157,42 @@ namespace :perf do
       end
     end
 
-    task :or_else do
-      class NotOptimized < Fear::PartialFunction::OrElse
-        def or_else(other)
-          NotOptimized.new(self, other)
+    task :either do
+      module ExhaustivePatternMatch
+        def initialize(*)
+          super
+          @default ||= self.else { raise Fear::MatchError }
         end
       end
 
-      class Optimized < Fear::PartialFunction::OrElse
-        def or_else(other)
-          Optimized.new(f1, f2.or_else(other))
-        end
-      end
+      RightBranch = Qo.create_branch(name: 'right', precondition: Fear::Right, extractor: :right_value)
+      LeftBranch = Qo.create_branch(name: 'left', precondition: Fear::Left, extractor: :left_value)
 
-      pf1 = Fear::PartialFunctionClass.new(->(x) { x.even? }) { |x| x }
-      pf2 = Fear::PartialFunctionClass.new(->(x) { x % 3 == 0 }) { |x| x }
-      pf3 = Fear::PartialFunctionClass.new(->(x) { x % 5 == 0 }) { |x| x }
+      PatternMatch = Qo.create_pattern_match(
+        branches: [
+          RightBranch,
+          LeftBranch,
+        ],
+      ).prepend(ExhaustivePatternMatch)
 
-      fallback = ->(*) { 'fallback' }
+      Fear::Right.include(PatternMatch.mixin(as: :qo_match))
 
-      optimized = Optimized.new(pf1, pf2).or_else(pf3)
-      not_optimized = NotOptimized.new(pf1, pf2).or_else(pf3)
+      right = Fear::Right.new(4)
 
       Benchmark.ips do |x|
-        x.report('OrElse#or_else#call_or_else optimized') do |n|
-          n.times do |t|
-            optimized.call_or_else(t, &fallback)
+        x.report('Qo') do
+          right.qo_match do |m|
+            m.left(->(y) { y % 3 == 0 }) { |y| y }
+            m.right(->(y) { y % 4 == 0 }) { |y| y }
+            m.else { 'else' }
           end
         end
 
-        x.report('OrElse#or_else#call_or_else not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
+        x.report('Fear') do
+          right.match do |m|
+            m.left(->(y) { y % 3 == 0 }) { |y| y }
+            m.right(->(y) { y % 4 == 0 }) { |y| y }
+            m.else { 'else' }
           end
         end
 
@@ -289,39 +200,192 @@ namespace :perf do
       end
     end
 
-    task :and_then do
-      class NotOptimized < Fear::PartialFunction::OrElse
-        def and_then(&block)
-          AndThen.new(self, &block)
+    task :option do
+      module ExhaustivePatternMatch
+        def initialize(*)
+          super
+          @default ||= self.else { raise Fear::MatchError }
         end
       end
 
-      class Optimized < Fear::PartialFunction::OrElse
-        def and_then(&block)
-          OrElse.new(@f1.and_then(&block), @f2.and_then(&block))
-        end
+      SomeBranch = Qo.create_branch(name: 'some', precondition: Fear::Some, extractor: :get)
+      NoneBranch = Qo.create_branch(name: 'none', precondition: Fear::None)
+
+      PatternMatch = Qo.create_pattern_match(
+        branches: [
+          SomeBranch,
+          NoneBranch,
+        ],
+      ).prepend(ExhaustivePatternMatch)
+
+      Fear::Some.include(PatternMatch.mixin(as: :qo_match))
+
+      some = Fear::Some.new(4)
+
+      some_case = Dry::Matcher::Case.new(
+        match: lambda { |option, *pattern|
+          option.is_a?(Fear::Some) && pattern.all? { |p| p === option.get }
+        },
+        resolve: ->(try) { try.get },
+      )
+
+      none_case = Dry::Matcher::Case.new(
+        match: lambda { |option, *pattern|
+          Fear::None == option && pattern.all? { |p| p === option }
+        },
+        resolve: ->(value) { value },
+      )
+
+      else_case = Dry::Matcher::Case.new(
+        match: ->(*) { true },
+        resolve: ->(value) { value },
+      )
+
+      # Build the matcher
+      matcher = Dry::Matcher.new(some: some_case, none: none_case, else: else_case)
+
+      option_matcher = Fear::Option.matcher do |m|
+        m.some(->(y) { y % 3 == 0 }) { |y| y }
+        m.some(->(y) { y % 4 == 0 }) { |y| y }
+        m.none { 'none' }
+        m.else { 'else' }
       end
-
-      pf1 = Fear::PartialFunctionClass.new(->(x) { x.even? }) { |x| x }
-      pf2 = Fear::PartialFunctionClass.new(->(x) { x % 3 == 0 }) { |x| x }
-
-      block = ->(*) { 'blk' }
-      fallback = ->(*) { 'fallback' }
-
-      optimized = Optimized.new(pf1, pf2).and_then(&block)
-      not_optimized = NotOptimized.new(pf1, pf2).and_then(&block)
 
       Benchmark.ips do |x|
-        x.report('OrElse#or_else#and_then optimized') do |n|
-          n.times do |t|
-            optimized.call_or_else(t, &fallback)
+        x.report('Qo') do
+          some.qo_match do |m|
+            m.some(->(y) { y % 3 == 0 }) { |y| y }
+            m.some(->(y) { y % 4 == 0 }) { |y| y }
+            m.none { 'none' }
+            m.else { 'else' }
           end
         end
 
-        x.report('OrElse#or_else#and_then not optimized') do |n|
-          n.times do |t|
-            not_optimized.call_or_else(t, &fallback)
+        x.report('Fear::Some#math') do
+          some.match do |m|
+            m.some(->(y) { y % 3 == 0 }) { |y| y }
+            m.some(->(y) { y % 4 == 0 }) { |y| y }
+            m.none { 'none' }
+            m.else { 'else' }
           end
+        end
+
+        x.report('Fear::Option.mather') do
+          option_matcher.call(some)
+        end
+
+        x.report('Dry::Matcher') do
+          matcher.call(some) do |m|
+            m.some(->(y) { y % 3 == 0 }) { |y| y }
+            m.some(->(y) { y % 4 == 0 }) { |y| y }
+            m.none { 'none' }
+            m.else { 'else' }
+          end
+        end
+
+        x.compare!
+      end
+    end
+
+    task :option_execution do
+      module ExhaustivePatternMatch
+        def initialize(*)
+          super
+          @default ||= self.else { raise Fear::MatchError }
+        end
+      end
+
+      SomeBranch = Qo.create_branch(name: 'some', precondition: Fear::Some, extractor: :get)
+      NoneBranch = Qo.create_branch(name: 'none', precondition: Fear::None)
+
+      PatternMatch = Qo.create_pattern_match(
+        branches: [
+          SomeBranch,
+          NoneBranch,
+        ],
+      ).prepend(ExhaustivePatternMatch)
+
+      some = Fear::Some.new(4)
+
+      qo_matcher = PatternMatch.new do |m|
+        m.some(->(y) { y % 3 == 0 }) { |y| y }
+        m.some(->(y) { y % 4 == 0 }) { |y| y }
+        m.none { 'none' }
+        m.else { 'else' }
+      end
+
+      fear_matcher = Fear::OptionPatternMatch.new do |m|
+        m.some(->(y) { y % 3 == 0 }) { |y| y }
+        m.some(->(y) { y % 4 == 0 }) { |y| y }
+        m.none { 'none' }
+        m.else { 'else' }
+      end
+
+      Benchmark.ips do |x|
+        x.report('Qo') do
+          qo_matcher.call(some)
+        end
+
+        x.report('Fear') do
+          fear_matcher.call(some)
+        end
+
+        x.compare!
+      end
+    end
+
+    task :factorial do
+      factorial_proc = proc do |n|
+        if n <= 1
+          1
+        else
+          n * factorial_proc.call(n - 1)
+        end
+      end
+
+      factorial_pm = Fear.matcher do |m|
+        m.case(->(n) { n <= 1 }) { 1 }
+        m.else { |n| n * factorial_pm.call(n - 1) }
+      end
+
+      factorial_qo = Qo.match do |m|
+        m.when(->(n) { n <= 1 }) { 1 }
+        m.else { |n| n * factorial_qo.call(n - 1) }
+      end
+
+      Benchmark.ips do |x|
+        x.report('Proc') do
+          factorial_proc.call(100)
+        end
+
+        x.report('Fear') do
+          factorial_pm.call(100)
+        end
+
+        x.report('Qo') do
+          factorial_qo.call(100)
+        end
+
+        x.compare!
+      end
+    end
+
+    task :construction_vs_execution do
+      matcher = Fear::PatternMatch.new do |m|
+        m.case(Integer) { |x| x * 2 }
+        m.case(String) { |x| x.to_i(10) * 2 }
+      end
+
+      Benchmark.ips do |x|
+        x.report('construction') do
+          Fear::PatternMatch.new do |m|
+            m.case(Integer) { |y| y * 2 }
+            m.case(String) { |y| y.to_i(10) * 2 }
+          end
+        end
+
+        x.report('execution') do
+          matcher.call(42)
         end
 
         x.compare!

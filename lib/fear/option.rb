@@ -11,12 +11,9 @@ module Fear
   # having to check for the existence of a value.
   #
   # @example A less-idiomatic way to use +Option+ values is via pattern matching
-  #   name = Option(params[:name])
-  #   case name
-  #   when Some
-  #     puts name.strip.upcase
-  #   when NoneClass
-  #     puts 'No name value'
+  #   Option(params[:name]).match do |m|
+  #     m.some { |name| name.strip.upcase }
+  #     m.none { 'No name value' }
   #   end
   #
   # @example or manually checking for non emptiness
@@ -145,6 +142,23 @@ module Fear
   #     Some(42).empty? #=> false
   #     None.empty?   #=> true
   #
+  # @!method match(&matcher)
+  #   Pattern match against this +Option+
+  #   @yield matcher [Fear::OptionPatternMatch]
+  #   @example
+  #     Option(val).match do |m|
+  #       m.some(Integer) do |x|
+  #        x * 2
+  #       end
+  #
+  #       m.some(String) do |x|
+  #         x.to_i * 2
+  #       end
+  #
+  #       m.none { 'NaN' }
+  #       m.else { 'error '}
+  #     end
+  #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
   #
   module Option
@@ -158,6 +172,29 @@ module Fear
       Some
     end
 
+    class << self
+      # Build pattern matcher to be used later, despite off
+      # +Option#match+ method, id doesn't apply matcher immanently,
+      # but build it instead. Unusually in sake of efficiency it's better
+      # to statically build matcher and reuse it later.
+      #
+      # @example
+      #   matcher =
+      #     Option.matcher do |m|
+      #       m.some(Integer) { |x| x * 2 }
+      #       m.some(String) { |x| x.to_i * 2 }
+      #       m.none { 'NaN' }
+      #       m.else { 'error '}
+      #     end
+      #   matcher.call(Some(42))
+      #
+      # @yieldparam [OptionPatternMatch]
+      # @return [Fear::PartialFunction]
+      def matcher(&matcher)
+        OptionPatternMatch.new(&matcher)
+      end
+    end
+
     # Include this mixin to access convenient factory methods.
     # @example
     #   include Fear::Option::Mixin
@@ -165,7 +202,7 @@ module Fear
     #   Option(17)  #=> #<Fear::Some value=17>
     #   Option(nil) #=> #<Fear::None>
     #   Some(17)    #=> #<Fear::Some value=17>
-    #   None      #=> #<Fear::None>
+    #   None        #=> #<Fear::None>
     #
     module Mixin
       None = Fear::None
@@ -174,6 +211,9 @@ module Fear
       # not +nil+, and +None+ if it is +nil+.
       # @param value [any]
       # @return [Some, None]
+      #
+      # @example
+      #   Option(v)
       #
       def Option(value)
         if value.nil?

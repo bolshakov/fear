@@ -1,8 +1,6 @@
 require 'any'
 
 RSpec.describe Fear::PartialFunction::EMPTY do
-  include Fear::PartialFunction::Mixin
-
   describe '#defined?' do
     subject { described_class.defined_at?(42) }
 
@@ -31,7 +29,7 @@ RSpec.describe Fear::PartialFunction::EMPTY do
   describe '#or_else' do
     subject { described_class.or_else(other) }
 
-    let(:other) { PartialFunction(Any) { 'other' } }
+    let(:other) { Fear.case(Any) { 'other' } }
 
     it { is_expected.to eq(other) }
   end

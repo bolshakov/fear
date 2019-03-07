@@ -114,4 +114,42 @@ RSpec.describe Fear::Right do
       it { is_expected.to eq(either) }
     end
   end
+
+  describe '#match' do
+    context 'matched' do
+      subject do
+        right.match do |m|
+          m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
+          m.right(->(x) { x.length > 2 }) { |x| "Right: #{x}" }
+          m.left(->(x) { x.length > 2 }) { |x| "Left: #{x}" }
+        end
+      end
+
+      it { is_expected.to eq('Right: value') }
+    end
+
+    context 'nothing matched and no else given' do
+      subject do
+        proc do
+          right.match do |m|
+            m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
+            m.left { |_| 'noop' }
+          end
+        end
+      end
+
+      it { is_expected.to raise_error(Fear::MatchError) }
+    end
+
+    context 'nothing matched and else given' do
+      subject do
+        right.match do |m|
+          m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
+          m.else { :default }
+        end
+      end
+
+      it { is_expected.to eq(:default) }
+    end
+  end
 end

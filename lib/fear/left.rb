@@ -2,6 +2,12 @@ module Fear
   class Left
     include Either
     include RightBiased::Left
+    include LeftPatternMatch.mixin
+
+    # @api private
+    def left_value
+      value
+    end
 
     # @return [false]
     def right?

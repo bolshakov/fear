@@ -19,12 +19,15 @@ module Fear
   #     Left(in)
   #   end
   #
-  #   puts(
-  #     result.reduce(
-  #       -> (x) { "You passed me the String: #{x}" },
-  #       -> (x) { "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" }
-  #     )
-  #   )
+  #   result.match do |m|
+  #     m.right do |x|
+  #       "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}"
+  #     end
+  #
+  #     m.left do |x|
+  #       "You passed me the String: #{x}"
+  #     end
+  #   end
   #
   # Either is right-biased, which means that +Right+ is assumed to be the default case to
   # operate on. If it is +Left+, operations like +#map+, +#flat_map+, ... return the +Left+ value
@@ -227,6 +230,23 @@ module Fear
   #     Right("daisy").join_left        #=> Right("daisy")
   #     Right(Left("daisy")).join_left  #=> Right(Left("daisy"))
   #
+  # @!method match(&matcher)
+  #   Pattern match against this +Either+
+  #   @yield matcher [Fear::EitherPatternMatch]
+  #   @example
+  #     Either(val).match do |m|
+  #       m.right(Integer) do |x|
+  #        x * 2
+  #       end
+  #
+  #       m.right(String) do |x|
+  #         x.to_i * 2
+  #       end
+  #
+  #       m.left { |x| x }
+  #       m.else { 'something unexpected' }
+  #     end
+  #
   # @see https://github.com/scala/scala/blob/2.12.x/src/library/scala/util/Either.scala
   #
   module Either
@@ -248,6 +268,29 @@ module Fear
 
     attr_reader :value
     protected :value
+
+    class << self
+      # Build pattern matcher to be used later, despite off
+      # +Either#match+ method, id doesn't apply matcher immanently,
+      # but build it instead. Unusually in sake of efficiency it's better
+      # to statically build matcher and reuse it later.
+      #
+      # @example
+      #   matcher =
+      #     Either.matcher do |m|
+      #       m.right(Integer, ->(x) { x > 2 }) { |x| x * 2 }
+      #       m.right(String) { |x| x.to_i * 2 }
+      #       m.left(String) { :err }
+      #       m.else { 'error '}
+      #     end
+      #   matcher.call(Some(42))
+      #
+      # @yieldparam [Fear::EitherPatternMatch]
+      # @return [Fear::PartialFunction]
+      def matcher(&matcher)
+        EitherPatternMatch.new(&matcher)
+      end
+    end
 
     # Include this mixin to access convenient factory methods.
     # @example
