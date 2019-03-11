@@ -15,11 +15,19 @@ module Fear
   #   divisor = Try { Integer(params[:divisor]) }
   #   problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
   #
-  #   if problem.success?
-  #     puts "Result of #{dividend.get} / #{divisor.get} is: #{problem.get}"
-  #   else
-  #     puts "You must've divided by zero or entered something wrong. Try again"
-  #     puts "Info from the exception: #{problem.exception.message}"
+  #   problem.match |m|
+  #     m.success do |result|
+  #       puts "Result of #{dividend.get} / #{divisor.get} is: #{result}"
+  #     end
+  #
+  #     m.failure(ZeroDivisionError) do
+  #       puts "Division by zero is not allowed"
+  #     end
+  #
+  #     m.failure do |exception|
+  #       puts "You entered something wrong. Try again"
+  #       puts "Info from the exception: #{exception.message}"
+  #     end
   #   end
   #
   # An important property of +Try+ shown in the above example is its
@@ -210,6 +218,23 @@ module Fear
   #     Success(42).to_either                #=> Right(42)
   #     Failure(ArgumentError.new).to_either #=> Left(ArgumentError.new)
   #
+  # @!method match(&matcher)
+  #   Pattern match against this +Try+
+  #   @yield matcher [Fear::TryPatternMatch]
+  #   @example
+  #     Try { ... }.match do |m|
+  #       m.success(Integer) do |x|
+  #        x * 2
+  #       end
+  #
+  #       m.success(String) do |x|
+  #         x.to_i * 2
+  #       end
+  #
+  #       m.failure(ZeroDivisionError) { 'not allowed to divide by 0' }
+  #       m.else { 'something unexpected' }
+  #     end
+  #
   # @author based on Twitter's original implementation.
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/util/Try.scala
   #
@@ -222,6 +247,29 @@ module Fear
     # @private
     def right_class
       Success
+    end
+
+    class << self
+      # Build pattern matcher to be used later, despite off
+      # +Try#match+ method, id doesn't apply matcher immanently,
+      # but build it instead. Unusually in sake of efficiency it's better
+      # to statically build matcher and reuse it later.
+      #
+      # @example
+      #   matcher =
+      #     Try.matcher do |m|
+      #       m.success(Integer, ->(x) { x > 2 }) { |x| x * 2 }
+      #       m.success(String) { |x| x.to_i * 2 }
+      #       m.failure(ActiveRecord::RecordNotFound) { :err }
+      #       m.else { 'error '}
+      #     end
+      #   matcher.call(try)
+      #
+      # @yieldparam [Fear::TryPatternMatch]
+      # @return [Fear::PartialFunction]
+      def matcher(&matcher)
+        TryPatternMatch.new(&matcher)
+      end
     end
 
     # Include this mixin to access convenient factory methods.

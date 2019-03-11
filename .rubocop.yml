@@ -5,6 +5,9 @@ AllCops:
 Naming/MethodName:
   Enabled: false
 
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
@@ -29,9 +32,14 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
+Style/NumericPredicate:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+    - Rakefile
+    - fear.gemspec
 
 Metrics/LineLength:
   Max: 120

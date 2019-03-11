@@ -4,6 +4,7 @@ module Fear
     include Option
     include Dry::Equalizer()
     include RightBiased::Left
+    include NonePatternMatch.mixin
 
     # @raise [NoSuchElementError]
     def get
@@ -40,6 +41,12 @@ module Fear
     # @return [String]
     def inspect
       AS_STRING
+    end
+
+    # @param other
+    # @return [Boolean]
+    def ===(other)
+      self == other
     end
   end
 

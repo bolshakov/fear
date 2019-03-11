@@ -48,12 +48,9 @@ having to check for the existence of a value.
 A less-idiomatic way to use `Option` values is via pattern matching
 
 ```ruby
-name = Option(params[:name])
-case name
-when Some
- puts name.strip.upcase
-when None
- puts 'No name value'
+Option(params[:name]).match do |m|
+  m.some { |name| name.strip.upcase }
+  m.none { 'No name value' }
 end
 ```
 
@@ -201,11 +198,19 @@ dividend = Try { Integer(params[:dividend]) }
 divisor = Try { Integer(params[:divisor]) }
 problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
 
-if problem.success?
-  puts "Result of #{dividend.get} / #{divisor.get} is: #{problem.get}"
-else
-  puts "You must've divided by zero or entered something wrong. Try again"
-  puts "Info from the exception: #{problem.exception.message}"
+problem.match |m|
+  m.success do |result|
+    puts "Result of #{dividend.get} / #{divisor.get} is: #{result}"
+  end
+
+  m.failure(ZeroDivisionError) do
+    puts "Division by zero is not allowed"
+  end
+
+  m.failure do |exception|
+    puts "You entered something wrong. Try again"
+    puts "Info from the exception: #{exception.message}"
+  end
 end
 ```
 
@@ -408,12 +413,15 @@ rescue ArgumentError
   Left(in)
 end
 
-puts(
-  result.reduce(
-    -> (x) { "You passed me the String: #{x}" },
-    -> (x) { "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}" }
-  )
-)
+result.match do |m|
+  m.right do |x|
+    "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}"
+  end
+
+  m.left do |x|
+    "You passed me the String: #{x}"
+  end
+end
 ```
 
 Either is right-biased, which means that `Right` is assumed to be the default case to
@@ -688,22 +696,201 @@ For(maybe_user, ->(user) { user.birthday }) do |user, birthday|
 end #=> Some('Paul was born on 1987-06-17')
 ```
 
-### Pattern Matching
+### Pattern Matching (See API Documentation)
 
-`Option`, `Either`, and `Try` contains enhanced version of `#===` method. It performs matching not 
-only on container itself, but on enclosed value as well. I'm writing all the options in a one 
-case statement in sake of simplicity.
- 
+Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
+defined on domain described with guard.
+
 ```ruby
-case Some(42)
-when Some(42)                #=> matches
-when Some(41)                #=> does not match
-when Some(Fixnum)            #=> matches
-when Some(String)            #=> does not match
-when Some((40..43))          #=> matches
-when Some(-> (x) { x > 40 }) #=> matches
-end  
+pf = Fear.case(Integer) { |x| x / 2 }
+pf.defined_at?(4) #=> true
+pf.defined_at?('Foo') #=> false
+pf.call('Foo') #=> raises Fear::MatchError
+pf.call_or_else('Foo') { 'not a number' } #=> 'not a number'
+pf.call_or_else(4) { 'not a number' } #=> 2
+pf.lift.call('Foo') #=> Fear::None
+pf.lift.call(4) #=> Fear::Some(2)
 ```
+
+It uses `#===` method under the hood, so you can pass:
+
+* Class to check kind of an object.
+* Lambda to evaluate it against an object.
+* Any literal, like `4`, `"Foobar"`, etc.
+* Symbol -- it is converted to lambda using `#to_proc` method.
+* Qo matcher -- `m.case(Qo[name: 'John']) { .... }`
+ 
+Partial functions may be combined with each other:
+
+```ruby
+is_even = Fear.case(->(arg) { arg % 2 == 0}) { |arg| "#{arg} is even" }
+is_odd = Fear.case(->(arg) { arg % 2 == 1}) { |arg| "#{arg} is odd" }
+
+(10..20).map(&is_even.or_else(is_odd))
+
+to_integer = Fear.case(String, &:to_i)
+integer_two_times = Fear.case(Integer) { |x| x * 2 }
+
+two_times = to_integer.and_then(integer_two_times).or_else(integer_two_times)
+two_times.(4) #=> 8
+two_times.('42') #=> 84
+```
+
+To create custom pattern match use `Fear.match` method and `case` builder to define
+branches. For instance this matcher applies different functions to Integers and Strings
+
+```ruby 
+Fear.match(value) do |m|
+  m.case(Integer) { |n| "#{n} is a number" }
+  m.case(String) { |n| "#{n} is a string" }
+end
+```
+
+if you pass something other than Integer or string, it will raise `Fear::MatchError` error.
+To avoid raising `MatchError`, you can use `else` method. It defines a branch matching
+on any value.
+
+```ruby 
+Fear.match(10..20) do |m|
+  m.case(Integer) { |n| "#{n} is a number" }
+  m.case(String) { |n| "#{n} is a string" }
+  m.else  { |n| "#{n} is a #{n.class}" }
+end #=> "10..20 is a Range"
+```
+
+You can use anything as a guardian if it responds to `#===` method:
+
+```ruby
+m.case(20..40) { |m| "#{m} is within range" }
+m.case(->(x) { x > 10}) { |m| "#{m} is greater than 10" }
+```
+
+If you pass a Symbol, it will be converted to proc using `#to_proc` method
+
+```ruby 
+m.case(:even?) { |x| "#{x} is even" }
+m.case(:odd?) { |x| "#{x} is odd" }
+```
+
+It's also possible to pass several guardians. All should match to pass
+
+```ruby 
+m.case(Integer, :even?) { |x| ... }
+m.case(Integer, :odd?) { |x| ... }
+```
+
+It's also possible to create matcher and use it several times:
+
+```ruby
+matcher = Fear.matcher do |m|
+  m.case(Integer) { |n| "#{n} is a number" }
+  m.case(String) { |n| "#{n} is a string" }
+  m.else  { |n| "#{n} is a #{n.class}" }
+end 
+
+matcher.(42) #=> "42 is a number"
+matcher.(10..20) #=> "10..20 is a Range"
+``` 
+
+Since matcher is just a syntactic sugar for partial functions, you can combine matchers with partial
+functions and each other. 
+
+```ruby
+handle_numbers = Fear.case(Integer, &:itself).and_then(
+  Fear.matcher do |m|
+    m.case(0) { 'zero' }
+    m.case(->(n) { n < 10 }) { 'smaller than ten' }  
+    m.case(->(n) { n > 10 }) { 'bigger than ten' }
+  end
+)
+
+handle_strings = Fear.case(String, &:itself).and_then(
+  Fear.matcher do |m|
+    m.case('zero') { 0 }
+    m.case('one') { 1 }
+    m.else { 'unexpected' }
+  end
+)
+
+handle = handle_numbers.or_else(handle_strings)
+handle.(0) #=> 'zero'
+handle.(12) #=> 'bigger than ten'
+handle.('one') #=> 1
+```
+
+#### More examples
+
+Factorial using pattern matching
+
+```ruby
+factorial = Fear.matcher do |m|
+  m.case(->(n) { n <= 1} ) { 1 }
+  m.else { |n| n * factorial.(n - 1) }
+end
+
+factorial.(10) #=> 3628800
+```
+
+Fibonacci number
+
+```ruby
+fibonnaci = Fear.matcher do |m|
+  m.case(0) { 0 }
+  m.case(1) { 1 }
+  m.case(->(n) { n > 1}) { |n| fibonnaci.(n - 1) + fibonnaci.(n - 2) }
+  m.else { raise 'should be positive' }
+end
+
+fibonnaci.(10) #=> 55
+```
+
+#### Monads pattern matching 
+
+You can use `Option#match`, `Either#match`, and `Try#match` method. It performs matching not 
+only on container itself, but on enclosed value as well. 
+
+Pattern match against an `Option`
+
+```ruby
+Some(42).match do |m|
+  m.some { |x| x * 2 }
+  m.none { 'none' }
+end #=> 84
+```
+
+pattern match on enclosed value
+
+```ruby
+Some(41).match do |m|
+  m.some(:even?) { |x| x / 2 }
+  m.some(:odd?, ->(v) { v > 0 }) { |x| x * 2 }
+  m.none { 'none' }
+end #=> 82
+``` 
+
+it raises `Fear::MatchError` error if nothing matched. To avoid exception, you can pass `#else` branch
+
+```ruby
+Some(42).match do |m|
+  m.some(:odd?) { |x| x * 2 }
+  m.else { 'nothing' }
+end #=> nothing
+```
+
+Pattern matching works the similar way for `Either` and `Try` monads.
+
+In sake of performance, you may want to generate pattern matching function and reuse it multiple times:
+
+```ruby
+matcher = Option.matcher do |m|
+  m.some(42) { 'Yep' }
+  m.some { 'Nope' }
+  m.none { 'Error' } 
+end
+
+matcher.(Some(42)) #=> 'Yep'
+matcher.(Some(40)) #=> 'Nope'
+``` 
 
 ## Testing
 

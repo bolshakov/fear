@@ -3,6 +3,7 @@ module Fear
     include Try
     include Dry::Equalizer(:exception)
     include RightBiased::Left
+    include FailurePatternMatch.mixin
 
     # @param [StandardError]
     def initialize(exception)

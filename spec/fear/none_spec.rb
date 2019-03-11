@@ -70,4 +70,60 @@ RSpec.describe Fear::None do
 
     it { is_expected.to eq('Fear::None') }
   end
+
+  describe '#===' do
+    context 'None' do
+      subject { Fear::None === none }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'Fear::Some' do
+      subject { Fear::None === Some(4) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'Integer' do
+      subject { Fear::None === 4 }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#match' do
+    context 'matched' do
+      subject do
+        none.match do |m|
+          m.some { |x| x * 2 }
+          m.none { 'noop' }
+        end
+      end
+
+      it { is_expected.to eq('noop') }
+    end
+
+    context 'nothing matched and no else given' do
+      subject do
+        proc do
+          none.match do |m|
+            m.some { |x| x * 2 }
+          end
+        end
+      end
+
+      it { is_expected.to raise_error(Fear::MatchError) }
+    end
+
+    context 'nothing matched and else given' do
+      subject do
+        none.match do |m|
+          m.some { |x| x * 2 }
+          m.else { :default }
+        end
+      end
+
+      it { is_expected.to eq(:default) }
+    end
+  end
 end
