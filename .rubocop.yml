@@ -40,6 +40,7 @@ Metrics/BlockLength:
     - spec/**/*
     - Rakefile
     - fear.gemspec
+    - examples/**/*
 
 Metrics/LineLength:
   Max: 120
