@@ -99,14 +99,6 @@ module Fear
   #     Right(42).flat_map { |v| Right(v/2) }         #=> Right(21)
   #     Left('undefined').flat_map { |v| Right(v/2) } #=> Left('undefined')
   #
-  # @!method to_a
-  #   Returns an +Array+ containing the +Right+ value or an
-  #   empty +Array+ if this is a +Left+.
-  #   @return [Array]
-  #   @example
-  #     Right(42).to_a          #=> [21]
-  #     Left('undefined').to_a  #=> []
-  #
   # @!method to_option
   #   Returns an +Some+ containing the +Right+ value or a +None+ if
   #   this is a +Left+.
