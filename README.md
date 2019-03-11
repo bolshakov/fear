@@ -811,7 +811,6 @@ fibonnaci = Fear.matcher do |m|
   m.case(0) { 0 }
   m.case(1) { 1 }
   m.case(->(n) { n > 1}) { |n| fibonnaci.(n - 1) + fibonnaci.(n - 2) }
-  m.else { raise 'should be positive' }
 end
 
 fibonnaci.(10) #=> 55
