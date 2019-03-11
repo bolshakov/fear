@@ -66,11 +66,6 @@ RSpec.shared_examples Fear::RightBiased::Left do
     end
   end
 
-  describe '#to_a' do
-    subject { left.to_a }
-    it { is_expected.to eq([]) }
-  end
-
   describe '#to_option' do
     subject { left.to_option }
     it { is_expected.to eq(Fear::None) }

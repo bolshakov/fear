@@ -124,15 +124,6 @@ Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
 None.flat_map { |v| Some(v/2) }     #=> None
 ```
 
-#### Option#to_a
-
-Returns an `Array` containing the `Some` value or an empty `Array` if this is a `None`
-
-```ruby
-Some(42).to_a #=> [21]
-None.to_a   #=> []
-```
-
 #### Option#any?
 
 Returns `false` if `None` or returns the result of the application of the given predicate to the `Some` value.
@@ -272,15 +263,6 @@ Returns the given block applied to the value from this `Success`or returns self 
 ```ruby
 Success(42).flat_map { |v| Success(v/2) } #=> Success(21)
 Failure(ArgumentError.new).flat_map { |v| Success(v/2) } #=> Failure(ArgumentError.new)
-```
-
-#### Try#to_a
-
-Returns an `Array` containing the `Success` value or an empty `Array` if this is a `Failure`.
-
-```ruby
-Success(42).to_a                 #=> [21]
-Failure(ArgumentError.new).to_a  #=> []
 ```
 
 #### Try#to_option
@@ -485,15 +467,6 @@ Returns the given block applied to the value from this `Right` or returns self i
 ```ruby
 Right(42).flat_map { |v| Right(v/2) }         #=> Right(21)
 Left('undefined').flat_map { |v| Right(v/2) } #=> Left('undefined')
-```
-
-#### Either#to_a
-
-Returns an `Array` containing the `Right` value or an empty `Array` if this is a `Left`.
-
-```ruby
-Right(42).to_a          #=> [21]
-Left('undefined').to_a  #=> []
 ```
 
 #### Either#to_option

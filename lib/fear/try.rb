@@ -107,14 +107,6 @@ module Fear
   #     Failure(ArgumentError.new).flat_map { |v| Success(v/2) }
   #       #=> Failure(ArgumentError.new)
   #
-  # @!method to_a
-  #   Returns an +Array+ containing the +Success+ value or an
-  #   empty +Array+ if this is a +Failure+.
-  #   @return [Array]
-  #   @example
-  #     Success(42).to_a                 #=> [21]
-  #     Failure(ArgumentError.new).to_a  #=> []
-  #
   # @!method to_option
   #   Returns an +Some+ containing the +Success+ value or a +None+ if
   #   this is a +Failure+.

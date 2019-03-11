@@ -90,14 +90,6 @@ module Fear
   #     Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
   #     None.flat_map { |v| Some(v/2) }     #=> None
   #
-  # @!method to_a
-  #   Returns an +Array+ containing the +Some+ value or an
-  #   empty +Array+ if this is a +None+
-  #   @return [Array]
-  #   @example
-  #     Some(42).to_a #=> [21]
-  #     None.to_a   #=> []
-  #
   # @!method any?(&predicate)
   #   Returns +false+ if +None+ or returns the result of the
   #   application of the given predicate to the +Some+ value.

@@ -85,11 +85,6 @@ module Fear
         yield(value)
       end
 
-      # @return [Array] containing value
-      def to_a
-        [value]
-      end
-
       # @return [Option] containing value
       def to_option
         Some.new(value)
@@ -162,11 +157,6 @@ module Fear
       #
       def flat_map
         self
-      end
-
-      # @return [Array] empty array
-      def to_a
-        []
       end
 
       # @return [None]
