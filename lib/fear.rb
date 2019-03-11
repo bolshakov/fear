@@ -4,7 +4,6 @@ require 'fear/pattern_matching_api'
 
 module Fear
   Error = Class.new(StandardError)
-  IllegalStateException = Class.new(Error)
   NoSuchElementError = Class.new(Error)
   MatchError = Class.new(Error)
   extend PatternMatchingApi

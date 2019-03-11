@@ -2,15 +2,14 @@ module Fear
   # Pattern match builder. Provides DSL for building pattern matcher
   # Pattern match is just a combination of partial functions
   #
-  # @example usage
-  #   matcher = PatternMatch.new do |m|
-  #     m.case(Integer) { |x| x * 2 }
-  #     m.case(String) { |x| x.to_i(10) * 2 }
-  #   end
-  #   matcher.is_a?(Fear::PartialFunction) #=> true
-  #   matcher.defined_at?(4) #=> true
-  #   matcher.defined_at?('4') #=> true
-  #   matcher.defined_at?(nil) #=> false
+  #     matcher = Fear.matcher do |m|
+  #       m.case(Integer) { |x| x * 2 }
+  #       m.case(String) { |x| x.to_i(10) * 2 }
+  #     end
+  #     matcher.is_a?(Fear::PartialFunction) #=> true
+  #     matcher.defined_at?(4) #=> true
+  #     matcher.defined_at?('4') #=> true
+  #     matcher.defined_at?(nil) #=> false
   #
   # The previous example is the same as:
   #
@@ -22,14 +21,14 @@ module Fear
   # You can provide +else+ branch, so partial function will be defined
   # on any input:
   #
-  # @example
-  #   matcher = PatternMatch.new do |m|
-  #     m.else { 'Match' }
-  #   end
-  #   matcher.call(42) #=> 'Match'
+  #     matcher = Fear.matcher do |m|
+  #       m.else { 'Match' }
+  #     end
+  #     matcher.call(42) #=> 'Match'
   #
-  # @see Fear.matcher
-  # @api private
+  # @see Fear.matcher public interface for building matchers
+  # @api Fear
+  # @note Use this class only to build custom pattern match classes. See +Fear::OptionPatternMatch+ as an example.
   class PatternMatch
     class << self
       alias __new__ new
