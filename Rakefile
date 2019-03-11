@@ -1,7 +1,6 @@
 require 'bundler/gem_tasks'
 require 'benchmark/ips'
 require_relative 'lib/fear'
-require 'any'
 
 namespace :perf do
   namespace :guard do

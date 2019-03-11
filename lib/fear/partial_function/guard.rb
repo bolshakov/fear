@@ -1,5 +1,3 @@
-require 'any'
-
 module Fear
   module PartialFunction
     # Guard represents PartialFunction guardian

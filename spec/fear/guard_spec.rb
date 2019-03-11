@@ -42,16 +42,16 @@ RSpec.describe Fear::PartialFunction::Guard do
   end
 
   describe '.and' do
-    let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?, ->(x) { x.even? }]) }
-
     context 'match' do
       subject { guard === 4 }
+      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?, ->(x) { x.even? }]) }
 
       it { is_expected.to eq(true) }
     end
 
     context 'not match' do
       subject { guard === 3 }
+      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?, ->(x) { x.even? }]) }
 
       it { is_expected.to eq(false) }
     end

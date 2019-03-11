@@ -1,9 +1,8 @@
-require 'any'
 # This file contains tests from
 # https://github.com/scala/scala/blob/2.13.x/test/junit/scala/PartialFunctionCompositionTest.scala
 RSpec.describe Fear::PartialFunction do
   let(:fallback_fun) { ->(_) { 'fallback' } }
-  let(:pass_all) { Fear.case(Any) { |x| x } }
+  let(:pass_all) { Fear.case(proc { true }) { |x| x } }
   let(:pass_short) { Fear.case(->(x) { x.length < 5 }) { |x| x } }
   let(:pass_pass) { Fear.case(->(x) { x.include?('pass') }) { |x| x } }
 

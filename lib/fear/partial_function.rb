@@ -37,6 +37,7 @@ module Fear
   # @see https://github.com/scala/scala/commit/5050915eb620af3aa43d6ddaae6bbb83ad74900d
   module PartialFunction
     autoload :AndThen, 'fear/partial_function/and_then'
+    autoload :Any, 'fear/partial_function/any'
     autoload :Combined, 'fear/partial_function/combined'
     autoload :EMPTY, 'fear/partial_function/empty'
     autoload :Guard, 'fear/partial_function/guard'

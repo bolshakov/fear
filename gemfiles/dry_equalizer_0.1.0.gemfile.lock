@@ -9,7 +9,6 @@ PATH
   remote: ..
   specs:
     fear (0.10.0)
-      any
       dry-equalizer (<= 0.2.1)
 
 GEM
@@ -65,7 +64,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  any
   appraisal
   benchmark-ips
   bundler
