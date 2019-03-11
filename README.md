@@ -27,7 +27,7 @@ Or install it yourself as:
 * [Try](#try-documentation)
 * [Either](#either-documentation)
 * [For composition](#for-composition)
-* [Pattern Matching](#pattern-matching)
+* [Pattern Matching](#pattern-matching-api-documentation)
 
 ### Option ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
 
@@ -696,7 +696,7 @@ For(maybe_user, ->(user) { user.birthday }) do |user, birthday|
 end #=> Some('Paul was born on 1987-06-17')
 ```
 
-### Pattern Matching (See API Documentation)
+### Pattern Matching (API Documentation)
 
 Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
 defined on domain described with guard.
@@ -843,6 +843,8 @@ end
 
 fibonnaci.(10) #=> 55
 ```
+
+Binary tree set implemented using pattern matching https://gist.github.com/bolshakov/3c51bbf7be95066d55d6d1ac8c605a1d
 
 #### Monads pattern matching 
 
