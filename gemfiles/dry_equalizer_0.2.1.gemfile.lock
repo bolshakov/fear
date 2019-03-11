@@ -8,7 +8,7 @@ GIT
 PATH
   remote: ..
   specs:
-    fear (0.10.0)
+    fear (0.11.0)
       dry-equalizer (<= 0.2.1)
 
 GEM
