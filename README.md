@@ -29,7 +29,7 @@ Or install it yourself as:
 * [For composition](#for-composition)
 * [Pattern Matching](#pattern-matching-api-documentation)
 
-### Option ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
+### Option ([Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/OptionApi))
 
 Represents optional (nullable) values. Instances of `Option` are either an instance of 
 `Some` or the object `None`.
@@ -37,7 +37,7 @@ Represents optional (nullable) values. Instances of `Option` are either an insta
 The most idiomatic way to use an `Option` instance is to treat it as a collection
 
 ```ruby
-name = Option(params[:name])
+name = Fear.option(params[:name])
 upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
 puts upper.get_or_else('')
 ```
@@ -48,7 +48,7 @@ having to check for the existence of a value.
 A less-idiomatic way to use `Option` values is via pattern matching
 
 ```ruby
-Option(params[:name]).match do |m|
+Fear.option(params[:name]).match do |m|
   m.some { |name| name.strip.upcase }
   m.none { 'No name value' }
 end
@@ -57,7 +57,7 @@ end
 or manually checking for non emptiness
 
 ```ruby
-name = Option(params[:name])
+name = Fear.option(params[:name])
 if name.empty?
  puts 'No name value'
 else
@@ -65,16 +65,29 @@ else
 end
 ```
 
+Alternatively, include `Fear::Option::Mixin` to use `Option()`, `Some()` and `None()` methods:
+
+```ruby
+include Fear::Option::Mixin 
+
+Option(42) #=> #<Fear::Some get=42>
+Option(nil) #=> #<Fear::None>
+
+Some(42) #=> #<Fear::Some get=42>
+Some(nil) #=> #<Fear::Some get=nil>
+None() #=> #<Fear::None>
+``` 
+
 #### Option#get_or_else
 
 Returns the value from this `Some` or evaluates the given default argument if this is a `None`.
 
 ```ruby
-Some(42).get_or_else { 24/2 } #=> 42
-None.get_or_else { 24/2 }   #=> 12
+Fear.some(42).get_or_else { 24/2 } #=> 42
+Fear.none.get_or_else { 24/2 }   #=> 12
 
-Some(42).get_or_else(12)  #=> 42
-None.get_or_else(12)    #=> 12
+Fear.some(42).get_or_else(12)  #=> 42
+Fear.none.get_or_else(12)    #=> 12
 ```
 
 #### Option#or_else
@@ -82,9 +95,9 @@ None.get_or_else(12)    #=> 12
 returns self `Some` or the given alternative if this is a `None`.
 
 ```ruby
-Some(42).or_else { Some(21) } #=> Some(42)
-None.or_else { Some(21) }   #=> Some(21)
-None.or_else { None }     #=> None
+Fear.some(42).or_else { Fear.some(21) } #=> Fear.some(42)
+Fear.none.or_else { Fear.some(21) }   #=> Fear.some(21)
+Fear.none.or_else { None }     #=> None
 ```
 
 #### Option#inlude?
@@ -92,9 +105,9 @@ None.or_else { None }     #=> None
 Checks if `Option` has an element that is equal (as determined by `==`) to given values.
 
 ```ruby
-Some(17).include?(17) #=> true
-Some(17).include?(7)  #=> false
-None.include?(17)   #=> false
+Fear.some(17).include?(17) #=> true
+Fear.some(17).include?(7)  #=> false
+Fear.none.include?(17)   #=> false
 ```
 
 #### Option#each
@@ -102,8 +115,8 @@ None.include?(17)   #=> false
 Performs the given block if this is a `Some`.
 
 ```ruby
-Some(17).each { |value| puts value } #=> prints 17
-None.each { |value| puts value } #=> does nothing
+Fear.some(17).each { |value| puts value } #=> prints 17
+Fear.none.each { |value| puts value } #=> does nothing
 ```
 
 #### Option#map 
@@ -111,8 +124,8 @@ None.each { |value| puts value } #=> does nothing
 Maps the given block to the value from this `Some` or returns self if this is a `None`
 
 ```ruby
-Some(42).map { |v| v/2 } #=> Some(21)
-None.map { |v| v/2 }   #=> None
+Fear.some(42).map { |v| v/2 } #=> Fear.some(21)
+Fear.none.map { |v| v/2 }   #=> None
 ```
 
 #### Option#flat_map
@@ -120,8 +133,8 @@ None.map { |v| v/2 }   #=> None
 Returns the given block applied to the value from this `Some` or returns self if this is a `None`
 
 ```ruby
-Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
-None.flat_map { |v| Some(v/2) }     #=> None
+Fear.some(42).flat_map { |v| Fear.some(v/2) }   #=> Fear.some(21)
+Fear.none.flat_map { |v| Fear.some(v/2) }     #=> None
 ```
 
 #### Option#any?
@@ -129,9 +142,9 @@ None.flat_map { |v| Some(v/2) }     #=> None
 Returns `false` if `None` or returns the result of the application of the given predicate to the `Some` value.
 
 ```ruby 
-Some(12).any?( |v| v > 10)  #=> true
-Some(7).any?( |v| v > 10)   #=> false
-None.any?( |v| v > 10)    #=> false
+Fear.some(12).any?( |v| v > 10)  #=> true
+Fear.some(7).any?( |v| v > 10)   #=> false
+Fear.none.any?( |v| v > 10)    #=> false
 ```
 
 #### Option#select
@@ -140,9 +153,9 @@ Returns self if it is nonempty and applying the predicate to this `Option`'s val
 return `None`.
 
 ```ruby 
-Some(42).select { |v| v > 40 } #=> Success(21)
-Some(42).select { |v| v < 40 } #=> None
-None.select { |v| v < 40 }   #=> None
+Fear.some(42).select { |v| v > 40 } #=> Fear.success(21)
+Fear.some(42).select { |v| v < 40 } #=> None
+Fear.none.select { |v| v < 40 }   #=> None
 ```
 
 #### Option#reject
@@ -150,9 +163,9 @@ None.select { |v| v < 40 }   #=> None
 Returns `Some` if applying the predicate to this `Option`'s value returns `false`. Otherwise, return `None`.
 
 ```ruby 
-Some(42).reject { |v| v > 40 } #=> None
-Some(42).reject { |v| v < 40 } #=> Some(42)
-None.reject { |v| v < 40 }   #=> None
+Fear.some(42).reject { |v| v > 40 } #=> None
+Fear.some(42).reject { |v| v < 40 } #=> Fear.some(42)
+Fear.none.reject { |v| v < 40 }   #=> None
 ```
 
 #### Option#get
@@ -164,14 +177,14 @@ Not an idiomatic way of using Option at all. Returns values of raise `NoSuchElem
 Returns `true` if the `Option` is `None`, `false` otherwise.
 
 ```ruby
-Some(42).empty? #=> false
-None.empty?   #=> true
+Fear.some(42).empty? #=> false
+Fear.none.empty?   #=> true
 ```
 
 @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
  
 
-### Try ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Try))
+### Try ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/TryApi))
 
 The `Try` represents a computation that may either result
 in an exception, or return a successfully computed value. Instances of `Try`,
@@ -183,10 +196,8 @@ exception-handling in all of the places that an exception
 might occur.
 
 ```ruby
-include Fear::Try::Mixin
-
-dividend = Try { Integer(params[:dividend]) }
-divisor = Try { Integer(params[:divisor]) }
+dividend = Fear.try { Integer(params[:dividend]) }
+divisor = Fear.try { Integer(params[:divisor]) }
 problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
 
 problem.match |m|
@@ -218,13 +229,22 @@ type of default behavior in the case of failure.
 *NOTE*: Only non-fatal exceptions are caught by the combinators on `Try`.
 Serious system errors, on the other hand, will be thrown.
 
+Alternatively, include `Fear::Try::Mixin` to use `Try()` method:
+
+```ruby
+include Fear::Try::Mixin 
+
+Try { 4/0 }  #=> #<Fear::Failure exception=...>
+Try { 4/2 }  #=> #<Fear::Success value=2>
+```
+
 #### Try#get_or_else
 
 Returns the value from this `Success` or evaluates the given default argument if this is a `Failure`.
 
 ```ruby
-Success(42).get_or_else { 24/2 }                #=> 42
-Failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
+Fear.success(42).get_or_else { 24/2 }                #=> 42
+Fear.failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
 ```
 
 #### Try#include?
@@ -232,9 +252,9 @@ Failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
 Returns `true` if it has an element that is equal given values, `false` otherwise.
 
 ```ruby
-Success(17).include?(17)                #=> true
-Success(17).include?(7)                 #=> false
-Failure(ArgumentError.new).include?(17) #=> false
+Fear.success(17).include?(17)                #=> true
+Fear.success(17).include?(7)                 #=> false
+Fear.failure(ArgumentError.new).include?(17) #=> false
 ```
 
 #### Try#each
@@ -243,8 +263,8 @@ Performs the given block if this is a `Success`. If block raise an error,
 then this method may raise an exception.
 
 ```ruby
-Success(17).each { |value| puts value }  #=> prints 17
-Failure(ArgumentError.new).each { |value| puts value } #=> does nothing
+Fear.success(17).each { |value| puts value }  #=> prints 17
+Fear.failure(ArgumentError.new).each { |value| puts value } #=> does nothing
 ```
 
 #### Try#map
@@ -252,8 +272,8 @@ Failure(ArgumentError.new).each { |value| puts value } #=> does nothing
 Maps the given block to the value from this `Success` or returns self if this is a `Failure`.
 
 ```ruby
-Success(42).map { |v| v/2 }                 #=> Success(21)
-Failure(ArgumentError.new).map { |v| v/2 }  #=> Failure(ArgumentError.new)
+Fear.success(42).map { |v| v/2 }                 #=> Fear.success(21)
+Fear.failure(ArgumentError.new).map { |v| v/2 }  #=> Fear.failure(ArgumentError.new)
 ```
 
 #### Try#flat_map
@@ -261,8 +281,8 @@ Failure(ArgumentError.new).map { |v| v/2 }  #=> Failure(ArgumentError.new)
 Returns the given block applied to the value from this `Success`or returns self if this is a `Failure`.
 
 ```ruby
-Success(42).flat_map { |v| Success(v/2) } #=> Success(21)
-Failure(ArgumentError.new).flat_map { |v| Success(v/2) } #=> Failure(ArgumentError.new)
+Fear.success(42).flat_map { |v| Fear.success(v/2) } #=> Fear.success(21)
+Fear.failure(ArgumentError.new).flat_map { |v| Fear.success(v/2) } #=> Fear.failure(ArgumentError.new)
 ```
 
 #### Try#to_option
@@ -270,8 +290,8 @@ Failure(ArgumentError.new).flat_map { |v| Success(v/2) } #=> Failure(ArgumentErr
 Returns an `Some` containing the `Success` value or a `None` if this is a `Failure`.
 
 ```ruby
-Success(42).to_option                 #=> Some(21)
-Failure(ArgumentError.new).to_option  #=> None
+Fear.success(42).to_option                 #=> Fear.some(21)
+Fear.failure(ArgumentError.new).to_option  #=> None
 ```
 
 #### Try#any?
@@ -279,20 +299,20 @@ Failure(ArgumentError.new).to_option  #=> None
 Returns `false` if `Failure` or returns the result of the application of the given predicate to the `Success` value.
 
 ```ruby
-Success(12).any?( |v| v > 10)                #=> true
-Success(7).any?( |v| v > 10)                 #=> false
-Failure(ArgumentError.new).any?( |v| v > 10) #=> false
+Fear.success(12).any?( |v| v > 10)                #=> true
+Fear.success(7).any?( |v| v > 10)                 #=> false
+Fear.failure(ArgumentError.new).any?( |v| v > 10) #=> false
 ```
 
 #### Try#success? and Try#failure?
 
 
 ```ruby
-Success(12).success? #=> true
-Success(12).failure? #=> true
+Fear.success(12).success? #=> true
+Fear.success(12).failure? #=> true
 
-Failure(ArgumentError.new).success? #=> false
-Failure(ArgumentError.new).failure? #=> true
+Fear.failure(ArgumentError.new).success? #=> false
+Fear.failure(ArgumentError.new).failure? #=> true
 ```
 
 #### Try#get
@@ -300,8 +320,8 @@ Failure(ArgumentError.new).failure? #=> true
 Returns the value from this `Success` or raise the exception if this is a `Failure`.
 
 ```ruby
-Success(42).get                 #=> 42
-Failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
+Fear.success(42).get                 #=> 42
+Fear.failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
 ```
 
 #### Try#or_else
@@ -309,9 +329,9 @@ Failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
 Returns self `Try` if it's a `Success` or the given alternative if this is a `Failure`.
 
 ```ruby
-Success(42).or_else { Success(-1) }                 #=> Success(42)
-Failure(ArgumentError.new).or_else { Success(-1) }  #=> Success(-1)
-Failure(ArgumentError.new).or_else { Try { 1/0 } }  #=> Failure(ZeroDivisionError.new('divided by 0'))
+Fear.success(42).or_else { Fear.success(-1) }                 #=> Fear.success(42)
+Fear.failure(ArgumentError.new).or_else { Fear.success(-1) }  #=> Fear.success(-1)
+Fear.failure(ArgumentError.new).or_else { Fear.try { 1/0 } }  #=> Fear.failure(ZeroDivisionError.new('divided by 0'))
 ```
 
 #### Try#flatten
@@ -319,10 +339,10 @@ Failure(ArgumentError.new).or_else { Try { 1/0 } }  #=> Failure(ZeroDivisionErro
 Transforms a nested `Try`, ie, a `Success` of `Success`, into an un-nested `Try`, ie, a `Success`.
 
 ```ruby
-Success(42).flatten                         #=> Success(42)
-Success(Success(42)).flatten                #=> Success(42)
-Success(Failure(ArgumentError.new)).flatten #=> Failure(ArgumentError.new)
-Failure(ArgumentError.new).flatten { -1 }   #=> Failure(ArgumentError.new)
+Fear.success(42).flatten                         #=> Fear.success(42)
+Fear.success(Fear.success(42)).flatten                #=> Fear.success(42)
+Fear.success(Fear.failure(ArgumentError.new)).flatten #=> Fear.failure(ArgumentError.new)
+Fear.failure(ArgumentError.new).flatten { -1 }   #=> Fear.failure(ArgumentError.new)
 ```
 
 #### Try#select
@@ -330,12 +350,12 @@ Failure(ArgumentError.new).flatten { -1 }   #=> Failure(ArgumentError.new)
 Converts this to a `Failure` if the predicate is not satisfied.
 
 ```ruby
-Success(42).select { |v| v > 40 }
-  #=> Success(21)
-Success(42).select { |v| v < 40 }
-  #=> Failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
-Failure(ArgumentError.new).select { |v| v < 40 }
-  #=> Failure(ArgumentError.new)
+Fear.success(42).select { |v| v > 40 }
+  #=> Fear.success(21)
+Fear.success(42).select { |v| v < 40 }
+  #=> Fear.failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
+Fear.failure(ArgumentError.new).select { |v| v < 40 }
+  #=> Fear.failure(ArgumentError.new)
 ```
 
 #### Try#recover_with
@@ -343,12 +363,12 @@ Failure(ArgumentError.new).select { |v| v < 40 }
 Applies the given block to exception. This is like `flat_map` for the exception.
 
 ```ruby
-Success(42).recover_with { |e| Success(e.massage) }
-  #=> Success(42)
-Failure(ArgumentError.new).recover_with { |e| Success(e.massage) }
-  #=> Success('ArgumentError')
-Failure(ArgumentError.new).recover_with { |e| raise }
-  #=> Failure(RuntimeError)
+Fear.success(42).recover_with { |e| Fear.success(e.massage) }
+  #=> Fear.success(42)
+Fear.failure(ArgumentError.new).recover_with { |e| Fear.success(e.massage) }
+  #=> Fear.success('ArgumentError')
+Fear.failure(ArgumentError.new).recover_with { |e| raise }
+  #=> Fear.failure(RuntimeError)
 ```
 
 #### Try#recover
@@ -356,12 +376,12 @@ Failure(ArgumentError.new).recover_with { |e| raise }
 Applies the given block to exception. This is like `map` for the exception.
 
 ```ruby
-Success(42).recover { |e| e.massage }
-  #=> Success(42)
-Failure(ArgumentError.new).recover { |e| e.massage }
-  #=> Success('ArgumentError')
-Failure(ArgumentError.new).recover { |e| raise }
-  #=> Failure(RuntimeError)
+Fear.success(42).recover { |e| e.massage }
+  #=> Fear.success(42)
+Fear.failure(ArgumentError.new).recover { |e| e.massage }
+  #=> Fear.success('ArgumentError')
+Fear.failure(ArgumentError.new).recover { |e| raise }
+  #=> Fear.failure(RuntimeError)
 ```
 
 #### Try#to_either
@@ -369,11 +389,11 @@ Failure(ArgumentError.new).recover { |e| raise }
 Returns `Left` with exception if this is a `Failure`, otherwise returns `Right` with `Success` value.
 
 ```ruby
-Success(42).to_either                #=> Right(42)
-Failure(ArgumentError.new).to_either #=> Left(ArgumentError.new)
+Fear.success(42).to_either                #=> Fear.right(42)
+Fear.failure(ArgumentError.new).to_either #=> Fear.left(ArgumentError.new)
 ```
 
-### Either ([Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Either))
+### Either ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/EitherApi))
   
 Represents a value of one of two possible types (a disjoint union.)
 An instance of `Either` is either an instance of `Left` or `Right`.
@@ -390,9 +410,9 @@ received input is a +String+ or an +Fixnum+.
 ```ruby
 in = Readline.readline('Type Either a string or an Int: ', true)
 result = begin
-  Right(Integer(in))
+  Fear.right(Integer(in))
 rescue ArgumentError
-  Left(in)
+  Fear.left(in)
 end
 
 result.match do |m|
@@ -410,16 +430,25 @@ Either is right-biased, which means that `Right` is assumed to be the default ca
 operate on. If it is `Left`, operations like `#map`, `#flat_map`, ... return the `Left` value
 unchanged.
 
+Alternatively, include `Fear::Either::Mixin` to use `Left()`, and `Right()` methods:
+
+```ruby
+include Fear::Either::Mixin 
+
+Left(42)  #=> #<Fear::Left value=42>
+Right(42)  #=> #<Fear::Right value=42>
+```
+
 #### Either#get_or_else
 
 Returns the value from this `Right` or evaluates the given default argument if this is a `Left`.
 
 ```ruby
-Right(42).get_or_else { 24/2 }         #=> 42
-Left('undefined').get_or_else { 24/2 } #=> 12
+Fear.right(42).get_or_else { 24/2 }         #=> 42
+Fear.left('undefined').get_or_else { 24/2 } #=> 12
 
-Right(42).get_or_else(12)         #=> 42
-Left('undefined').get_or_else(12) #=> 12
+Fear.right(42).get_or_else(12)         #=> 42
+Fear.left('undefined').get_or_else(12) #=> 12
 ```
 
 #### Either#or_else
@@ -427,9 +456,9 @@ Left('undefined').get_or_else(12) #=> 12
 Returns self `Right` or the given alternative if this is a `Left`.
 
 ```ruby
-Right(42).or_else { Right(21) }           #=> Right(42)
-Left('unknown').or_else { Right(21) }     #=> Right(21)
-Left('unknown').or_else { Left('empty') } #=> Left('empty')
+Fear.right(42).or_else { Fear.right(21) }           #=> Fear.right(42)
+Fear.left('unknown').or_else { Fear.right(21) }     #=> Fear.right(21)
+Fear.left('unknown').or_else { Fear.left('empty') } #=> Fear.left('empty')
 ```
 
 #### Either#include?
@@ -437,9 +466,9 @@ Left('unknown').or_else { Left('empty') } #=> Left('empty')
 Returns `true` if `Right` has an element that is equal to given value, `false` otherwise.
 
 ```ruby
-Right(17).include?(17)         #=> true
-Right(17).include?(7)          #=> false
-Left('undefined').include?(17) #=> false
+Fear.right(17).include?(17)         #=> true
+Fear.right(17).include?(7)          #=> false
+Fear.left('undefined').include?(17) #=> false
 ```
 
 #### Either#each
@@ -447,8 +476,8 @@ Left('undefined').include?(17) #=> false
 Performs the given block if this is a `Right`.
 
 ```ruby
-Right(17).each { |value| puts value } #=> prints 17
-Left('undefined').each { |value| puts value } #=> does nothing
+Fear.right(17).each { |value| puts value } #=> prints 17
+Fear.left('undefined').each { |value| puts value } #=> does nothing
 ```
 
 #### Either#map
@@ -456,8 +485,8 @@ Left('undefined').each { |value| puts value } #=> does nothing
 Maps the given block to the value from this `Right` or returns self if this is a `Left`.
 
 ```ruby
-Right(42).map { |v| v/2 }          #=> Right(21)
-Left('undefined').map { |v| v/2 }  #=> Left('undefined')
+Fear.right(42).map { |v| v/2 }          #=> Fear.right(21)
+Fear.left('undefined').map { |v| v/2 }  #=> Fear.left('undefined')
 ```
 
 #### Either#flat_map
@@ -465,8 +494,8 @@ Left('undefined').map { |v| v/2 }  #=> Left('undefined')
 Returns the given block applied to the value from this `Right` or returns self if this is a `Left`.
 
 ```ruby
-Right(42).flat_map { |v| Right(v/2) }         #=> Right(21)
-Left('undefined').flat_map { |v| Right(v/2) } #=> Left('undefined')
+Fear.right(42).flat_map { |v| Fear.right(v/2) }         #=> Fear.right(21)
+Fear.left('undefined').flat_map { |v| Fear.right(v/2) } #=> Fear.left('undefined')
 ```
 
 #### Either#to_option
@@ -474,8 +503,8 @@ Left('undefined').flat_map { |v| Right(v/2) } #=> Left('undefined')
 Returns an `Some` containing the `Right` value or a `None` if this is a `Left`.
 
 ```ruby
-Right(42).to_option          #=> Some(21)
-Left('undefined').to_option  #=> None
+Fear.right(42).to_option          #=> Fear.some(21)
+Fear.left('undefined').to_option  #=> Fear::None
 ```
 
 #### Either#any?
@@ -483,9 +512,9 @@ Left('undefined').to_option  #=> None
 Returns `false` if `Left` or returns the result of the application of the given predicate to the `Right` value.
 
 ```ruby
-Right(12).any?( |v| v > 10)         #=> true
-Right(7).any?( |v| v > 10)          #=> false
-Left('undefined').any?( |v| v > 10) #=> false
+Fear.right(12).any?( |v| v > 10)         #=> true
+Fear.right(7).any?( |v| v > 10)          #=> false
+Fear.left('undefined').any?( |v| v > 10) #=> false
 ```
 
 #### Either#right?, Either#success?
@@ -493,8 +522,8 @@ Left('undefined').any?( |v| v > 10) #=> false
 Returns `true` if this is a `Right`, `false` otherwise.
 
 ```ruby
-Right(42).right?   #=> true
-Left('err').right? #=> false
+Fear.right(42).right?   #=> true
+Fear.left('err').right? #=> false
 ```
 
 #### Either#left?, Either#failure?
@@ -502,8 +531,8 @@ Left('err').right? #=> false
 Returns `true` if this is a `Left`, `false` otherwise.
 
 ```ruby
-Right(42).left?   #=> false
-Left('err').left? #=> true
+Fear.right(42).left?   #=> false
+Fear.left('err').left? #=> true
 ```
 
 #### Either#select_or_else
@@ -512,10 +541,10 @@ Returns `Left` of the default if the given predicate does not hold for the right
 returns `Right`.
 
 ```ruby
-Right(12).select_or_else(-1, &:even?)       #=> Right(12)
-Right(7).select_or_else(-1, &:even?)        #=> Left(-1)
-Left(12).select_or_else(-1, &:even?)        #=> Left(12)
-Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(12)
+Fear.right(12).select_or_else(-1, &:even?)       #=> Fear.right(12)
+Fear.right(7).select_or_else(-1, &:even?)        #=> Fear.left(-1)
+Fear.left(12).select_or_else(-1, &:even?)        #=> Fear.left(12)
+Fear.left(12).select_or_else(-> { -1 }, &:even?) #=> Fear.left(12)
 ```
 
 #### Either#select
@@ -523,10 +552,10 @@ Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(12)
 Returns `Left` of value if the given predicate does not hold for the right value, otherwise, returns `Right`.
 
 ```ruby
-Right(12).select(&:even?) #=> Right(12)
-Right(7).select(&:even?)  #=> Left(7)
-Left(12).select(&:even?)  #=> Left(12)
-Left(7).select(&:even?)   #=> Left(7)
+Fear.right(12).select(&:even?) #=> Fear.right(12)
+Fear.right(7).select(&:even?)  #=> Fear.left(7)
+Fear.left(12).select(&:even?)  #=> Fear.left(12)
+Fear.left(7).select(&:even?)   #=> Fear.left(7)
 ```
 
 #### Either#reject
@@ -534,10 +563,10 @@ Left(7).select(&:even?)   #=> Left(7)
 Returns `Left` of value if the given predicate holds for the right value, otherwise, returns `Right`.
 
 ```ruby
-Right(12).reject(&:even?) #=> Left(12)
-Right(7).reject(&:even?)  #=> Right(7)
-Left(12).reject(&:even?)  #=> Left(12)
-Left(7).reject(&:even?)   #=> Left(7)
+Fear.right(12).reject(&:even?) #=> Fear.left(12)
+Fear.right(7).reject(&:even?)  #=> Fear.right(7)
+Fear.left(12).reject(&:even?)  #=> Fear.left(12)
+Fear.left(7).reject(&:even?)   #=> Fear.left(7)
 ```
 
 #### Either#swap
@@ -545,8 +574,8 @@ Left(7).reject(&:even?)   #=> Left(7)
 If this is a `Left`, then return the left value in `Right` or vice versa.
 
 ```ruby
-Left('left').swap   #=> Right('left')
-Right('right').swap #=> Light('left')
+Fear.left('left').swap   #=> Fear.right('left')
+Fear.right('right').swap #=> Fear.left('left')
 ```
 
 #### Either#reduce
@@ -569,10 +598,10 @@ Joins an `Either` through `Right`. This method requires that the right side of t
 `Either` type. This method, and `join_left`, are analogous to `Option#flatten`
 
 ```ruby
-Right(Right(12)).join_right      #=> Right(12)
-Right(Left("flower")).join_right #=> Left("flower")
-Left("flower").join_right        #=> Left("flower")
-Left(Right("flower")).join_right #=> Left(Right("flower"))
+Fear.right(Fear.right(12)).join_right      #=> Fear.right(12)
+Fear.right(Fear.left("flower")).join_right #=> Fear.left("flower")
+Fear.left("flower").join_right        #=> Fear.left("flower")
+Fear.left(Fear.right("flower")).join_right #=> Fear.left(Fear.right("flower"))
 ```
 
 #### Either#join_right
@@ -581,32 +610,32 @@ Joins an `Either` through `Left`. This method requires that the left side of thi
 `Either` type. This method, and `join_right`, are analogous to `Option#flatten`
 
 ```ruby
-Left(Right("flower")).join_left #=> Right("flower")
-Left(Left(12)).join_left        #=> Left(12)
-Right("daisy").join_left        #=> Right("daisy")
-Right(Left("daisy")).join_left  #=> Right(Left("daisy"))
+Fear.left(Fear.right("flower")).join_left #=> Fear.right("flower")
+Fear.left(Fear.left(12)).join_left        #=> Fear.left(12)
+Fear.right("daisy").join_left        #=> Fear.right("daisy")
+Fear.right(Fear.left("daisy")).join_left  #=> Fear.right(Fear.left("daisy"))
 ```
-  
-### For composition
+
+### For composition ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/ForApi))
 
 Provides syntactic sugar for composition of multiple monadic operations. 
 It supports two such operations - `flat_map` and `map`. Any class providing them
 is supported by `For`.
 
 ```ruby
-For(Some(2), Some(3)) do |a, b|
+Fear.for(Fear.some(2), Fear.some(3)) do |a, b|
   a * b
-end #=> Some(6)
+end #=> Fear.some(6)
 ```
 
 If one of operands is None, the result is None
 
 ```ruby
-For(Some(2), None) do |a, b| 
+Fear.for(Fear.some(2), None) do |a, b| 
   a * b 
 end #=> None
 
-For(None, Some(2)) do |a, b| 
+Fear.for(None, Fear.some(2)) do |a, b| 
   a * b 
 end #=> None
 ```
@@ -614,7 +643,7 @@ end #=> None
 Lets look at first example:
 
 ```ruby
-For(Some(2), None) do |a, b| 
+Fear.for(Fear.some(2), None) do |a, b| 
   a * b 
 end #=> None
 ```
@@ -622,8 +651,8 @@ end #=> None
 it is translated to:
 
 ```ruby
-Some(2).flat_map do |a|
-  Some(3).map do |b|
+Fear.some(2).flat_map do |a|
+  Fear.some(3).map do |b|
     a * b
   end
 end
@@ -632,7 +661,7 @@ end
 It works with arrays as well
 
 ```ruby
-For([1, 2], [2, 3], [3, 4]) { |a, b, c| a * b * c }
+Fear.for([1, 2], [2, 3], [3, 4]) { |a, b, c| a * b * c }
   #=> [6, 8, 9, 12, 12, 16, 18, 24]
 
 ```
@@ -653,7 +682,7 @@ If you pass lambda as a variable value, it would be evaluated
 only on demand.
 
 ```ruby
-For(proc { None }, proc { raise 'kaboom' } ) do |a, b|
+Fear.for(proc { None }, proc { raise 'kaboom' } ) do |a, b|
   a * b
 end #=> None
 ```
@@ -664,12 +693,12 @@ You can refer to previously defined variables from within lambdas.
 ```ruby
 maybe_user = find_user('Paul') #=> <#Option value=<#User ...>>
 
-For(maybe_user, ->(user) { user.birthday }) do |user, birthday|
+Fear.for(maybe_user, ->(user) { user.birthday }) do |user, birthday|
   "#{user.name} was born on #{birthday}"
-end #=> Some('Paul was born on 1987-06-17')
+end #=> Fear.some('Paul was born on 1987-06-17')
 ```
 
-### Pattern Matching (API Documentation)
+### Pattern Matching ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/PatternMatchingApi))
 
 Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
 defined on domain described with guard.
@@ -682,7 +711,7 @@ pf.call('Foo') #=> raises Fear::MatchError
 pf.call_or_else('Foo') { 'not a number' } #=> 'not a number'
 pf.call_or_else(4) { 'not a number' } #=> 2
 pf.lift.call('Foo') #=> Fear::None
-pf.lift.call(4) #=> Fear::Some(2)
+pf.lift.call(4) #=> Fear.some(2)
 ```
 
 It uses `#===` method under the hood, so you can pass:
@@ -826,7 +855,7 @@ only on container itself, but on enclosed value as well.
 Pattern match against an `Option`
 
 ```ruby
-Some(42).match do |m|
+Fear.some(42).match do |m|
   m.some { |x| x * 2 }
   m.none { 'none' }
 end #=> 84
@@ -835,7 +864,7 @@ end #=> 84
 pattern match on enclosed value
 
 ```ruby
-Some(41).match do |m|
+Fear.some(41).match do |m|
   m.some(:even?) { |x| x / 2 }
   m.some(:odd?, ->(v) { v > 0 }) { |x| x * 2 }
   m.none { 'none' }
@@ -845,7 +874,7 @@ end #=> 82
 it raises `Fear::MatchError` error if nothing matched. To avoid exception, you can pass `#else` branch
 
 ```ruby
-Some(42).match do |m|
+Fear.some(42).match do |m|
   m.some(:odd?) { |x| x * 2 }
   m.else { 'nothing' }
 end #=> nothing
@@ -856,14 +885,14 @@ Pattern matching works the similar way for `Either` and `Try` monads.
 In sake of performance, you may want to generate pattern matching function and reuse it multiple times:
 
 ```ruby
-matcher = Option.matcher do |m|
+matcher = Fear::Option.matcher do |m|
   m.some(42) { 'Yep' }
   m.some { 'Nope' }
   m.none { 'Error' } 
 end
 
-matcher.(Some(42)) #=> 'Yep'
-matcher.(Some(40)) #=> 'Nope'
+matcher.(Fear.some(42)) #=> 'Yep'
+matcher.(Fear.some(40)) #=> 'Nope'
 ``` 
 
 ## Testing

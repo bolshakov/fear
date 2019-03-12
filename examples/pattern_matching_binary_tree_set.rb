@@ -9,8 +9,6 @@ require 'fear'
 #   set.includes?(4) #=> false
 #
 class BinaryTreeSet
-  include Fear::Option::Mixin
-
   Position = Module.new
   Right = Module.new.include(Position)
   Left = Module.new.include(Position)
@@ -90,9 +88,9 @@ class BinaryTreeSet
   # @return [Fear::Option<BinaryTreeSet>]
   private def leaf(position)
     if subtrees.key?(position)
-      Some(subtrees[position])
+      Fear.some(subtrees[position])
     else
-      Fear::None
+      Fear.none
     end
   end
 end

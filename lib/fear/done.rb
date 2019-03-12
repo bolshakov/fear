@@ -3,9 +3,9 @@ module Fear
   #
   # @example
   #   if user.valid?
-  #     Right(Done)
+  #     Fear.right(Done)
   #   else
-  #     Left(user.errors)
+  #     Fear.left(user.errors)
   #   end
   #
   Done = Object.new.tap do |done|

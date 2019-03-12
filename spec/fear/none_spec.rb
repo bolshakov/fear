@@ -1,11 +1,9 @@
 RSpec.describe Fear::None do
-  include Fear::Option::Mixin
-
   it_behaves_like Fear::RightBiased::Left do
-    let(:left) { None() }
+    let(:left) { Fear.none }
   end
 
-  subject(:none) { None() }
+  subject(:none) { Fear.none }
 
   describe '#get' do
     subject { proc { none.get } }
@@ -19,7 +17,7 @@ RSpec.describe Fear::None do
 
   describe '#or_else' do
     subject { none.or_else { alternative } }
-    let(:alternative) { Some(42) }
+    let(:alternative) { Fear.some(42) }
 
     it 'returns alternative' do
       is_expected.to eq(alternative)
@@ -35,7 +33,7 @@ RSpec.describe Fear::None do
     subject { none.select { |value| value > 42 } }
 
     it 'always return None' do
-      is_expected.to eq(None())
+      is_expected.to eq(Fear.none)
     end
   end
 
@@ -43,7 +41,7 @@ RSpec.describe Fear::None do
     subject { none.reject { |value| value > 42 } }
 
     it 'always return None' do
-      is_expected.to eq(None())
+      is_expected.to eq(Fear.none)
     end
   end
 
@@ -54,7 +52,7 @@ RSpec.describe Fear::None do
   end
 
   describe '.inherited' do
-    subject { -> { Class.new(Fear::None.class) } }
+    subject { -> { Class.new(Fear::Fear.none.class) } }
 
     it { is_expected.to raise_error }
   end
@@ -79,7 +77,7 @@ RSpec.describe Fear::None do
     end
 
     context 'Fear::Some' do
-      subject { Fear::None === Some(4) }
+      subject { Fear::None === Fear.some(4) }
 
       it { is_expected.to eq(false) }
     end

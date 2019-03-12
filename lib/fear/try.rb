@@ -11,8 +11,8 @@ module Fear
   # @example
   #   include Fear::Try::Mixin
   #
-  #   dividend = Try { Integer(params[:dividend]) }
-  #   divisor = Try { Integer(params[:divisor]) }
+  #   dividend = Fear.try { Integer(params[:dividend]) }
+  #   divisor = Fear.try { Integer(params[:divisor]) }
   #   problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
   #
   #   problem.match |m|
@@ -53,13 +53,13 @@ module Fear
   #     @yieldreturn [any]
   #     @return [any]
   #     @example
-  #       Success(42).get_or_else { 24/2 }                #=> 42
-  #       Failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
+  #       Fear.success(42).get_or_else { 24/2 }                #=> 42
+  #       Fear.failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
   #   @overload get_or_else(default)
   #     @return [any]
   #     @example
-  #       Success(42).get_or_else(12)                #=> 42
-  #       Failure(ArgumentError.new).get_or_else(12) #=> 12
+  #       Fear.success(42).get_or_else(12)                #=> 42
+  #       Fear.failure(ArgumentError.new).get_or_else(12) #=> 12
   #
   # @!method include?(other_value)
   #   Returns +true+ if it has an element that is equal
@@ -67,9 +67,9 @@ module Fear
   #   @param [any]
   #   @return [Boolean]
   #   @example
-  #     Success(17).include?(17)                #=> true
-  #     Success(17).include?(7)                 #=> false
-  #     Failure(ArgumentError.new).include?(17) #=> false
+  #     Fear.success(17).include?(17)                #=> true
+  #     Fear.success(17).include?(7)                 #=> false
+  #     Fear.failure(ArgumentError.new).include?(17) #=> false
   #
   # @!method each(&block)
   #   Performs the given block if this is a +Success+.
@@ -78,11 +78,11 @@ module Fear
   #   @yieldreturn [void]
   #   @return [Try] itself
   #   @example
-  #     Success(17).each do |value|
+  #     Fear.success(17).each do |value|
   #       puts value
   #     end #=> prints 17
   #
-  #     Failure(ArgumentError.new).each do |value|
+  #     Fear.failure(ArgumentError.new).each do |value|
   #       puts value
   #     end #=> does nothing
   #
@@ -92,8 +92,8 @@ module Fear
   #   @yieldparam [any] value
   #   @yieldreturn [any]
   #   @example
-  #     Success(42).map { |v| v/2 }                 #=> Success(21)
-  #     Failure(ArgumentError.new).map { |v| v/2 }  #=> Failure(ArgumentError.new)
+  #     Fear.success(42).map { |v| v/2 }                 #=> Fear.success(21)
+  #     Fear.failure(ArgumentError.new).map { |v| v/2 }  #=> Fear.failure(ArgumentError.new)
   #
   # @!method flat_map(&block)
   #   Returns the given block applied to the value from this +Success+
@@ -102,18 +102,18 @@ module Fear
   #   @yieldreturn [Try]
   #   @return [Try]
   #   @example
-  #     Success(42).flat_map { |v| Success(v/2) }
-  #       #=> Success(21)
-  #     Failure(ArgumentError.new).flat_map { |v| Success(v/2) }
-  #       #=> Failure(ArgumentError.new)
+  #     Fear.success(42).flat_map { |v| Fear.success(v/2) }
+  #       #=> Fear.success(21)
+  #     Fear.failure(ArgumentError.new).flat_map { |v| Fear.success(v/2) }
+  #       #=> Fear.failure(ArgumentError.new)
   #
   # @!method to_option
   #   Returns an +Some+ containing the +Success+ value or a +None+ if
   #   this is a +Failure+.
   #   @return [Option]
   #   @example
-  #     Success(42).to_option                 #=> Some(21)
-  #     Failure(ArgumentError.new).to_option  #=> None()
+  #     Fear.success(42).to_option                 #=> Fear.some(21)
+  #     Fear.failure(ArgumentError.new).to_option  #=> Fear.none()
   #
   # @!method any?(&predicate)
   #   Returns +false+ if +Failure+ or returns the result of the
@@ -122,9 +122,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Boolean]
   #   @example
-  #     Success(12).any?( |v| v > 10)                #=> true
-  #     Success(7).any?( |v| v > 10)                 #=> false
-  #     Failure(ArgumentError.new).any?( |v| v > 10) #=> false
+  #     Fear.success(12).any?( |v| v > 10)                #=> true
+  #     Fear.success(7).any?( |v| v > 10)                 #=> false
+  #     Fear.failure(ArgumentError.new).any?( |v| v > 10) #=> false
   #
   # ---
   #
@@ -141,26 +141,27 @@ module Fear
   #   if this is a +Failure+.
   #   @return [any]
   #   @example
-  #     Success(42).get                 #=> 42
-  #     Failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
+  #     Fear.success(42).get                 #=> 42
+  #     Fear.failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
   #
   # @!method or_else(&alternative)
   #   Returns this +Try+ if it's a +Success+ or the given alternative if this is a +Failure+.
   #   @return [Try]
   #   @example
-  #     Success(42).or_else { Success(-1) }                 #=> Success(42)
-  #     Failure(ArgumentError.new).or_else { Success(-1) }  #=> Success(-1)
-  #     Failure(ArgumentError.new).or_else { Try { 1/0 } }  #=> Failure(ZeroDivisionError.new('divided by 0'))
+  #     Fear.success(42).or_else { Fear.success(-1) }                 #=> Fear.success(42)
+  #     Fear.failure(ArgumentError.new).or_else { Fear.success(-1) }  #=> Fear.success(-1)
+  #     Fear.failure(ArgumentError.new).or_else { Fear.try { 1/0 } }
+  #       #=> Fear.failure(ZeroDivisionError.new('divided by 0'))
   #
   # @!method flatten
   #   Transforms a nested +Try+, ie, a +Success+ of +Success+,
   #   into an un-nested +Try+, ie, a +Success+.
   #   @return [Try]
   #   @example
-  #     Success(42).flatten                         #=> Success(42)
-  #     Success(Success(42)).flatten                #=> Success(42)
-  #     Success(Failure(ArgumentError.new)).flatten #=> Failure(ArgumentError.new)
-  #     Failure(ArgumentError.new).flatten { -1 }   #=> Failure(ArgumentError.new)
+  #     Fear.success(42).flatten                         #=> Fear.success(42)
+  #     Fear.success(Fear.success(42)).flatten                #=> Fear.success(42)
+  #     Fear.success(Fear.failure(ArgumentError.new)).flatten #=> Fear.failure(ArgumentError.new)
+  #     Fear.failure(ArgumentError.new).flatten { -1 }   #=> Fear.failure(ArgumentError.new)
   #
   # @!method select(&predicate)
   #   Converts this to a +Failure+ if the predicate is not satisfied.
@@ -168,12 +169,12 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Try]
   #   @example
-  #     Success(42).select { |v| v > 40 }
-  #       #=> Success(21)
-  #     Success(42).select { |v| v < 40 }
-  #       #=> Failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
-  #     Failure(ArgumentError.new).select { |v| v < 40 }
-  #       #=> Failure(ArgumentError.new)
+  #     Fear.success(42).select { |v| v > 40 }
+  #       #=> Fear.success(21)
+  #     Fear.success(42).select { |v| v < 40 }
+  #       #=> Fear.failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
+  #     Fear.failure(ArgumentError.new).select { |v| v < 40 }
+  #       #=> Fear.failure(ArgumentError.new)
   #
   # @!method recover_with(&block)
   #   Applies the given block to exception. This is like +flat_map+
@@ -182,12 +183,12 @@ module Fear
   #   @yieldreturn [Try]
   #   @return [Try]
   #   @example
-  #     Success(42).recover_with { |e| Success(e.massage) }
-  #       #=> Success(42)
-  #     Failure(ArgumentError.new).recover_with { |e| Success(e.massage) }
-  #       #=> Success('ArgumentError')
-  #     Failure(ArgumentError.new).recover_with { |e| raise }
-  #       #=> Failure(RuntimeError)
+  #     Fear.success(42).recover_with { |e| Fear.success(e.massage) }
+  #       #=> Fear.success(42)
+  #     Fear.failure(ArgumentError.new).recover_with { |e| Fear.success(e.massage) }
+  #       #=> Fear.success('ArgumentError')
+  #     Fear.failure(ArgumentError.new).recover_with { |e| raise }
+  #       #=> Fear.failure(RuntimeError)
   #
   # @!method recover(&block)
   #   Applies the given block to exception. This is like +map+ for the exception.
@@ -195,26 +196,26 @@ module Fear
   #   @yieldreturn [any]
   #   @return [Try]
   #   @example #recover
-  #     Success(42).recover { |e| e.massage }
-  #       #=> Success(42)
-  #     Failure(ArgumentError.new).recover { |e| e.massage }
-  #       #=> Success('ArgumentError')
-  #     Failure(ArgumentError.new).recover { |e| raise }
-  #       #=> Failure(RuntimeError)
+  #     Fear.success(42).recover { |e| e.massage }
+  #       #=> Fear.success(42)
+  #     Fear.failure(ArgumentError.new).recover { |e| e.massage }
+  #       #=> Fear.success('ArgumentError')
+  #     Fear.failure(ArgumentError.new).recover { |e| raise }
+  #       #=> Fear.failure(RuntimeError)
   #
   # @!method to_either
   #   Returns +Left+ with exception if this is a +Failure+, otherwise
   #   returns +Right+ with +Success+ value.
   #   @return [Right<any>, Left<StandardError>]
   #   @example
-  #     Success(42).to_either                #=> Right(42)
-  #     Failure(ArgumentError.new).to_either #=> Left(ArgumentError.new)
+  #     Fear.success(42).to_either                #=> Fear.right(42)
+  #     Fear.failure(ArgumentError.new).to_either #=> Fear.left(ArgumentError.new)
   #
   # @!method match(&matcher)
   #   Pattern match against this +Try+
   #   @yield matcher [Fear::TryPatternMatch]
   #   @example
-  #     Try { ... }.match do |m|
+  #     Fear.try { ... }.match do |m|
   #       m.success(Integer) do |x|
   #        x * 2
   #       end
@@ -268,34 +269,32 @@ module Fear
     # @example
     #   include Fear::Try::Mixin
     #
-    #   Try { 4/2 } #=> #<Fear::Success value=2>
-    #   Try { 4/0 } #=> #<Fear::Failure value=#<ZeroDivisionError: divided by 0>>
-    #   Success(2)  #=> #<Fear::Success value=2>
+    #   Fear.try { 4/2 } #=> #<Fear::Success value=2>
+    #   Fear.try { 4/0 } #=> #<Fear::Failure exception=#<ZeroDivisionError: divided by 0>>
+    #   Fear.success(2)  #=> #<Fear::Success value=2>
     #
     module Mixin
       # Constructs a +Try+ using the block. This
-      # method will ensure any non-fatal exception )is caught and a
+      # method ensures any non-fatal exception is caught and a
       # +Failure+ object is returned.
       # @return [Try]
       #
-      def Try
-        Success.new(yield)
-      rescue StandardError => error
-        Failure.new(error)
+      def Try(&block)
+        Fear.try(&block)
       end
 
       # @param exception [StandardError]
       # @return [Failure]
       #
       def Failure(exception)
-        Failure.new(exception)
+        Fear.failure(exception)
       end
 
       # @param value [any]
       # @return [Success]
       #
       def Success(value)
-        Success.new(value)
+        Fear.success(value)
       end
     end
   end

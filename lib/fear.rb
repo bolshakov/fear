@@ -1,12 +1,20 @@
 require 'dry-equalizer'
-require 'fear/version'
+require 'fear/either_api'
+require 'fear/for_api'
+require 'fear/option_api'
 require 'fear/pattern_matching_api'
+require 'fear/try_api'
+require 'fear/version'
 
 module Fear
   Error = Class.new(StandardError)
   NoSuchElementError = Class.new(Error)
   MatchError = Class.new(Error)
+  extend EitherApi
+  extend ForApi
+  extend OptionApi
   extend PatternMatchingApi
+  extend TryApi
 
   autoload :EmptyPartialFunction, 'fear/empty_partial_function'
   autoload :PartialFunction, 'fear/partial_function'

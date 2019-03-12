@@ -14,9 +14,9 @@ module Fear
   # @example
   #   in = Readline.readline('Type Either a string or an Int: ', true)
   #   result = begin
-  #     Right(Integer(in))
+  #     Fear.right(Integer(in))
   #   rescue ArgumentError
-  #     Left(in)
+  #     Fear.left(in)
   #   end
   #
   #   result.match do |m|
@@ -40,21 +40,21 @@ module Fear
   #     @yieldreturn [any]
   #     @return [any]
   #     @example
-  #       Right(42).get_or_else { 24/2 }         #=> 42
-  #       Left('undefined').get_or_else { 24/2 } #=> 12
+  #       Fear.right(42).get_or_else { 24/2 }         #=> 42
+  #       Fear.left('undefined').get_or_else { 24/2 } #=> 12
   #   @overload get_or_else(default)
   #     @return [any]
   #     @example
-  #       Right(42).get_or_else(12)         #=> 42
-  #       Left('undefined').get_or_else(12) #=> 12
+  #       Fear.right(42).get_or_else(12)         #=> 42
+  #       Fear.left('undefined').get_or_else(12) #=> 12
   #
   # @!method or_else(&alternative)
   #   Returns this +Right+ or the given alternative if this is a +Left+.
   #   @return [Either]
   #   @example
-  #     Right(42).or_else { Right(21) }           #=> Right(42)
-  #     Left('unknown').or_else { Right(21) }     #=> Right(21)
-  #     Left('unknown').or_else { Left('empty') } #=> Left('empty')
+  #     Fear.right(42).or_else { Fear.right(21) }           #=> Fear.right(42)
+  #     Fear.left('unknown').or_else { Fear.right(21) }     #=> Fear.right(21)
+  #     Fear.left('unknown').or_else { Fear.left('empty') } #=> Fear.left('empty')
   #
   # @!method include?(other_value)
   #   Returns +true+ if +Right+ has an element that is equal
@@ -62,9 +62,9 @@ module Fear
   #   @param [any]
   #   @return [Boolean]
   #   @example
-  #     Right(17).include?(17)         #=> true
-  #     Right(17).include?(7)          #=> false
-  #     Left('undefined').include?(17) #=> false
+  #     Fear.right(17).include?(17)         #=> true
+  #     Fear.right(17).include?(7)          #=> false
+  #     Fear.left('undefined').include?(17) #=> false
   #
   # @!method each(&block)
   #   Performs the given block if this is a +Right+.
@@ -72,11 +72,11 @@ module Fear
   #   @yieldreturn [void]
   #   @return [Option] itself
   #   @example
-  #     Right(17).each do |value|
+  #     Fear.right(17).each do |value|
   #       puts value
   #     end #=> prints 17
   #
-  #     Left('undefined').each do |value|
+  #     Fear.left('undefined').each do |value|
   #       puts value
   #     end #=> does nothing
   #
@@ -86,8 +86,8 @@ module Fear
   #   @yieldparam [any] value
   #   @yieldreturn [any]
   #   @example
-  #     Right(42).map { |v| v/2 }          #=> Right(21)
-  #     Left('undefined').map { |v| v/2 }  #=> Left('undefined')
+  #     Fear.right(42).map { |v| v/2 }          #=> Fear.right(21)
+  #     Fear.left('undefined').map { |v| v/2 }  #=> Fear.left('undefined')
   #
   # @!method flat_map(&block)
   #   Returns the given block applied to the value from this +Right+
@@ -96,16 +96,16 @@ module Fear
   #   @yieldreturn [Option]
   #   @return [Option]
   #   @example
-  #     Right(42).flat_map { |v| Right(v/2) }         #=> Right(21)
-  #     Left('undefined').flat_map { |v| Right(v/2) } #=> Left('undefined')
+  #     Fear.right(42).flat_map { |v| Fear.right(v/2) }         #=> Fear.right(21)
+  #     Fear.left('undefined').flat_map { |v| Fear.right(v/2) } #=> Fear.left('undefined')
   #
   # @!method to_option
   #   Returns an +Some+ containing the +Right+ value or a +None+ if
   #   this is a +Left+.
   #   @return [Option]
   #   @example
-  #     Right(42).to_option          #=> Some(21)
-  #     Left('undefined').to_option  #=> None()
+  #     Fear.right(42).to_option          #=> Fear.some(21)
+  #     Fear.left('undefined').to_option  #=> Fear.none()
   #
   # @!method any?(&predicate)
   #   Returns +false+ if +Left+ or returns the result of the
@@ -114,9 +114,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Boolean]
   #   @example
-  #     Right(12).any?( |v| v > 10)         #=> true
-  #     Right(7).any?( |v| v > 10)          #=> false
-  #     Left('undefined').any?( |v| v > 10) #=> false
+  #     Fear.right(12).any?( |v| v > 10)         #=> true
+  #     Fear.right(7).any?( |v| v > 10)          #=> false
+  #     Fear.left('undefined').any?( |v| v > 10) #=> false
   #
   # -----
   #
@@ -125,16 +125,16 @@ module Fear
   #   @note this method is also aliased as +#success?+
   #   @return [Boolean]
   #   @example
-  #     Right(42).right?   #=> true
-  #     Left('err').right? #=> false
+  #     Fear.right(42).right?   #=> true
+  #     Fear.left('err').right? #=> false
   #
   # @!method left?
   #   Returns +true+ if this is a +Left+, +false+ otherwise.
   #   @note this method is also aliased as +#failure?+
   #   @return [Boolean]
   #   @example
-  #     Right(42).left?   #=> false
-  #     Left('err').left? #=> true
+  #     Fear.right(42).left?   #=> false
+  #     Fear.left('err').left? #=> true
   #
   # @!method select_or_else(default, &predicate)
   #   Returns +Left+ of the default if the given predicate
@@ -144,10 +144,10 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Either]
   #   @example
-  #     Right(12).select_or_else(-1, &:even?)       #=> Right(12)
-  #     Right(7).select_or_else(-1, &:even?)        #=> Left(-1)
-  #     Left(12).select_or_else(-1, &:even?)        #=> Left(12)
-  #     Left(12).select_or_else(-> { -1 }, &:even?) #=> Left(12)
+  #     Fear.right(12).select_or_else(-1, &:even?)       #=> Fear.right(12)
+  #     Fear.right(7).select_or_else(-1, &:even?)        #=> Fear.left(-1)
+  #     Fear.left(12).select_or_else(-1, &:even?)        #=> Fear.left(12)
+  #     Fear.left(12).select_or_else(-> { -1 }, &:even?) #=> Fear.left(12)
   #
   # @!method select(&predicate)
   #   Returns +Left+ of value if the given predicate
@@ -156,10 +156,10 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Either]
   #   @example
-  #     Right(12).select(&:even?) #=> Right(12)
-  #     Right(7).select(&:even?)  #=> Left(7)
-  #     Left(12).select(&:even?)  #=> Left(12)
-  #     Left(7).select(&:even?)   #=> Left(7)
+  #     Fear.right(12).select(&:even?) #=> Fear.right(12)
+  #     Fear.right(7).select(&:even?)  #=> Fear.left(7)
+  #     Fear.left(12).select(&:even?)  #=> Fear.left(12)
+  #     Fear.left(7).select(&:even?)   #=> Fear.left(7)
   #
   # @!method reject(&predicate)
   #   Returns +Left+ of value if the given predicate holds for the
@@ -168,17 +168,17 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Either]
   #   @example
-  #     Right(12).reject(&:even?) #=> Left(12)
-  #     Right(7).reject(&:even?)  #=> Right(7)
-  #     Left(12).reject(&:even?)  #=> Left(12)
-  #     Left(7).reject(&:even?)   #=> Left(7)
+  #     Fear.right(12).reject(&:even?) #=> Fear.left(12)
+  #     Fear.right(7).reject(&:even?)  #=> Fear.right(7)
+  #     Fear.left(12).reject(&:even?)  #=> Fear.left(12)
+  #     Fear.left(7).reject(&:even?)   #=> Fear.left(7)
   #
   # @!method swap
   #   If this is a +Left+, then return the left value in +Right+ or vice versa.
   #   @return [Either]
   #   @example
-  #     Left('left').swap   #=> Right('left')
-  #     Right('right').swap #=> Light('left')
+  #     Fear.left('left').swap   #=> Fear.right('left')
+  #     Fear.right('right').swap #=> Fear.left('left')
   #
   # @!method reduce(reduce_left, reduce_right)
   #   Applies +reduce_left+ if this is a +Left+ or +reduce_right+ if
@@ -204,10 +204,10 @@ module Fear
   #   @return [Either]
   #   @raise [TypeError] if it does not contain +Either+.
   #   @example
-  #     Right(Right(12)).join_right      #=> Right(12)
-  #     Right(Left("flower")).join_right #=> Left("flower")
-  #     Left("flower").join_right        #=> Left("flower")
-  #     Left(Right("flower")).join_right #=> Left(Right("flower"))
+  #     Fear.right(Fear.right(12)).join_right      #=> Fear.right(12)
+  #     Fear.right(Fear.left("flower")).join_right #=> Fear.left("flower")
+  #     Fear.left("flower").join_right             #=> Fear.left("flower")
+  #     Fear.left(Fear.right("flower")).join_right #=> Fear.left(Fear.right("flower"))
   #
   # @!method join_right
   #   Joins an +Either+ through +Left+. This method requires
@@ -217,16 +217,16 @@ module Fear
   #   @return [Either]
   #   @raise [TypeError] if it does not contain +Either+.
   #   @example
-  #     Left(Right("flower")).join_left #=> Right("flower")
-  #     Left(Left(12)).join_left        #=> Left(12)
-  #     Right("daisy").join_left        #=> Right("daisy")
-  #     Right(Left("daisy")).join_left  #=> Right(Left("daisy"))
+  #     Fear.left(Fear.right("flower")).join_left   #=> Fear.right("flower")
+  #     Fear.left(Fear.left(12)).join_left          #=> Fear.left(12)
+  #     Fear.right("daisy").join_left               #=> Fear.right("daisy")
+  #     Fear.right(Fear.left("daisy")).join_left    #=> Fear.right(Fear.left("daisy"))
   #
   # @!method match(&matcher)
   #   Pattern match against this +Either+
   #   @yield matcher [Fear::EitherPatternMatch]
   #   @example
-  #     Either(val).match do |m|
+  #     either.match do |m|
   #       m.right(Integer) do |x|
   #        x * 2
   #       end
@@ -275,7 +275,7 @@ module Fear
       #       m.left(String) { :err }
       #       m.else { 'error '}
       #     end
-      #   matcher.call(Some(42))
+      #   matcher.call(Fear.right(42))
       #
       # @yieldparam [Fear::EitherPatternMatch]
       # @return [Fear::PartialFunction]
@@ -292,16 +292,22 @@ module Fear
     #   Left('beaf')    #=> #<Fear::Legt value='beaf'>
     #
     module Mixin
-      # @param [any]
-      # @return [Left]
+      # @param value [any]
+      # @return [Fear::Left]
+      # @example
+      #   Left(42) #=> #<Fear::Left value=42>
+      #
       def Left(value)
-        Left.new(value)
+        Fear.left(value)
       end
 
-      # @param [any]
-      # @return [Right]
+      # @param value [any]
+      # @return [Fear::Right]
+      # @example
+      #   Right(42) #=> #<Fear::Right value=42>
+      #
       def Right(value)
-        Right.new(value)
+        Fear.right(value)
       end
     end
   end

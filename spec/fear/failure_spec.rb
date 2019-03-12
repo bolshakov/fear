@@ -1,6 +1,6 @@
 RSpec.describe Fear::Failure do
   let(:exception) { RuntimeError.new('error') }
-  let(:failure) { Failure(exception) }
+  let(:failure) { Fear.failure(exception) }
 
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { failure }
@@ -53,7 +53,7 @@ RSpec.describe Fear::Failure do
     context 'block does not fail' do
       subject do
         failure.recover_with do |error|
-          Success(error.message)
+          Fear.success(error.message)
         end
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Fear::Failure do
       subject { failure.recover(&:message) }
 
       it 'returns Success of evaluation of the block against the error' do
-        is_expected.to eq(Success('error'))
+        is_expected.to eq(Fear.success('error'))
       end
     end
 
@@ -89,29 +89,29 @@ RSpec.describe Fear::Failure do
 
   describe '#to_either' do
     subject { failure.to_either }
-    it { is_expected.to eq(Left(exception)) }
+    it { is_expected.to eq(Fear.left(exception)) }
   end
 
   describe '#===' do
     subject { match === failure }
 
     context 'matches erectly' do
-      let(:match) { Failure(exception) }
+      let(:match) { Fear.failure(exception) }
       it { is_expected.to eq(true) }
     end
 
     context 'value does not match' do
-      let(:match) { Failure(ArgumentError.new) }
+      let(:match) { Fear.failure(ArgumentError.new) }
       it { is_expected.to eq(false) }
     end
 
     context 'matches by class' do
-      let(:match) { Failure(RuntimeError) }
+      let(:match) { Fear.failure(RuntimeError) }
       it { is_expected.to eq(true) }
     end
 
     context 'does not matches by class' do
-      let(:match) { Failure(ArgumentError) }
+      let(:match) { Fear.failure(ArgumentError) }
       it { is_expected.to eq(false) }
     end
   end

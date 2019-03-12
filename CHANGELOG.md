@@ -1,6 +1,11 @@
+## 0.x
+
+* Add `Fear.option`, `Fear.some`, `Fear.none`, `Fear.try`, `Fear.left`, `Fear.right`, and `Fear.for` alternatives to
+  including mixins. ([@bolshakov][])
+
 ## 0.11.0
 
-* Implement pattern matching and partial functions. See [README](https://github.com/bolshakov/fear#pattern-matching-api-documentation) (([@bolshakov][]))
+* Implement pattern matching and partial functions. See [README](https://github.com/bolshakov/fear#pattern-matching-api-documentation) ([@bolshakov][])
 * `#to_a` method removed ([@bolshakov][])
 * `For` syntax changed. See [diff](https://github.com/bolshakov/fear/pull/22/files#diff-04c6e90faac2675aa89e2176d2eec7d8) ([@bolshakov][])
 * `Fear::None` is singleton object now and could not be instantiated ([@bolshakov][])

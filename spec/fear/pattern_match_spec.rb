@@ -1,6 +1,4 @@
 RSpec.describe Fear::PatternMatch do
-  include Fear::Option::Mixin
-
   context 'else at the end' do
     let(:matcher) do
       described_class.new do |m|
