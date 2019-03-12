@@ -1,5 +1,5 @@
 RSpec.describe Fear::Success do
-  let(:success) { Success('value') }
+  let(:success) { Fear.success('value') }
 
   it_behaves_like Fear::RightBiased::Right do
     let(:right) { success }
@@ -77,7 +77,7 @@ RSpec.describe Fear::Success do
   end
 
   describe '#recover_with' do
-    subject { success.recover_with { |v| Success(v * 2) } }
+    subject { success.recover_with { |v| Fear.success(v * 2) } }
     it { is_expected.to eq(success) }
   end
 
@@ -88,7 +88,7 @@ RSpec.describe Fear::Success do
 
   describe '#to_either' do
     subject { success.to_either }
-    it { is_expected.to eq(Right('value')) }
+    it { is_expected.to eq(Fear.right('value')) }
   end
 
   describe '#match' do

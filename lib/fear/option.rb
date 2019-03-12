@@ -3,7 +3,7 @@ module Fear
   # are either an instance of +Some+ or the object +None+.
   #
   # @example The most idiomatic way to use an +Option+ instance is to treat it as a collection
-  #   name = Option(params[:name])
+  #   name = Fear.option(params[:name])
   #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
   #   puts upper.get_or_else('')
   #
@@ -11,13 +11,13 @@ module Fear
   # having to check for the existence of a value.
   #
   # @example A less-idiomatic way to use +Option+ values is via pattern matching
-  #   Option(params[:name]).match do |m|
+  #   Fear.option(params[:name]).match do |m|
   #     m.some { |name| name.strip.upcase }
   #     m.none { 'No name value' }
   #   end
   #
   # @example or manually checking for non emptiness
-  #   name = Option(params[:name])
+  #   name = Fear.option(params[:name])
   #   if name.empty?
   #     puts 'No name value'
   #   else
@@ -31,21 +31,21 @@ module Fear
   #     @yieldreturn [any]
   #     @return [any]
   #     @example
-  #       Some(42).get_or_else { 24/2 } #=> 42
-  #       None.get_or_else { 24/2 }   #=> 12
+  #       Fear.some(42).get_or_else { 24/2 } #=> 42
+  #       Fear.none.get_or_else { 24/2 }   #=> 12
   #   @overload get_or_else(default)
   #     @return [any]
   #     @example
-  #       Some(42).get_or_else(12)  #=> 42
-  #       None.get_or_else(12)    #=> 12
+  #       Fear.some(42).get_or_else(12)  #=> 42
+  #       Fear.none.get_or_else(12)    #=> 12
   #
   # @!method or_else(&alternative)
   #   Returns this +Some+ or the given alternative if this is a +None+.
   #   @return [Option]
   #   @example
-  #     Some(42).or_else { Some(21) } #=> Some(42)
-  #     None.or_else { Some(21) }   #=> Some(21)
-  #     None.or_else { None }     #=> None
+  #     Fear.some(42).or_else { Fear.some(21) } #=> Fear.some(42)
+  #     Fear.none.or_else { Fear.some(21) }   #=> Fear.some(21)
+  #     Fear.none.or_else { None }     #=> None
   #
   # @!method include?(other_value)
   #   Returns +true+ if it has an element that is equal
@@ -53,9 +53,9 @@ module Fear
   #   @param [any]
   #   @return [Boolean]
   #   @example
-  #     Some(17).include?(17) #=> true
-  #     Some(17).include?(7)  #=> false
-  #     None.include?(17)   #=> false
+  #     Fear.some(17).include?(17) #=> true
+  #     Fear.some(17).include?(7)  #=> false
+  #     Fear.none.include?(17)   #=> false
   #
   # @!method each(&block)
   #   Performs the given block if this is a +Some+.
@@ -63,11 +63,11 @@ module Fear
   #   @yieldreturn [void]
   #   @return [Option] itself
   #   @example
-  #     Some(17).each do |value|
+  #     Fear.some(17).each do |value|
   #       puts value
   #     end #=> prints 17
   #
-  #     None.each do |value|
+  #     Fear.none.each do |value|
   #       puts value
   #     end #=> does nothing
   #
@@ -77,8 +77,8 @@ module Fear
   #   @yieldparam [any] value
   #   @yieldreturn [any]
   #   @example
-  #     Some(42).map { |v| v/2 } #=> Some(21)
-  #     None.map { |v| v/2 }   #=> None
+  #     Fear.some(42).map { |v| v/2 } #=> Fear.some(21)
+  #     Fear.none.map { |v| v/2 }   #=> None
   #
   # @!method flat_map(&block)
   #   Returns the given block applied to the value from this +Some+
@@ -87,8 +87,8 @@ module Fear
   #   @yieldreturn [Option]
   #   @return [Option]
   #   @example
-  #     Some(42).flat_map { |v| Some(v/2) }   #=> Some(21)
-  #     None.flat_map { |v| Some(v/2) }     #=> None
+  #     Fear.some(42).flat_map { |v| Fear.some(v/2) }   #=> Fear.some(21)
+  #     Fear.none.flat_map { |v| Fear.some(v/2) }     #=> None
   #
   # @!method any?(&predicate)
   #   Returns +false+ if +None+ or returns the result of the
@@ -97,9 +97,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Boolean]
   #   @example
-  #     Some(12).any?( |v| v > 10)  #=> true
-  #     Some(7).any?( |v| v > 10)   #=> false
-  #     None.any?( |v| v > 10)    #=> false
+  #     Fear.some(12).any?( |v| v > 10)  #=> true
+  #     Fear.some(7).any?( |v| v > 10)   #=> false
+  #     Fear.none.any?( |v| v > 10)    #=> false
   #
   # @!method select(&predicate)
   #   Returns self if it is nonempty and applying the predicate to this
@@ -108,9 +108,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Option]
   #   @example
-  #     Some(42).select { |v| v > 40 } #=> Success(21)
-  #     Some(42).select { |v| v < 40 } #=> None
-  #     None.select { |v| v < 40 }   #=> None
+  #     Fear.some(42).select { |v| v > 40 } #=> Fear.success(21)
+  #     Fear.some(42).select { |v| v < 40 } #=> None
+  #     Fear.none.select { |v| v < 40 }   #=> None
   #
   # @!method reject(&predicate)
   #   Returns +Some+ if applying the predicate to this
@@ -119,9 +119,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Option]
   #   @example
-  #     Some(42).reject { |v| v > 40 } #=> None
-  #     Some(42).reject { |v| v < 40 } #=> Some(42)
-  #     None.reject { |v| v < 40 }   #=> None
+  #     Fear.some(42).reject { |v| v > 40 } #=> None
+  #     Fear.some(42).reject { |v| v < 40 } #=> Fear.some(42)
+  #     Fear.none.reject { |v| v < 40 }   #=> None
   #
   # @!method get
   #   @return [any] the +Option+'s value.
@@ -131,14 +131,14 @@ module Fear
   #   Returns +true+ if the +Option+ is +None+, +false+ otherwise.
   #   @return [Boolean]
   #   @example
-  #     Some(42).empty? #=> false
-  #     None.empty?   #=> true
+  #     Fear.some(42).empty? #=> false
+  #     Fear.none.empty?   #=> true
   #
   # @!method match(&matcher)
   #   Pattern match against this +Option+
   #   @yield matcher [Fear::OptionPatternMatch]
   #   @example
-  #     Option(val).match do |m|
+  #     Fear.option(val).match do |m|
   #       m.some(Integer) do |x|
   #        x * 2
   #       end
@@ -178,7 +178,7 @@ module Fear
       #       m.none { 'NaN' }
       #       m.else { 'error '}
       #     end
-      #   matcher.call(Some(42))
+      #   matcher.call(Fear.some(42))
       #
       # @yieldparam [OptionPatternMatch]
       # @return [Fear::PartialFunction]
@@ -191,39 +191,41 @@ module Fear
     # @example
     #   include Fear::Option::Mixin
     #
-    #   Option(17)  #=> #<Fear::Some value=17>
+    #   Option(17) #=> #<Fear::Some get=17>
     #   Option(nil) #=> #<Fear::None>
-    #   Some(17)    #=> #<Fear::Some value=17>
-    #   None        #=> #<Fear::None>
+    #   Some(17) #=> #<Fear::Some get=17>
+    #   None() #=> #<Fear::None>
     #
     module Mixin
-      None = Fear::None
-
       # An +Option+ factory which creates +Some+ if the argument is
       # not +nil+, and +None+ if it is +nil+.
       # @param value [any]
-      # @return [Some, None]
+      # @return [Fear::Some, Fear::None]
       #
       # @example
-      #   Option(v)
+      #   Option(17) #=> #<Fear::Some get=17>
+      #   Option(nil) #=> #<Fear::None>
       #
       def Option(value)
-        if value.nil?
-          None
-        else
-          Some(value)
-        end
+        Fear.option(value)
       end
 
       # @return [None]
+      # @example
+      #   None() #=> #<Fear::None>
+      #
       def None
-        Fear::None
+        Fear.none
       end
 
       # @param value [any] except nil
-      # @return [None]
+      # @return [Fear::Some]
+      # @example
+      #   Some(17) #=> #<Fear::Some get=17>
+      #   Some(nil) #=> #<Fear::Some get=nil>
+      #
       def Some(value)
-        Some.new(value)
+        Fear.some(value)
       end
     end
   end

@@ -1,6 +1,4 @@
 RSpec.describe Fear::OptionPatternMatch do
-  include Fear::Option::Mixin
-
   context 'Some' do
     let(:matcher) do
       described_class.new do |m|
@@ -10,10 +8,10 @@ RSpec.describe Fear::OptionPatternMatch do
     end
 
     it do
-      expect(matcher.call(Some(4))).to eq('4 is even')
-      expect(matcher.call(Some(3))).to eq('3 is odd')
+      expect(matcher.call(Fear.some(4))).to eq('4 is even')
+      expect(matcher.call(Fear.some(3))).to eq('3 is odd')
       expect do
-        matcher.call(None())
+        matcher.call(Fear.none)
       end.to raise_error(Fear::MatchError)
     end
   end
@@ -26,9 +24,9 @@ RSpec.describe Fear::OptionPatternMatch do
     end
 
     it do
-      expect(matcher.call(None())).to eq('nil')
+      expect(matcher.call(Fear.none)).to eq('nil')
       expect do
-        matcher.call(Some(3))
+        matcher.call(Fear.some(3))
       end.to raise_error(Fear::MatchError)
     end
   end

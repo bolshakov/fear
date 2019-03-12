@@ -1,11 +1,9 @@
 RSpec.describe Fear::Some do
-  include Fear::Option::Mixin
-
   it_behaves_like Fear::RightBiased::Right do
-    let(:right) { Some('value') }
+    let(:right) { Fear.some('value') }
   end
 
-  subject(:some) { Some(42) }
+  subject(:some) { Fear.some(42) }
 
   describe '#select' do
     subject { some.select(&predicate) }
@@ -17,7 +15,7 @@ RSpec.describe Fear::Some do
 
     context 'predicate evaluates to false' do
       let(:predicate) { ->(v) { v < 40 } }
-      it { is_expected.to eq(None()) }
+      it { is_expected.to eq(Fear.none) }
     end
   end
 
@@ -26,7 +24,7 @@ RSpec.describe Fear::Some do
 
     context 'predicate evaluates to true' do
       let(:predicate) { ->(v) { v > 40 } }
-      it { is_expected.to eq(None()) }
+      it { is_expected.to eq(Fear.none) }
     end
 
     context 'predicate evaluates to false' do

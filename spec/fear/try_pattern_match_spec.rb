@@ -1,6 +1,4 @@
 RSpec.describe Fear::TryPatternMatch do
-  include Fear::Try::Mixin
-
   context 'Success' do
     let(:matcher) do
       described_class.new do |m|
@@ -10,10 +8,10 @@ RSpec.describe Fear::TryPatternMatch do
     end
 
     it do
-      expect(matcher.call(Success(4))).to eq('4 is even')
-      expect(matcher.call(Success(3))).to eq('3 is odd')
+      expect(matcher.call(Fear.success(4))).to eq('4 is even')
+      expect(matcher.call(Fear.success(3))).to eq('3 is odd')
       expect do
-        matcher.call(Failure(RuntimeError.new))
+        matcher.call(Fear.failure(RuntimeError.new))
       end.to raise_error(Fear::MatchError)
     end
   end
@@ -27,10 +25,10 @@ RSpec.describe Fear::TryPatternMatch do
     end
 
     it do
-      expect(matcher.call(Failure(RuntimeError.new))).to eq('RuntimeError is first')
-      expect(matcher.call(Failure(StandardError.new))).to eq('StandardError is second')
+      expect(matcher.call(Fear.failure(RuntimeError.new))).to eq('RuntimeError is first')
+      expect(matcher.call(Fear.failure(StandardError.new))).to eq('StandardError is second')
       expect do
-        matcher.call(Success(44))
+        matcher.call(Fear.success(44))
       end.to raise_error(Fear::MatchError)
     end
   end

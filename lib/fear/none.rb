@@ -60,7 +60,7 @@ module Fear
       None
     end
 
-    def inherited
+    def inherited(*)
       raise 'you are not allowed to inherit from NoneClass, use Fear::None instead'
     end
   end

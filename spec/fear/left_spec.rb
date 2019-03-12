@@ -1,11 +1,9 @@
 RSpec.describe Fear::Left do
-  include Fear::Either::Mixin
-
   it_behaves_like Fear::RightBiased::Left do
-    let(:left) { Left('value') }
+    let(:left) { Fear.left('value') }
   end
 
-  let(:left) { Left('value') }
+  let(:left) { Fear.left('value') }
 
   describe '#right?' do
     subject { left }
@@ -41,7 +39,7 @@ RSpec.describe Fear::Left do
 
   describe '#or_else' do
     subject { left.or_else { alternative } }
-    let(:alternative) { Left(42) }
+    let(:alternative) { Fear.left(42) }
 
     it 'returns alternative' do
       is_expected.to eq(alternative)
@@ -70,7 +68,7 @@ RSpec.describe Fear::Left do
 
   describe '#swap' do
     subject { left.swap }
-    it { is_expected.to eq(Right('value')) }
+    it { is_expected.to eq(Fear.right('value')) }
   end
 
   describe '#reduce' do
@@ -88,12 +86,12 @@ RSpec.describe Fear::Left do
     subject(:join_right) { either.join_right }
 
     context 'value is Either' do
-      let(:either) { described_class.new(Left('error')) }
+      let(:either) { described_class.new(Fear.left('error')) }
       it { is_expected.to eq(either) }
     end
 
     context 'value s not Either' do
-      let(:either) { Left('error') }
+      let(:either) { Fear.left('error') }
       it { is_expected.to eq(either) }
     end
   end
@@ -102,10 +100,10 @@ RSpec.describe Fear::Left do
     context 'value is Either' do
       subject { either.join_left }
       let(:either) { described_class.new(value) }
-      let(:value) { Left('error') }
+      let(:value) { Fear.left('error') }
 
       it 'returns value' do
-        is_expected.to eq(Left('error'))
+        is_expected.to eq(Fear.left('error'))
       end
     end
 
@@ -122,22 +120,22 @@ RSpec.describe Fear::Left do
     subject { match === left }
 
     context 'matches erectly' do
-      let(:match) { Left('value') }
+      let(:match) { Fear.left('value') }
       it { is_expected.to eq(true) }
     end
 
     context 'value does not match' do
-      let(:match) { Left('error') }
+      let(:match) { Fear.left('error') }
       it { is_expected.to eq(false) }
     end
 
     context 'matches by class' do
-      let(:match) { Left(String) }
+      let(:match) { Fear.left(String) }
       it { is_expected.to eq(true) }
     end
 
     context 'does not matches by class' do
-      let(:match) { Left(Integer) }
+      let(:match) { Fear.left(Integer) }
       it { is_expected.to eq(false) }
     end
   end
