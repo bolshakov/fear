@@ -29,7 +29,7 @@ Or install it yourself as:
 * [For composition](#for-composition)
 * [Pattern Matching](#pattern-matching-api-documentation)
 
-### Option ([Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/OptionApi))
+### Option ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
 
 Represents optional (nullable) values. Instances of `Option` are either an instance of 
 `Some` or the object `None`.
@@ -184,7 +184,7 @@ Fear.none.empty?   #=> true
 @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
  
 
-### Try ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/TryApi))
+### Try ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/Try))
 
 The `Try` represents a computation that may either result
 in an exception, or return a successfully computed value. Instances of `Try`,
@@ -381,7 +381,7 @@ Fear.success(42).recover { |e| e.massage }
 Fear.failure(ArgumentError.new).recover { |e| e.massage }
   #=> Fear.success('ArgumentError')
 Fear.failure(ArgumentError.new).recover { |e| raise }
-  #=> Fear.failure(RuntimeError)
+  #=> Fear.failurefRuntimeError)
 ```
 
 #### Try#to_either
@@ -393,7 +393,7 @@ Fear.success(42).to_either                #=> Fear.right(42)
 Fear.failure(ArgumentError.new).to_either #=> Fear.left(ArgumentError.new)
 ```
 
-### Either ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/EitherApi))
+### Either ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
   
 Represents a value of one of two possible types (a disjoint union.)
 An instance of `Either` is either an instance of `Left` or `Right`.
