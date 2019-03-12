@@ -1,8 +1,10 @@
 module Fear
   # Use singleton version of EmptyPartialFunction -- PartialFunction::EMPTY
   # @api private
-  module EmptyPartialFunction
+  class EmptyPartialFunction
     include PartialFunction
+
+    def initialize; end
 
     def defined_at?(_)
       false

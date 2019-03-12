@@ -1,6 +1,6 @@
 module Fear
   module PartialFunction
-    EMPTY = Object.new.extend(EmptyPartialFunction)
+    EMPTY = EmptyPartialFunction.new
     EMPTY.freeze
   end
 end
