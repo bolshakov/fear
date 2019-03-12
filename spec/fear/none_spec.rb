@@ -62,13 +62,13 @@ RSpec.describe Fear::None do
   describe '#to_s' do
     subject { none.to_s }
 
-    it { is_expected.to eq('Fear::None') }
+    it { is_expected.to eq('#<Fear::NoneClass>') }
   end
 
   describe '#inspect' do
     subject { none.inspect }
 
-    it { is_expected.to eq('Fear::None') }
+    it { is_expected.to eq('#<Fear::NoneClass>') }
   end
 
   describe '#===' do

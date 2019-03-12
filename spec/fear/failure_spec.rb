@@ -153,4 +153,10 @@ RSpec.describe Fear::Failure do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '#to_s' do
+    subject { failure.to_s }
+
+    it { is_expected.to eq('#<Fear::Failure exception=#<RuntimeError: error>>') }
+  end
 end

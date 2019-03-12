@@ -261,6 +261,9 @@ module Fear
     attr_reader :value
     protected :value
 
+    # @return [String]
+    alias to_s inspect
+
     class << self
       # Build pattern matcher to be used later, despite off
       # +Either#match+ method, id doesn't apply matcher immanently,

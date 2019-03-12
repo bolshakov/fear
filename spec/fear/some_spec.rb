@@ -84,4 +84,10 @@ RSpec.describe Fear::Some do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '#to_s' do
+    subject { some.to_s }
+
+    it { is_expected.to eq('#<Fear::Some get=42>') }
+  end
 end

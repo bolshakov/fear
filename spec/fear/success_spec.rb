@@ -127,4 +127,10 @@ RSpec.describe Fear::Success do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '#to_s' do
+    subject { success.to_s }
+
+    it { is_expected.to eq('#<Fear::Success value="value">') }
+  end
 end

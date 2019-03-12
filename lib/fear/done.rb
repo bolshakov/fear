@@ -11,12 +11,12 @@ module Fear
   Done = Object.new.tap do |done|
     # @return [String]
     def done.to_s
-      'Done'
+      '#<Fear::Done>'
     end
 
     # @return [String]
     def done.inspect
-      'Done'
+      '#<Fear::Done>'
     end
   end.freeze
 end

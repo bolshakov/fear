@@ -152,4 +152,10 @@ RSpec.describe Fear::Right do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '#to_s' do
+    subject { right.to_s }
+
+    it { is_expected.to eq('#<Fear::Right value="value">') }
+  end
 end
