@@ -79,5 +79,8 @@ module Fear
         super
       end
     end
+
+    # @return [String]
+    alias to_s inspect
   end
 end

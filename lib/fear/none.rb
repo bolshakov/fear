@@ -31,17 +31,8 @@ module Fear
       self
     end
 
-    AS_STRING = 'Fear::None'.freeze
-
     # @return [String]
-    def to_s
-      AS_STRING
-    end
-
-    # @return [String]
-    def inspect
-      AS_STRING
-    end
+    alias to_s inspect
 
     # @param other
     # @return [Boolean]

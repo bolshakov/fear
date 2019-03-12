@@ -83,5 +83,8 @@ module Fear
     def to_either
       Right.new(value)
     end
+
+    # @return [String]
+    alias to_s inspect
   end
 end

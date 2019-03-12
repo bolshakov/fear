@@ -177,4 +177,10 @@ RSpec.describe Fear::Left do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '#to_s' do
+    subject { left.to_s }
+
+    it { is_expected.to eq('#<Fear::Left value="value">') }
+  end
 end
