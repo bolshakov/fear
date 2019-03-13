@@ -1,0 +1,64 @@
+# PEG grammar for pattern matching and extracting
+
+module Fear::Extractor
+  grammar Grammar
+    rule matcher
+      array / literal
+    end
+    rule array
+      fixed_size_array
+    end
+
+    rule fixed_size_array
+      '[' array_value_list? ']' <ArrayLiteral>
+    end
+
+    rule array_value_list
+      array_value+ <ArrayValueList>
+    end
+
+    rule array_value
+      space? expression space? ','? <ArrayValue>
+    end
+
+    rule expression
+      space? integer <Expression>
+    end
+
+    rule comma
+      "," space
+    end
+
+    rule space
+      [\s]+
+    end
+
+    rule expression
+      literal
+    end
+
+    rule variable
+      [a-z_] [a-z0-9_]*
+    end
+
+    rule literal
+      number
+    end
+
+    rule number
+      integer / float
+    end
+
+    rule integer
+      ('+' / '-')? [0-9]+ <IntegerLiteral>
+    end
+
+    rule float
+      ('+' / '-')? [0-9]+ '.' [0-9]+ <FloatLiteral>
+    end
+
+    rule string
+      '"' ([^"\\] / "\\" . )* '"' <StringLiteral>
+    end
+  end
+end

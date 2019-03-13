@@ -25,6 +25,8 @@ Gem::Specification.new do |spec|
   MSG
 
   spec.add_runtime_dependency 'dry-equalizer', '<= 0.2.1'
+  spec.add_runtime_dependency 'dry-struct'
+  spec.add_runtime_dependency 'treetop'
 
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'benchmark-ips'
