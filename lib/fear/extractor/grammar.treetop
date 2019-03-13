@@ -5,20 +5,33 @@ module Fear::Extractor
     rule matcher
       array / literal
     end
-    rule array
-      fixed_size_array
-    end
 
-    rule fixed_size_array
-      '[' array_value_list? ']' <ArrayLiteral>
+    rule array
+      '[' (array_value_list / array_splat)? ']' <ArrayLiteral>
     end
 
     rule array_value_list
-      array_value+ <ArrayValueList>
+      array_head (array_tail / array_tail_splat)? <ArrayValueList>
     end
 
-    rule array_value
-      space? expression space? ','? <ArrayValue>
+    rule array_tail
+      ',' array_value_list <ArrayTail>
+    end
+
+    rule array_tail_splat
+      ',' array_splat <ArrayTailSplat>
+    end
+
+    rule array_splat
+      space? anonymous_array_splat space? <ArraySplat>
+    end
+
+    rule anonymous_array_splat
+      '*' '_'? <AnonymousArraySplat>
+    end
+
+    rule array_head
+      space? expression space? <ArrayHead>
     end
 
     rule expression

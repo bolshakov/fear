@@ -1,7 +1,7 @@
 module Fear
   module Extractor
     class Matcher < Dry::Struct
-      attribute :node, Types.Instance(Treetop::Runtime::SyntaxNode)
+      attribute :node, Types.Instance(Fear::Extractor::Grammar::Node)
 
       def defined_at?(_)
         raise NoMethodError
