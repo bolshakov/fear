@@ -16,8 +16,8 @@ RSpec.describe Fear::Extractor::IdentifierMatcher do
       let(:pattern) { '[1, n, 2]' }
 
       it { is_expected.to be_defined_at([1, 2, 2]) }
-      # it { is_expected.to be_defined_at([1, 'foo', 2]) }
-      # it { is_expected.not_to be_defined_at([1, 'foo']) }
+      it { is_expected.to be_defined_at([1, 'foo', 2]) }
+      it { is_expected.not_to be_defined_at([1, 'foo']) }
     end
   end
 

@@ -74,4 +74,12 @@ RSpec.describe Fear::ExtractorApi do
     assert(Fear['_'] === 'foo')
     assert(Fear['_'] === [42])
   end
+
+  specify 'type matching' do
+    assert(Fear['Integer'] === 3)
+    assert_not(Fear['Integer'] === '3')
+    assert(Fear['Numeric'] === 3)
+    assert(Fear['var : Integer'] === 3)
+    assert_not(Fear['var : Integer'] === '3')
+  end
 end

@@ -163,6 +163,23 @@ module Fear
           text_value[1..-1].to_sym
         end
       end
+
+      class TypeLiteral < Node
+        def to_matcher
+          TypeMatcher.new(class_name: text_value, node: self)
+        end
+      end
+
+      class TypedIdentifier < Node
+        def to_matcher
+          identifier, type = elements.values_at(0, 2)
+          TypedIdentifierMatcher.new(
+            identifier: identifier.to_matcher,
+            type: type.to_matcher,
+            node: type,
+          )
+        end
+      end
     end
   end
 end

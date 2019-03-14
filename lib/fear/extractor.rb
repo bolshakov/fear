@@ -24,5 +24,26 @@ module Fear
     autoload :NilMatcher, 'fear/extractor/nil_matcher'
     autoload :NumberMatcher, 'fear/extractor/number_matcher'
     autoload :StringMatcher, 'fear/extractor/string_matcher'
+
+    class TypeMatcher < Matcher
+      attribute :class_name, Types::Strict::String
+
+      def defined_at?(other)
+        Object.const_get(class_name) === other
+      end
+    end
+
+    class TypedIdentifierMatcher < Matcher
+      attribute :identifier, IdentifierMatcher
+      attribute :type, TypeMatcher
+
+      def defined_at?(other)
+        type.defined_at?(other) && identifier.defined_at?(other)
+      end
+
+      def bindings(other)
+        { identifier.name => other }
+      end
+    end
   end
 end

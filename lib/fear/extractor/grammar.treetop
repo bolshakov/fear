@@ -3,7 +3,7 @@
 module Fear::Extractor
   grammar Grammar
     rule matcher
-      array / literal / identifier
+      array / literal / identifier / type
     end
 
     rule array
@@ -55,7 +55,11 @@ module Fear::Extractor
     end
 
     rule identifier
-      any / variable_identifier
+      typed_identifier / any / variable_identifier
+    end
+
+    rule typed_identifier
+      (any / variable_identifier) ' : ' type <TypedIdentifier>
     end
 
     rule literal
@@ -96,6 +100,10 @@ module Fear::Extractor
 
     rule nil
       'nil' <NilLiteral>
+    end
+
+    rule type
+      [A-Z] [a-zA-Z0-9_]* <TypeLiteral>
     end
   end
 end
