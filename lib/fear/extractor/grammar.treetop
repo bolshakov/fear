@@ -31,23 +31,11 @@ module Fear::Extractor
     end
 
     rule array_head
-      space? expression space? <ArrayHead>
-    end
-
-    rule expression
-      space? integer <Expression>
-    end
-
-    rule comma
-      "," space
+      space? matcher space? <ArrayHead>
     end
 
     rule space
       [\s]+
-    end
-
-    rule expression
-      literal
     end
 
     rule variable

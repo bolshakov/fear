@@ -1,7 +1,7 @@
 module Fear
   module Extractor
     class ArrayHeadMatcher < Matcher
-      attribute :element, IntegerMatcher
+      attribute :element, Matcher
       attribute :index, Types::Strict::Integer
 
       def defined_at?(other)

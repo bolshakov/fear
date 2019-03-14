@@ -74,13 +74,6 @@ module Fear
         end
       end
 
-      class ArrayListWithSplat
-        def to_matcher
-          arra
-          elements[1].to_matcher
-        end
-      end
-
       class ArraySplat < Node
         def to_matcher
           elements[1].to_matcher
@@ -91,9 +84,6 @@ module Fear
         def to_matcher
           AnonymousArraySplatMatcher.new(node: self)
         end
-      end
-
-      class Expression < Node
       end
 
       class FloatLiteral < Node

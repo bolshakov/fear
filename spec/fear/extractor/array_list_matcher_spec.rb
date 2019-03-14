@@ -29,6 +29,16 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       it { is_expected.not_to be_defined_at([2, 1]) }
     end
 
+    context 'two elements array with nested matcher' do
+      let(:pattern) { '[[1, *], 1]' }
+
+      it { is_expected.not_to be_defined_at([]) }
+      it { is_expected.to be_defined_at([[1], 1]) }
+      it { is_expected.to be_defined_at([[1, 2], 1]) }
+      it { is_expected.not_to be_defined_at([[1, 2], 2]) }
+      it { is_expected.not_to be_defined_at([2, 1]) }
+    end
+
     context 'one element array with splat' do
       let(:pattern) { '[1, *]' }
 
