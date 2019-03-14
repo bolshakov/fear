@@ -3,11 +3,16 @@ RSpec.describe Fear::Extractor::Pattern do
     context 'invalid syntax' do
       subject { -> { described_class.new('[1, 2, 3') } }
 
-      it { is_expected.to raise_error(Fear::PatternSyntaxError, <<-MSG) }
-Expected one of [0-9], [\\s], ',', ']' at line 1, column 9 (byte 9):
-[1, 2, 3
-~~~~~~~~^
-      MSG
+      it 'shows where the error happens' do
+        is_expected.to raise_error(Fear::PatternSyntaxError) { |error|
+          lines = error.message.split("\n")
+          expect(lines[0]).to start_with('Expected one of')
+            .and(end_with('at line 1, column 9 (byte 9):'))
+
+          expect(lines[1]).to eq('[1, 2, 3')
+          expect(lines[2]).to eq('~~~~~~~~^')
+        }
+      end
     end
   end
 end

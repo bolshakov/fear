@@ -87,6 +87,10 @@ module Fear
       end
 
       class FloatLiteral < Node
+        def to_matcher
+          NumberMatcher.new(value: value, node: self)
+        end
+
         def value
           text_value.to_f
         end
@@ -94,7 +98,7 @@ module Fear
 
       class IntegerLiteral < Node
         def to_matcher
-          IntegerMatcher.new(value: value, node: self)
+          NumberMatcher.new(value: value, node: self)
         end
 
         def value

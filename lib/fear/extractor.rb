@@ -11,7 +11,7 @@ module Fear
 
     autoload :Pattern, 'fear/extractor/pattern'
     autoload :Matcher, 'fear/extractor/matcher'
-    autoload :IntegerMatcher, 'fear/extractor/integer_matcher'
+    autoload :NumberMatcher, 'fear/extractor/number_matcher'
     autoload :ArrayListMatcher, 'fear/extractor/array_list_matcher'
     autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
     autoload :ArrayHeadMatcher, 'fear/extractor/array_head_matcher'

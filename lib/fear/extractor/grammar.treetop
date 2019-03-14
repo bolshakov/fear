@@ -47,7 +47,7 @@ module Fear::Extractor
     end
 
     rule number
-      integer / float
+      float / integer
     end
 
     rule integer
