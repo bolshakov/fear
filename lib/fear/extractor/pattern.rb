@@ -16,6 +16,12 @@ module Fear
         matcher.defined_at?(other)
       end
 
+      def extracted_arguments(other)
+        matcher.call(other).get_or_else do
+          raise ArgumentError, 'extracting arguments of not matcher pattern'
+        end
+      end
+
       private def syntax_error_message(parser, pattern)
         parser.failure_reason =~ /^(Expected .+) after/m
         "#{Regexp.last_match(1).gsub("\n", '$NEWLINE')}:\n" +

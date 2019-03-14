@@ -1,5 +1,17 @@
 RSpec.describe Fear::PartialFunction do
   describe 'Fear.case()' do
+    context 'condition is extractor' do
+      subject do
+        Fear.case(Fear['[1, [2, second_of_second, *], 3, *rest]']) do |second_of_second:, rest:|
+          [second_of_second, rest]
+        end
+      end
+
+      it { is_expected.to be_defined_at([1, [2, 2, 3, 4], 3, 6, 7]) }
+      it { is_expected.not_to be_defined_at([1, [1, 3, 3, 4], 3, 6, 7]) }
+      it { is_expected.not_to be_defined_at([1, [1, 2, 3, 4], 4, 6, 7]) }
+    end
+
     context 'condition as symbol' do
       subject { Fear.case(:even?) { |x| x } }
 
@@ -92,6 +104,16 @@ RSpec.describe Fear::PartialFunction do
       subject { -> { partial_function.call(0) } }
 
       it { is_expected.to raise_error(Fear::MatchError, 'partial function not defined at: 0') }
+    end
+
+    context 'defined and condition is extractor' do
+      subject { partial_function.call([1, 2, 3, 4, 5]) }
+
+      let(:partial_function) do
+        Fear.case(Fear['[1, second, 3, *rest]']) { |second:, rest:| [second, rest] }
+      end
+
+      it { is_expected.to eq([2, [4, 5]]) }
     end
   end
 
