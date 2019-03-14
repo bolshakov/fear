@@ -43,7 +43,7 @@ module Fear::Extractor
     end
 
     rule literal
-      number / string
+      nil / true / false / number / string
     end
 
     rule number
@@ -68,6 +68,18 @@ module Fear::Extractor
 
     rule single_quoted_string
       "'" ([^'\\] / '\\' . )* "'" <StringLiteral>
+    end
+
+    rule true
+      'true' <TrueLiteral>
+    end
+
+    rule false
+      'false' <FalseLiteral>
+    end
+
+    rule nil
+      'nil' <NilLiteral>
     end
   end
 end

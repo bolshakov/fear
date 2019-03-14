@@ -19,5 +19,7 @@ module Fear
     autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
     autoload :NumberMatcher, 'fear/extractor/number_matcher'
     autoload :StringMatcher, 'fear/extractor/string_matcher'
+    autoload :BooleanMatcher, 'fear/extractor/boolean_matcher'
+    autoload :NilMatcher, 'fear/extractor/nil_matcher'
   end
 end

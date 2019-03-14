@@ -127,6 +127,24 @@ module Fear
           YAML.safe_load(%(---\n"#{super}"\n))
         end
       end
+
+      class TrueLiteral < Node
+        def to_matcher
+          BooleanMatcher.new(value: true, node: self)
+        end
+      end
+
+      class FalseLiteral < Node
+        def to_matcher
+          BooleanMatcher.new(value: false, node: self)
+        end
+      end
+
+      class NilLiteral < Node
+        def to_matcher
+          NilMatcher.new(value: nil, node: self)
+        end
+      end
     end
   end
 end
