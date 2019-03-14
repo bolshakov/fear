@@ -39,6 +39,7 @@ RSpec.describe Fear::ExtractorApi do
     assert_invalid_syntax  { Fear['[1, *, 2]'] }
     assert_invalid_syntax  { Fear['[1, *, *]'] }
     assert_invalid_syntax  { Fear['[*, *]'] }
+    assert(Fear['"foo"'] === 'foo')
 
     # assert(Fear['[a, b]']).to match([1, 2]) }
     #

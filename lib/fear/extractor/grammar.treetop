@@ -43,7 +43,7 @@ module Fear::Extractor
     end
 
     rule literal
-      number
+      number / string
     end
 
     rule number
@@ -59,7 +59,15 @@ module Fear::Extractor
     end
 
     rule string
-      '"' ([^"\\] / "\\" . )* '"' <StringLiteral>
+      double_quoted_string / single_quoted_string
+    end
+
+    rule double_quoted_string
+      '"' ([^"\\] / '\\' . )* '"' <DoubleQuotedStringLiteral>
+    end
+
+    rule single_quoted_string
+      "'" ([^'\\] / '\\' . )* "'" <StringLiteral>
     end
   end
 end

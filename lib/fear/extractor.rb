@@ -11,11 +11,13 @@ module Fear
 
     autoload :Pattern, 'fear/extractor/pattern'
     autoload :Matcher, 'fear/extractor/matcher'
-    autoload :NumberMatcher, 'fear/extractor/number_matcher'
-    autoload :ArrayListMatcher, 'fear/extractor/array_list_matcher'
-    autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
-    autoload :ArrayHeadMatcher, 'fear/extractor/array_head_matcher'
-    autoload :ArraySplatMatcher, 'fear/extractor/array_splat_matcher'
+
     autoload :AnonymousArraySplatMatcher, 'fear/extractor/anonymous_array_splat_matcher'
+    autoload :ArrayHeadMatcher, 'fear/extractor/array_head_matcher'
+    autoload :ArrayListMatcher, 'fear/extractor/array_list_matcher'
+    autoload :ArraySplatMatcher, 'fear/extractor/array_splat_matcher'
+    autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
+    autoload :NumberMatcher, 'fear/extractor/number_matcher'
+    autoload :StringMatcher, 'fear/extractor/string_matcher'
   end
 end

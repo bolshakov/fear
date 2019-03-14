@@ -107,8 +107,24 @@ module Fear
       end
 
       class StringLiteral < Node
+        def to_matcher
+          StringMatcher.new(value: value, node: self)
+        end
+
         def value
-          text_value
+          elements[1].text_value
+        end
+      end
+
+      require 'yaml'
+
+      class DoubleQuotedStringLiteral < StringLiteral
+        def to_matcher
+          StringMatcher.new(value: value, node: self)
+        end
+
+        def value
+          YAML.safe_load(%(---\n"#{super}"\n))
         end
       end
     end

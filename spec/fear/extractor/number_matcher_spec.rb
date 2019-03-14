@@ -2,7 +2,7 @@ RSpec.describe Fear::Extractor::NumberMatcher do
   let(:parser) { Fear::Extractor::GrammarParser.new }
   let(:matcher) { parser.parse(pattern).to_matcher }
 
-  describe '#defined_at??' do
+  describe '#defined_at?' do
     subject { matcher }
 
     context 'Integer' do
