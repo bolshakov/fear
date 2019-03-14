@@ -1,8 +1,8 @@
 module Fear
   module Extractor
     class AnonymousArraySplatMatcher < ArraySplatMatcher
-      def defined_at?(_other)
-        true
+      def bindings(_)
+        Dry::Core::Constants::EMPTY_HASH
       end
     end
   end

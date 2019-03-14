@@ -23,11 +23,19 @@ module Fear::Extractor
     end
 
     rule array_splat
+      space? (named_array_splat / anonymous_array_splat) space? <ArraySplat>
+    end
+
+    rule array_splat_identifier
       space? anonymous_array_splat space? <ArraySplat>
     end
 
     rule anonymous_array_splat
       '*' '_'? <AnonymousArraySplat>
+    end
+
+    rule named_array_splat
+      '*' [a-z] [a-z0-9_]* <NamedArraySplat>
     end
 
     rule array_head

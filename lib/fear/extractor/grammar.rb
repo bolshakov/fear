@@ -156,6 +156,16 @@ module Fear
           IdentifierMatcher.new(name: text_value.to_sym, node: self)
         end
       end
+
+      class NamedArraySplat < Node
+        def to_matcher
+          NamedArraySplatMatcher.new(name: name, node: self)
+        end
+
+        def name
+          text_value[1..-1].to_sym
+        end
+      end
     end
   end
 end

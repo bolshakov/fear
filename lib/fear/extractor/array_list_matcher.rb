@@ -19,8 +19,8 @@ module Fear
       end
 
       def bindings(other)
-        if head.is_a?(AnonymousArraySplatMatcher)
-          Dry::Core::Constants::EMPTY_HASH
+        if head.is_a?(ArraySplatMatcher)
+          head.bindings(other)
         else
           other_head, *other_tail = other
           head.bindings(other_head).merge(tail.bindings(other_tail))

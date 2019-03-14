@@ -42,6 +42,8 @@ RSpec.describe Fear::ExtractorApi do
     assert(Fear['[a, b]'] === [1, 2])
     assert_not(Fear['[a, b, c]'] === [1, 2])
     assert(Fear['[a, b, _]'] === [1, 2, 3])
+    assert(Fear['[a, b, *c]'] === [1, 2])
+    assert_not(Fear['[a, b, c, *d]'] === [1, 2])
   end
 
   specify 'String' do

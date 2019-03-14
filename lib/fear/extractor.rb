@@ -20,6 +20,7 @@ module Fear
     autoload :BooleanMatcher, 'fear/extractor/boolean_matcher'
     autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
     autoload :IdentifierMatcher, 'fear/extractor/identifier_matcher'
+    autoload :NamedArraySplatMatcher, 'fear/extractor/named_array_splat_matcher'
     autoload :NilMatcher, 'fear/extractor/nil_matcher'
     autoload :NumberMatcher, 'fear/extractor/number_matcher'
     autoload :StringMatcher, 'fear/extractor/string_matcher'

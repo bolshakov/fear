@@ -20,6 +20,14 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       it { is_expected.to be_defined_at([1, 2]) }
     end
 
+    context 'empty array with named splat' do
+      let(:pattern) { '[*var]' }
+
+      it { is_expected.to be_defined_at([]) }
+      it { is_expected.to be_defined_at([1]) }
+      it { is_expected.to be_defined_at([1, 2]) }
+    end
+
     context 'one element array' do
       let(:pattern) { '[1]' }
 
@@ -49,6 +57,16 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
 
     context 'one element array with splat' do
       let(:pattern) { '[1, *]' }
+
+      it { is_expected.not_to be_defined_at([]) }
+      it { is_expected.to be_defined_at([1]) }
+      it { is_expected.to be_defined_at([1, 2]) }
+      it { is_expected.to be_defined_at([1, 2, 3]) }
+      it { is_expected.not_to be_defined_at([2, 1]) }
+    end
+
+    context 'one element array with named splat' do
+      let(:pattern) { '[1, *var]' }
 
       it { is_expected.not_to be_defined_at([]) }
       it { is_expected.to be_defined_at([1]) }
@@ -130,6 +148,20 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       let(:pattern) { '[2, 1, var]' }
 
       it { is_expected.to eq(Fear.some(var: 3)) }
+    end
+
+    context 'with named splat matching tail of an array' do
+      let(:other) { [2, 1, 3, 4] }
+      let(:pattern) { '[2, 1, *var]' }
+
+      it { is_expected.to eq(Fear.some(var: [3, 4])) }
+    end
+
+    context 'with named splat at the end of an array' do
+      let(:other) { [2, 1] }
+      let(:pattern) { '[2, 1, *var]' }
+
+      it { is_expected.to eq(Fear.some(var: [])) }
     end
 
     context 'with several identifiers in an array' do
