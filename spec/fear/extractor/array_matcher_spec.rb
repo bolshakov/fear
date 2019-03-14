@@ -86,6 +86,13 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
         it { is_expected.not_to be_defined_at([1]) }
         it { is_expected.not_to be_defined_at([2]) }
       end
+
+      context 'head and tail' do
+        let(:pattern) { '[head, *tail]' }
+
+        it { is_expected.not_to be_defined_at([]) }
+        it { is_expected.to be_defined_at([1, 3, 2]) }
+      end
     end
 
     context 'two element array' do
@@ -169,6 +176,20 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
       let(:pattern) { '[a, 1, b]' }
 
       it { is_expected.to eq(Fear.some(a: 2, b: 3)) }
+    end
+
+    context 'head and tail' do
+      let(:other) { [2, 1, 3] }
+      let(:pattern) { '[head, *tail]' }
+
+      it { is_expected.to eq(Fear.some(head: 2, tail: [1, 3])) }
+    end
+
+    context 'ignore head, capture tail' do
+      let(:other) { [2, 1, 3] }
+      let(:pattern) { '[_, *tail]' }
+
+      it { is_expected.to eq(Fear.some(tail: [1, 3])) }
     end
   end
 

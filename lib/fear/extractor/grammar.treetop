@@ -55,7 +55,7 @@ module Fear::Extractor
     end
 
     rule identifier
-      variable_identifier / any
+      any / variable_identifier
     end
 
     rule literal
