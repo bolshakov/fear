@@ -67,4 +67,13 @@ RSpec.describe Fear::ExtractorApi do
     assert(Fear['nil'] === nil) # rubocop:disable Style/NilComparison
     assert_not(Fear['nil'] === 42)
   end
+
+  specify '_' do
+    assert(Fear['_'] === nil) # rubocop:disable Style/NilComparison
+    assert(Fear['_'] === true)
+    assert(Fear['_'] === false)
+    assert(Fear['_'] === 42)
+    assert(Fear['_'] === 'foo')
+    assert(Fear['_'] === [42])
+  end
 end

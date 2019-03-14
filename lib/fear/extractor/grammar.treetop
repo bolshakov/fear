@@ -3,7 +3,7 @@
 module Fear::Extractor
   grammar Grammar
     rule matcher
-      array / literal
+      array / literal / identifier
     end
 
     rule array
@@ -38,8 +38,13 @@ module Fear::Extractor
       [\s]+
     end
 
-    rule variable
-      [a-z_] [a-z0-9_]*
+    rule any
+      '_' <AnyIdentifier>
+    end
+
+    rule identifier
+      any
+      # [a-z_] [a-z0-9_]*
     end
 
     rule literal

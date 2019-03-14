@@ -142,7 +142,13 @@ module Fear
 
       class NilLiteral < Node
         def to_matcher
-          NilMatcher.new(value: nil, node: self)
+          NilMatcher.new(node: self)
+        end
+      end
+
+      class AnyIdentifier < Node
+        def to_matcher
+          AnyMatcher.new(node: self)
         end
       end
     end

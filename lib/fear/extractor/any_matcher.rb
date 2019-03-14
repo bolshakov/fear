@@ -1,8 +1,8 @@
 module Fear
   module Extractor
-    class NilMatcher < Matcher
-      def defined_at?(other)
-        nil === other
+    class AnyMatcher < Matcher
+      def defined_at?(_other)
+        true
       end
 
       def bindings(_)
