@@ -27,6 +27,14 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       it { is_expected.to be_defined_at([1]) }
       it { is_expected.not_to be_defined_at([1, 2]) }
       it { is_expected.not_to be_defined_at([2, 1]) }
+
+      context 'identifier' do
+        let(:pattern) { '[var]' }
+
+        it { is_expected.not_to be_defined_at([]) }
+        it { is_expected.to be_defined_at([1]) }
+        it { is_expected.to be_defined_at([[1]]) }
+      end
     end
 
     context 'two elements array with nested matcher' do
@@ -49,6 +57,19 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       it { is_expected.not_to be_defined_at([2, 1]) }
     end
 
+    context 'three elements array' do
+      context 'with identifier in the middle' do
+        let(:pattern) { '[1, var, 2]' }
+
+        it { is_expected.not_to be_defined_at([]) }
+        it { is_expected.to be_defined_at([1, 3, 2]) }
+        it { is_expected.not_to be_defined_at([1, 2, 3]) }
+        it { is_expected.not_to be_defined_at([1, 2, 3, 4]) }
+        it { is_expected.not_to be_defined_at([1]) }
+        it { is_expected.not_to be_defined_at([2]) }
+      end
+    end
+
     context 'two element array' do
       let(:pattern) { '[ 1, 2 ]' }
 
@@ -59,6 +80,17 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       it { is_expected.not_to be_defined_at([1, 3]) }
       it { is_expected.not_to be_defined_at([2, 2]) }
       it { is_expected.not_to be_defined_at([1, 2, 3]) }
+
+      context 'with identifier at the beginning' do
+        let(:pattern) { '[var, 2]' }
+
+        it { is_expected.not_to be_defined_at([]) }
+        it { is_expected.to be_defined_at([1, 2]) }
+        it { is_expected.not_to be_defined_at([1, 3]) }
+        it { is_expected.not_to be_defined_at([1]) }
+        it { is_expected.not_to be_defined_at([2]) }
+        it { is_expected.not_to be_defined_at([1, 2, 3]) }
+      end
     end
   end
 
@@ -84,6 +116,27 @@ RSpec.describe Fear::Extractor::ArrayListMatcher do
       let(:pattern) { '[2, *]' }
 
       it { is_expected.to eq(Fear.some({})) }
+    end
+
+    context 'with identifier at the middle of an array' do
+      let(:other) { [2, 1, 3] }
+      let(:pattern) { '[2, var, 3]' }
+
+      it { is_expected.to eq(Fear.some(var: 1)) }
+    end
+
+    context 'with identifier at the end of an array' do
+      let(:other) { [2, 1, 3] }
+      let(:pattern) { '[2, 1, var]' }
+
+      it { is_expected.to eq(Fear.some(var: 3)) }
+    end
+
+    context 'with several identifiers in an array' do
+      let(:other) { [2, 1, 3] }
+      let(:pattern) { '[a, 1, b]' }
+
+      it { is_expected.to eq(Fear.some(a: 2, b: 3)) }
     end
   end
 

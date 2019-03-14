@@ -41,11 +41,10 @@ module Fear
 
       class ArrayTail < Node
         def to_matcher(index)
-          head, tail = elements[1]
-          head = head.elements[0]
+          head, tail = elements[1].elements
           ArrayListMatcher.new(
             head: head.to_matcher(index),
-            tail: tail ? tail.to_matcher(1) : EmptyListMatcher.new(index: 1, node: self),
+            tail: tail.empty? ? EmptyListMatcher.new(index: 1, node: self) : tail.to_matcher(1),
             index: index,
             node: self,
           )
@@ -149,6 +148,12 @@ module Fear
       class AnyIdentifier < Node
         def to_matcher
           AnyMatcher.new(node: self)
+        end
+      end
+
+      class Identifier < Node
+        def to_matcher
+          IdentifierMatcher.new(name: text_value.to_sym, node: self)
         end
       end
     end

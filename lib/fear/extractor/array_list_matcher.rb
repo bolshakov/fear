@@ -10,8 +10,10 @@ module Fear
           if head.is_a?(ArraySplatMatcher)
             true
           else
-            other_head, *other_tail = other
-            head.defined_at?(other_head) && tail.defined_at?(other_tail)
+            unless other.empty?
+              other_head, *other_tail = other
+              head.defined_at?(other_head) && tail.defined_at?(other_tail)
+            end
           end
         end
       end

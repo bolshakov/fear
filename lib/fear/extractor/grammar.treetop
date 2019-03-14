@@ -42,9 +42,12 @@ module Fear::Extractor
       '_' <AnyIdentifier>
     end
 
+    rule variable_identifier
+      [a-z_] [a-z0-9_]* <Identifier>
+    end
+
     rule identifier
-      any
-      # [a-z_] [a-z0-9_]*
+      variable_identifier / any
     end
 
     rule literal
