@@ -11,7 +11,7 @@ module Fear::Extractor
     end
 
     rule array_value_list
-      array_head (array_tail / array_tail_splat)? <ArrayValueList>
+      array_head (array_tail / array_tail_splat)? <Array>
     end
 
     rule array_tail

@@ -24,10 +24,10 @@ module Fear
         end
       end
 
-      class ArrayValueList < Node
+      class Array < Node
         def to_matcher
           head, tail = elements.reject(&:empty?)
-          ArrayListMatcher.new(
+          ArrayMatcher.new(
             head: head.to_matcher(0),
             tail: tail ? tail.to_matcher(1) : EmptyListMatcher.new(index: 1, node: self),
             index: 0,
@@ -36,13 +36,10 @@ module Fear
         end
       end
 
-      class Expression < Node
-      end
-
       class ArrayTail < Node
         def to_matcher(index)
           head, tail = elements[1].elements
-          ArrayListMatcher.new(
+          ArrayMatcher.new(
             head: head.to_matcher(index),
             tail: tail.empty? ? EmptyListMatcher.new(index: 1, node: self) : tail.to_matcher(1),
             index: index,
@@ -54,7 +51,7 @@ module Fear
       class ArrayTailSplat < Node
         def to_matcher(index)
           splat, = elements[1]
-          ArrayListMatcher.new(
+          ArrayMatcher.new(
             head: splat.to_matcher,
             tail: EmptyListMatcher.new(index: index + 1, node: self),
             index: index,

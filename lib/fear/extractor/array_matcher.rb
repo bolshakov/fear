@@ -1,8 +1,8 @@
 module Fear
   module Extractor
-    class ArrayListMatcher < Matcher
+    class ArrayMatcher < Matcher
       attribute :head, ArrayHeadMatcher | ArraySplatMatcher
-      attribute :tail, ArrayListMatcher | EmptyListMatcher
+      attribute :tail, ArrayMatcher | EmptyListMatcher
       attribute :index, Types::Strict::Integer
 
       def defined_at?(other)

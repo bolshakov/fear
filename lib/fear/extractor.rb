@@ -15,7 +15,7 @@ module Fear
     autoload :AnonymousArraySplatMatcher, 'fear/extractor/anonymous_array_splat_matcher'
     autoload :AnyMatcher, 'fear/extractor/any_matcher'
     autoload :ArrayHeadMatcher, 'fear/extractor/array_head_matcher'
-    autoload :ArrayListMatcher, 'fear/extractor/array_list_matcher'
+    autoload :ArrayMatcher, 'fear/extractor/array_matcher'
     autoload :ArraySplatMatcher, 'fear/extractor/array_splat_matcher'
     autoload :BooleanMatcher, 'fear/extractor/boolean_matcher'
     autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
