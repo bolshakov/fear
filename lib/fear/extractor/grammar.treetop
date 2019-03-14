@@ -3,6 +3,14 @@
 module Fear::Extractor
   grammar Grammar
     rule matcher
+      identified_matcher / anonymous_matcher
+    end
+
+    rule identified_matcher
+      identifier space '@' space anonymous_matcher <IdentifiedMatcher>
+    end
+
+    rule anonymous_matcher
       array / literal / identifier / type
     end
 
@@ -39,7 +47,7 @@ module Fear::Extractor
     end
 
     rule array_head
-      space? matcher space? <ArrayHead>
+      space? anonymous_matcher space? <ArrayHead>
     end
 
     rule space

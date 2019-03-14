@@ -82,4 +82,9 @@ RSpec.describe Fear::ExtractorApi do
     assert(Fear['var : Integer'] === 3)
     assert_not(Fear['var : Integer'] === '3')
   end
+
+  specify 'capture matcher' do
+    assert(Fear['array @ [head : Integer, *tail]'] === [1, 2])
+    assert_not(Fear['array @ [head : Integer, *tail]'] === ['1', 2])
+  end
 end

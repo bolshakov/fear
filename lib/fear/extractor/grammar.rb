@@ -180,6 +180,17 @@ module Fear
           )
         end
       end
+
+      class IdentifiedMatcher < Node
+        def to_matcher
+          identifier, matcher = elements.values_at(0, -1)
+          Extractor::IdentifiedMatcher.new(
+            identifier: identifier.to_matcher,
+            matcher: matcher.to_matcher,
+            node: matcher,
+          )
+        end
+      end
     end
   end
 end

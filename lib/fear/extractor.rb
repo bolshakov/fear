@@ -38,11 +38,24 @@ module Fear
       attribute :type, TypeMatcher
 
       def defined_at?(other)
-        type.defined_at?(other) && identifier.defined_at?(other)
+        type.defined_at?(other)
       end
 
       def bindings(other)
         { identifier.name => other }
+      end
+    end
+
+    class IdentifiedMatcher < Matcher
+      attribute :identifier, IdentifierMatcher
+      attribute :matcher, Matcher
+
+      def defined_at?(other)
+        matcher.defined_at?(other)
+      end
+
+      def bindings(other)
+        { identifier.name => other }.merge(matcher.bindings(other))
       end
     end
   end
