@@ -161,7 +161,7 @@ RSpec.describe Fear::Failure do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['Failure(v : ArgumentError)']) { 'matched' }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('Failure(v : ArgumentError)') { 'matched' }.call_or_else(var) { 'nothing' } }
 
     context 'failure of ArgumentError' do
       let(:var) { Fear.failure(ArgumentError.new) }

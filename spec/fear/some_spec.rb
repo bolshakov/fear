@@ -92,7 +92,7 @@ RSpec.describe Fear::Some do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['Some(v : Integer)']) { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('Some(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
 
     context 'some of int' do
       let(:var) { Fear.some(42) }

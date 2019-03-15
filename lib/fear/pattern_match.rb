@@ -93,6 +93,16 @@ module Fear
       or_else(Fear.case(*guards, &effect))
     end
 
+    # @param pattern [String]
+    # @param guards [<#===>]
+    # @param effect [Proc]
+    # @return [Fear::PartialFunction]
+    # @see #case for details
+    # @see Fear.xcase for details
+    def xcase(pattern, *guards, &effect)
+      or_else(Fear.xcase(pattern, *guards, &effect))
+    end
+
     # @see Fear::PartialFunction#or_else
     def or_else(other)
       self.result = result.or_else(other)

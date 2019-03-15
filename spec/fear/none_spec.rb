@@ -128,7 +128,7 @@ RSpec.describe Fear::None do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['None()']) { 'matched' }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('None()') { 'matched' }.call_or_else(var) { 'nothing' } }
 
     context 'none' do
       let(:var) { Fear.none }

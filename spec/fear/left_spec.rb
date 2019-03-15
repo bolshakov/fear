@@ -185,7 +185,7 @@ RSpec.describe Fear::Left do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['Left(v : Integer)']) { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('Left(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
 
     context 'left of int' do
       let(:var) { Fear.left(42) }

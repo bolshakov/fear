@@ -2,7 +2,7 @@ RSpec.describe Fear::PartialFunction do
   describe 'Fear.case()' do
     context 'condition is extractor' do
       subject do
-        Fear.case(Fear['[1, [2, second_of_second, *], 3, *rest]']) do |second_of_second:, rest:|
+        Fear.xcase('[1, [2, second_of_second, *], 3, *rest]') do |second_of_second:, rest:|
           [second_of_second, rest]
         end
       end
@@ -110,7 +110,7 @@ RSpec.describe Fear::PartialFunction do
       subject { partial_function.call([1, 2, 3, 4, 5]) }
 
       let(:partial_function) do
-        Fear.case(Fear['[1, second, 3, *rest]']) { |second:, rest:| [second, rest] }
+        Fear.xcase('[1, second, 3, *rest]') { |second:, rest:| [second, rest] }
       end
 
       it { is_expected.to eq([2, [4, 5]]) }

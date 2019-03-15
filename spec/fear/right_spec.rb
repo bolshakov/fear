@@ -160,7 +160,7 @@ RSpec.describe Fear::Right do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['Right(v : Integer)']) { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('Right(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
 
     context 'right of int' do
       let(:var) { Fear.right(42) }

@@ -135,7 +135,7 @@ RSpec.describe Fear::Success do
   end
 
   describe 'pattern matching' do
-    subject { Fear.case(Fear['Success(v : Integer)']) { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+    subject { Fear.xcase('Success(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
 
     context 'success of int' do
       let(:var) { Fear.success(42) }
