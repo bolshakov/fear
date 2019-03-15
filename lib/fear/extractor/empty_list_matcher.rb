@@ -1,5 +1,7 @@
 module Fear
   module Extractor
+    # Match only if array is empty
+    #
     class EmptyListMatcher < Matcher
       attribute :index, Types::Strict::Integer
 

@@ -13,6 +13,10 @@ RSpec.describe Fear::ExtractorApi do
     end.to raise_error(Fear::PatternSyntaxError)
   end
 
+  def assert_valid_syntax
+    expect { yield }.not_to raise_error
+  end
+
   specify 'Array' do
     assert(Fear['[]'] === [])
     assert_not(Fear['[]'] === [1])
@@ -76,9 +80,15 @@ RSpec.describe Fear::ExtractorApi do
   end
 
   specify 'type matching' do
+    class Foo
+      class Bar
+      end
+    end
+
     assert(Fear['Integer'] === 3)
     assert_not(Fear['Integer'] === '3')
     assert(Fear['Numeric'] === 3)
+    assert(Fear['Foo::Bar'] === Foo::Bar.new)
     assert(Fear['var : Integer'] === 3)
     assert_not(Fear['var : Integer'] === '3')
   end
@@ -86,5 +96,11 @@ RSpec.describe Fear::ExtractorApi do
   specify 'capture matcher' do
     assert(Fear['array @ [head : Integer, *tail]'] === [1, 2])
     assert_not(Fear['array @ [head : Integer, *tail]'] === ['1', 2])
+  end
+
+  specify 'extractor' do
+    assert_valid_syntax { Fear['Foo(a, b : Integer)'] }
+    assert(Fear['Fear::Some(a : Integer)'] === Fear.some(42))
+    assert_not(Fear['Fear::Some(a : Integer)'] === Fear.some('foo'))
   end
 end

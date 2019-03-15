@@ -183,4 +183,26 @@ RSpec.describe Fear::Left do
 
     it { is_expected.to eq('#<Fear::Left value="value">') }
   end
+
+  describe 'pattern matching' do
+    subject { Fear.case(Fear['Left(v : Integer)']) { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+
+    context 'left of int' do
+      let(:var) { Fear.left(42) }
+
+      it { is_expected.to eq('matched 42') }
+    end
+
+    context 'left of string' do
+      let(:var) { Fear.left('42') }
+
+      it { is_expected.to eq('nothing') }
+    end
+
+    context 'not left' do
+      let(:var) { '42' }
+
+      it { is_expected.to eq('nothing') }
+    end
+  end
 end

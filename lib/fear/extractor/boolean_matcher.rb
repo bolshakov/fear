@@ -1,5 +1,6 @@
 module Fear
   module Extractor
+    # Match against boolean values -- true and false
     class BooleanMatcher < Matcher
       attribute :value, Types::Strict::Bool
 

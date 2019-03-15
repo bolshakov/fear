@@ -1,5 +1,7 @@
 module Fear
   module Extractor
+    # Recursive array matcher. Match against its head and tail
+    #
     class ArrayMatcher < Matcher
       attribute :head, ArrayHeadMatcher | ArraySplatMatcher
       attribute :tail, ArrayMatcher | EmptyListMatcher

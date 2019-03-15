@@ -1,5 +1,7 @@
 module Fear
   module Extractor
+    # Part of recursive array matcher. Match against its head.
+    # @see ArrayMatcher
     class ArrayHeadMatcher < Matcher
       attribute :element, Matcher
       attribute :index, Types::Strict::Integer

@@ -1,5 +1,6 @@
 module Fear
   module Extractor
+    # @see IdentifiedMatcher
     class IdentifierMatcher < Matcher
       attribute :name, Types::Strict::Symbol
 

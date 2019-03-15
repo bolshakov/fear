@@ -1,5 +1,7 @@
 module Fear
   module Extractor
+    # Match against string. E.g. +"Foo"+ or +'bar'+
+    #
     class StringMatcher < Matcher
       attribute :value, Types::Strict::String
       attribute :node, Types.Instance(Grammar::StringLiteral)

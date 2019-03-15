@@ -11,7 +11,7 @@ module Fear::Extractor
     end
 
     rule anonymous_matcher
-      array / literal / identifier / type
+      array / literal / identifier / extractor / type
     end
 
     rule array
@@ -110,8 +110,16 @@ module Fear::Extractor
       'nil' <NilLiteral>
     end
 
+    rule extractor
+      type '(' array_value_list? ')' <ExtractorLiteral>
+    end
+
     rule type
-      [A-Z] [a-zA-Z0-9_]* <TypeLiteral>
+      constant ('::' constant)* <TypeLiteral>
+    end
+
+    rule constant
+      [A-Z] [a-zA-Z0-9_]*
     end
   end
 end

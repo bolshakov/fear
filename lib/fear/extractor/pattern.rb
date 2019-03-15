@@ -1,5 +1,6 @@
 module Fear
   module Extractor
+    # Parse pattern. Used within +Fear[]+
     class Pattern
       def initialize(pattern)
         parser = Extractor::GrammarParser.new
