@@ -700,85 +700,50 @@ end #=> Fear.some('Paul was born on 1987-06-17')
 
 ### Pattern Matching ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/PatternMatchingApi))
 
-Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
-defined on domain described with guard.
+#### Syntax
 
-```ruby
-pf = Fear.case(Integer) { |x| x / 2 }
-pf.defined_at?(4) #=> true
-pf.defined_at?('Foo') #=> false
-pf.call('Foo') #=> raises Fear::MatchError
-pf.call_or_else('Foo') { 'not a number' } #=> 'not a number'
-pf.call_or_else(4) { 'not a number' } #=> 2
-pf.lift.call('Foo') #=> Fear::None
-pf.lift.call(4) #=> Fear.some(2)
-```
-
-It uses `#===` method under the hood, so you can pass:
-
-* Class to check kind of an object.
-* Lambda to evaluate it against an object.
-* Any literal, like `4`, `"Foobar"`, etc.
-* Symbol -- it is converted to lambda using `#to_proc` method.
-* Qo matcher -- `m.case(Qo[name: 'John']) { .... }`
- 
-Partial functions may be combined with each other:
-
-```ruby
-is_even = Fear.case(->(arg) { arg % 2 == 0}) { |arg| "#{arg} is even" }
-is_odd = Fear.case(->(arg) { arg % 2 == 1}) { |arg| "#{arg} is odd" }
-
-(10..20).map(&is_even.or_else(is_odd))
-
-to_integer = Fear.case(String, &:to_i)
-integer_two_times = Fear.case(Integer) { |x| x * 2 }
-
-two_times = to_integer.and_then(integer_two_times).or_else(integer_two_times)
-two_times.(4) #=> 8
-two_times.('42') #=> 84
-```
-
-To create custom pattern match use `Fear.match` method and `case` builder to define
-branches. For instance this matcher applies different functions to Integers and Strings
+To pattern match against a value, use `Fear.match` function, and provide at least one case clause:
 
 ```ruby 
-Fear.match(value) do |m|
-  m.case(Integer) { |n| "#{n} is a number" }
-  m.case(String) { |n| "#{n} is a string" }
+x = Random.rand(10)
+
+Fear.match(x) do |m|
+  m.case(0) { 'zero' }
+  m.case(1) { 'one' }
+  m.case(2) { 'two' }
+  m.else { 'many' }
 end
 ```
 
-if you pass something other than Integer or string, it will raise `Fear::MatchError` error.
-To avoid raising `MatchError`, you can use `else` method. It defines a branch matching
-on any value.
+The `x` above is a random integer from 0 to 10. The last clause `else` is a “catch all” case 
+for anything other than `0`, `1`, and `2`. If you want to ensure that an Integer value is passed,
+matching against type available:
 
 ```ruby 
-Fear.match(10..20) do |m|
-  m.case(Integer) { |n| "#{n} is a number" }
-  m.case(String) { |n| "#{n} is a string" }
-  m.else  { |n| "#{n} is a #{n.class}" }
-end #=> "10..20 is a Range"
+Fear.match(x) do |m|
+  m.case(Integer, 0) { 'zero' }
+  m.case(Integer, 1) { 'one' }
+  m.case(Integer, 2) { 'two' }
+  m.case(Integer) { 'many' }
+end
 ```
 
-You can use anything as a guardian if it responds to `#===` method:
+Providing  something other than Integer will raise `Fear::MatchError` error.
+
+#### Pattern guards 
+
+You can use whatever you want as a pattern guard, if it respond to `#===` method to to make cases more specific. 
 
 ```ruby
 m.case(20..40) { |m| "#{m} is within range" }
 m.case(->(x) { x > 10}) { |m| "#{m} is greater than 10" }
 ```
 
-If you pass a Symbol, it will be converted to proc using `#to_proc` method
+In sake of convenience, passing a Symbol, converts it to proc using `#to_proc` method
 
 ```ruby 
 m.case(:even?) { |x| "#{x} is even" }
 m.case(:odd?) { |x| "#{x} is odd" }
-```
-
-It's also possible to pass several guardians. All should match to pass
-
-```ruby 
-m.case(Integer, :even?) { |x| ... }
-m.case(Integer, :odd?) { |x| ... }
 ```
 
 It's also possible to create matcher and use it several times:
@@ -794,30 +759,125 @@ matcher.(42) #=> "42 is a number"
 matcher.(10..20) #=> "10..20 is a Range"
 ``` 
 
-Since matcher is just a syntactic sugar for partial functions, you can combine matchers with partial
-functions and each other. 
+#### Pattern extraction 
+
+It's possible to use special syntax to match against an object and extract a variable form this object.
+To perform such extraction, `#xcase` method should be used. The following example should give you a sense 
+how extraction works.
 
 ```ruby
-handle_numbers = Fear.case(Integer, &:itself).and_then(
-  Fear.matcher do |m|
-    m.case(0) { 'zero' }
-    m.case(->(n) { n < 10 }) { 'smaller than ten' }  
-    m.case(->(n) { n > 10 }) { 'bigger than ten' }
-  end
-)
+matcher = Fear.matcher do |m|
+  m.xcase('[1, *tail]') { |tail:| tail }
+end
+```
 
-handle_strings = Fear.case(String, &:itself).and_then(
-  Fear.matcher do |m|
-    m.case('zero') { 0 }
-    m.case('one') { 1 }
-    m.else { 'unexpected' }
-  end
-)
+It matches only on an array starting from `1` integer, and captures its tail:
 
-handle = handle_numbers.or_else(handle_strings)
-handle.(0) #=> 'zero'
-handle.(12) #=> 'bigger than ten'
-handle.('one') #=> 1
+```ruby
+matcher.([1,2,3]) #=> [2,3]
+matcher.([2,3]) #=> raises MatchError
+``` 
+
+If you want to match against any value, use `_` 
+
+```ruby 
+matcher = Fear.matcher do |m|
+  m.xcase('[1, _, 3]') { .. }
+end
+```
+
+It matches against `[1, 2, 3]`, `[1, 'foo', 3]`, but not `[1, 2]`. It's also possible to capture several variables
+at the same time. Tho following example describes an array starting from `1`, and captures second and third elements.
+
+
+```ruby 
+matcher = Fear.matcher do |m|
+  m.xcase('[1, second, third]') { |second:, third: |.. }
+end
+``` 
+
+Matching on deeper structures is possible as well:
+
+```ruby 
+matcher = Fear.matcher do |m|
+  m.xcase('[["status", first_status], 4, *tail]') { |first_status:, tail: |.. }
+end
+``` 
+
+If you want to capture variable of specific type, there is a type matcher for that case:
+
+```ruby 
+matcher = Fear.matcher do |m|
+  m.xcase('[head : String, 2, *]') { |head: | head }
+end
+matcher.(['foo', 2]) #=> 'foo'
+matcher.(['foo', 3]) #=> MatchError
+matcher.([1, 2]) #=> MatchError
+``` 
+
+You can extract variables from more complex objects. Fear packed with extractors for monads and `Date` object:
+
+```ruby
+Fear.matcher do |m|
+  m.xcase('Date(year, 2, 29)', ->(year:) { year < 2000 }) do |year:|
+    "#{year} is a leap year before Millennium"
+  end
+  
+  m.xcase('Date(year, 2, 29)') do |year:|
+    "#{year} is a leap year after Millennium"
+  end
+  
+  m.case(Date) do |date|
+    "#{date.year} is not a leap year"
+  end
+end
+``` 
+
+This matcher extracts values from date object and match against them at the same time
+
+```ruby 
+matcher.(Date.new(1996,02,29)) #=> "1996 is a leap year before Millennium"
+matcher.(Date.new(2004,02,29)) #=> "1996 is a leap year after Millennium"
+matcher.(Date.new(2003,01,24)) #=> "2003 is not a leap year"
+```
+
+Nothing tricky here. The extractor object takes an object and tries to give back the arguments. It's like 
+constructor, but instead of construction an object, it deconstructs it. 
+
+An argument of an extractor may be also a pattern or even  introduce a new variable. 
+
+```ruby 
+matcher = Fear.matcher do |m|
+  m.xcase('Some([status : Integer, body : String])') do |status:, body:|
+    "#{body.bytesize} bytes received with code #{status}"
+  end 
+end
+
+matcher.(Fear.some([200, 'hello'])) #=> "5 bytes received with code 200"
+matcher.(Fear.some(['hello', 200])) #=> MatchError 
+```
+
+You can provide extractors for you own classes
+
+```ruby 
+Fear.register_extractor(User, Fear.case(User) { |user| [user.id, user.email] }.lift)
+# is the same as
+Fear.register_extractor(User, proc do |user|
+  if user.is_a?(User)
+    Fear.some([user.id, user.email])
+  else
+    Fear.none
+  end
+end)
+```
+
+Now extracting user's id and email is possible:
+
+
+```ruby 
+Fear.match(user) do |m|
+  m.xcase('User(id, email)') { |id:, email:| }
+end
 ```
 
 #### More examples
@@ -894,6 +954,72 @@ end
 matcher.(Fear.some(42)) #=> 'Yep'
 matcher.(Fear.some(40)) #=> 'Nope'
 ``` 
+
+#### Under the hood 
+
+Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
+defined on domain described with guard.
+
+```ruby
+pf = Fear.case(Integer) { |x| x / 2 }
+pf.defined_at?(4) #=> true
+pf.defined_at?('Foo') #=> false
+pf.call('Foo') #=> raises Fear::MatchError
+pf.call_or_else('Foo') { 'not a number' } #=> 'not a number'
+pf.call_or_else(4) { 'not a number' } #=> 2
+pf.lift.call('Foo') #=> Fear::None
+pf.lift.call(4) #=> Fear.some(2)
+```
+
+It uses `#===` method under the hood, so you can pass:
+
+* Class to check kind of an object.
+* Lambda to evaluate it against an object.
+* Any literal, like `4`, `"Foobar"`, etc.
+* Symbol -- it is converted to lambda using `#to_proc` method.
+* Qo matcher -- `m.case(Qo[name: 'John']) { .... }`
+ 
+Partial functions may be combined with each other:
+
+```ruby
+is_even = Fear.case(->(arg) { arg % 2 == 0}) { |arg| "#{arg} is even" }
+is_odd = Fear.case(->(arg) { arg % 2 == 1}) { |arg| "#{arg} is odd" }
+
+(10..20).map(&is_even.or_else(is_odd))
+
+to_integer = Fear.case(String, &:to_i)
+integer_two_times = Fear.case(Integer) { |x| x * 2 }
+
+two_times = to_integer.and_then(integer_two_times).or_else(integer_two_times)
+two_times.(4) #=> 8
+two_times.('42') #=> 84
+```
+
+Since matcher is just a syntactic sugar for partial functions, you can combine matchers with partial
+functions and each other. 
+
+```ruby
+handle_numbers = Fear.case(Integer, &:itself).and_then(
+  Fear.matcher do |m|
+    m.case(0) { 'zero' }
+    m.case(->(n) { n < 10 }) { 'smaller than ten' }  
+    m.case(->(n) { n > 10 }) { 'bigger than ten' }
+  end
+)
+
+handle_strings = Fear.case(String, &:itself).and_then(
+  Fear.matcher do |m|
+    m.case('zero') { 0 }
+    m.case('one') { 1 }
+    m.else { 'unexpected' }
+  end
+)
+
+handle = handle_numbers.or_else(handle_strings)
+handle.(0) #=> 'zero'
+handle.(12) #=> 'bigger than ten'
+handle.('one') #=> 1
+```
 
 ## Testing
 

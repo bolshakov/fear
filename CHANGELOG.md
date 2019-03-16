@@ -1,5 +1,6 @@
 ## 0.x
 
+* Add `#xcase` method to extract patterns ([@bolshakov][])
 * Add `Fear.option`, `Fear.some`, `Fear.none`, `Fear.try`, `Fear.left`, `Fear.right`, and `Fear.for` alternatives to
   including mixins. ([@bolshakov][])
 
