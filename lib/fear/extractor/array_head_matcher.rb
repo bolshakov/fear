@@ -3,8 +3,10 @@ module Fear
     # Part of recursive array matcher. Match against its head.
     # @see ArrayMatcher
     class ArrayHeadMatcher < Matcher
-      attribute :element, Matcher
-      attribute :index, Types::Strict::Integer
+      # @!attribute element
+      #   @return [Matcher]
+      # @!attribute index
+      #   @return [Types::Strict::Integer]
 
       def defined_at?(other)
         element.defined_at?(other)

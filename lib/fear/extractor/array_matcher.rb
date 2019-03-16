@@ -3,9 +3,12 @@ module Fear
     # Recursive array matcher. Match against its head and tail
     #
     class ArrayMatcher < Matcher
-      attribute :head, ArrayHeadMatcher | ArraySplatMatcher
-      attribute :tail, ArrayMatcher | EmptyListMatcher
-      attribute :index, Types::Strict::Integer
+      # @!attribute head
+      #   @return [ArrayHeadMatcher | ArraySplatMatcher]
+      # @!attribute tail
+      #   @return [ArrayMatcher | EmptyListMatcher]
+      # @!attribute index
+      #   @return [Types::Strict::Integer]
 
       def defined_at?(other)
         if other.is_a?(Array)

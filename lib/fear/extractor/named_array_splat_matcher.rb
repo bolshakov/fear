@@ -4,7 +4,8 @@ module Fear
     # E.g. +[1, 2, *tail]+
     #
     class NamedArraySplatMatcher < ArraySplatMatcher
-      attribute :name, Types::Strict::Symbol
+      # @!attribute name
+      #   @return [Types::Strict::Symbol]
 
       def bindings(other)
         { name => other }

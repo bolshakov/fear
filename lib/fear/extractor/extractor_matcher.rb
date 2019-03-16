@@ -4,8 +4,9 @@ module Fear
     # E.g. +Some(a : Integer)+
     # @see Extractor.register_extractor
     class ExtractorMatcher < Matcher
-      attribute :name, Types::Strict::String
-      attribute :arguments_matcher, ArrayMatcher | EmptyListMatcher
+      # @!attribute name
+      #   @return [Types::Strict::String]
+      # attribute :arguments_matcher, ArrayMatcher | EmptyListMatcher
 
       def defined_at?(other)
         Fear::Option.match(extract(other)) do |m|
@@ -23,9 +24,9 @@ module Fear
       def bindings(other)
         Fear::Option.match(extract(other)) do |m|
           m.some { |v| arguments_matcher.bindings([v].flatten) }
-          m.none { Dry::Core::Constants::EMPTY_ARRAY }
-          m.case(false) { Dry::Core::Constants::EMPTY_ARRAY }
-          m.case(true) { Dry::Core::Constants::EMPTY_ARRAY }
+          m.none { EMPTY_ARRAY }
+          m.case(false) { EMPTY_ARRAY }
+          m.case(true) { EMPTY_ARRAY }
         end
       end
 

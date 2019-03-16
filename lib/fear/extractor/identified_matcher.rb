@@ -3,8 +3,10 @@ module Fear
     # Match against and capture variable. E.g. +[foo : Integer]+
     # will check if the first element of an array is Integer and capture it ass +:foo+
     class IdentifiedMatcher < Matcher
-      attribute :identifier, IdentifierMatcher
-      attribute :matcher, Matcher
+      # @!attribute identifier
+      #   @return [IdentifierMatcher]
+      # @!attribute matcher
+      #   @return [Matcher]
 
       def defined_at?(other)
         matcher.defined_at?(other)

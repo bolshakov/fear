@@ -1,8 +1,21 @@
+require 'ostruct'
+
 module Fear
   module Extractor
     # @abstract abstract matcher to inherit from.
-    class Matcher < Dry::Struct
-      attribute :node, Types.Instance(Fear::Extractor::Grammar::Node)
+    class Matcher < OpenStruct
+      EMPTY_HASH = {}.freeze
+      EMPTY_ARRAY = [].freeze
+
+      # @param node [Fear::Extractor::Grammar::Node]
+      def initialize(node:, **attributes)
+        @input = node.input
+        @input_position = node.interval.first
+        super(**attributes)
+      end
+      attr_reader :input_position, :input
+      private :input
+      private :input_position
 
       # Checks if matcher match against provided argument
       # @param _argument [any]
@@ -23,7 +36,7 @@ module Fear
       # @param _argument [any]
       # @return [Hash<Symbol => any>]
       def bindings(_argument)
-        raise NoMethodError
+        EMPTY_HASH
       end
 
       # Shows why matcher has failed. Use it for debugging.
@@ -37,14 +50,6 @@ module Fear
         else
           Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
         end
-      end
-
-      private def input
-        node.input
-      end
-
-      private def input_position
-        node.interval.first
       end
     end
   end

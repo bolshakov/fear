@@ -3,8 +3,10 @@ module Fear
     # Match and capture identifier with specific type. E.g. +foo : Integer+
     #
     class TypedIdentifierMatcher < Matcher
-      attribute :identifier, IdentifierMatcher
-      attribute :type, TypeMatcher
+      # @!attribute identifier
+      #   @return [IdentifierMatcher]
+      # @!attribute type
+      #   @return [TypeMatcher]
 
       def defined_at?(other)
         type.defined_at?(other)
