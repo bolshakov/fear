@@ -81,7 +81,7 @@ module Fear
 
       class FloatLiteral < Node
         def to_matcher
-          NumberMatcher.new(value: value, node: self)
+          ValueMatcher.new(value: value, node: self)
         end
 
         def value
@@ -91,7 +91,7 @@ module Fear
 
       class IntegerLiteral < Node
         def to_matcher
-          NumberMatcher.new(value: value, node: self)
+          ValueMatcher.new(value: value, node: self)
         end
 
         def value
@@ -101,7 +101,7 @@ module Fear
 
       class StringLiteral < Node
         def to_matcher
-          StringMatcher.new(value: value, node: self)
+          ValueMatcher.new(value: value, node: self)
         end
 
         def value
@@ -113,7 +113,7 @@ module Fear
 
       class DoubleQuotedStringLiteral < StringLiteral
         def to_matcher
-          StringMatcher.new(value: value, node: self)
+          ValueMatcher.new(value: value, node: self)
         end
 
         def value
@@ -123,19 +123,19 @@ module Fear
 
       class TrueLiteral < Node
         def to_matcher
-          BooleanMatcher.new(value: true, node: self)
+          ValueMatcher.new(value: true, node: self)
         end
       end
 
       class FalseLiteral < Node
         def to_matcher
-          BooleanMatcher.new(value: false, node: self)
+          ValueMatcher.new(value: false, node: self)
         end
       end
 
       class NilLiteral < Node
         def to_matcher
-          NilMatcher.new(node: self)
+          ValueMatcher.new(value: nil, node: self)
         end
       end
 

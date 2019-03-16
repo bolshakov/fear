@@ -1,4 +1,4 @@
-RSpec.describe Fear::Extractor::NumberMatcher do
+RSpec.describe Fear::Extractor::ValueMatcher, 'Number' do
   let(:parser) { Fear::Extractor::GrammarParser.new }
   let(:matcher) { parser.parse(pattern).to_matcher }
 
