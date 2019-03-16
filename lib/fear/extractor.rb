@@ -25,15 +25,17 @@ module Fear
     ExtractorNotFound = Class.new(Error)
 
     @mutex = Mutex.new
-    @registry = {}
+    @registry = PartialFunction::EMPTY
+
+    EXTRACTOR_NOT_FOUND = proc do |klass|
+      raise ExtractorNotFound, 'could not find extractor for ' + klass.inspect
+    end
 
     class << self
       # @param klass [Class, String]
       # @api private
       def find_extractor(klass)
-        @registry.fetch(klass) do
-          raise ExtractorNotFound, 'could not find extractor for ' + klass.inspect
-        end
+        @registry.call_or_else(klass, &EXTRACTOR_NOT_FOUND)
       end
 
       # Register extractor for given class
@@ -57,11 +59,26 @@ module Fear
         *keys, extractor = *args
 
         @mutex.synchronize do
-          keys.map(&:to_s).uniq.each do |key|
-            @registry[key] = extractor
+          keys.uniq.each do |key|
+            @registry = BUILD_EXTRACTOR.call(key, extractor).or_else(@registry)
           end
         end
         self
+      end
+
+      BUILD_EXTRACTOR = proc do |key, extractor|
+        Fear.matcher do |m|
+          case key
+          when String
+            m.case(Module, ->(lookup) { lookup.to_s == key }) { extractor }
+            m.case(String, key) { extractor }
+          when Module
+            m.case(Module, ->(lookup) { lookup <= key }) { extractor }
+            m.case(String, key.to_s) { extractor }
+          else
+            m.case(key) { extractor } # may it be useful to register other types of keys? lambda?
+          end
+        end
       end
     end
 
@@ -73,6 +90,7 @@ module Fear
         Fear.none
       end
     end)
+    register_extractor(Struct, Fear.case(Struct, &:to_a).lift)
     # No argument boolean extractor example
     register_extractor('IsEven', proc { |int| int.is_a?(Integer) && int.even? })
     # Single argument extractor example

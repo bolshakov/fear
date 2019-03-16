@@ -191,14 +191,28 @@ module Fear
 
       class ExtractorLiteral < Node
         def to_matcher
-          extractor = elements[0]
-          arguments = elements[2].empty? ? EmptyListMatcher.new(node: self, index: 0) : elements[2].to_matcher
-
           ExtractorMatcher.new(
-            name: extractor.text_value,
-            arguments_matcher: arguments,
+            name: extractor_name,
+            arguments_matcher: extractor_arguments,
             node: self,
           )
+        end
+
+        private def extractor_name
+          name = elements[0].text_value
+          if Object.const_defined?(name)
+            Object.const_get(name)
+          else
+            name
+          end
+        end
+
+        private def extractor_arguments
+          if elements[2].empty?
+            EmptyListMatcher.new(node: self, index: 0)
+          else
+            elements[2].to_matcher
+          end
         end
       end
     end

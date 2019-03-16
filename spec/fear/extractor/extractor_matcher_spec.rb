@@ -28,6 +28,15 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
       it { is_expected.not_to be_defined_at(Date.parse('2018-02-15')) }
       it { is_expected.not_to be_defined_at('foo') }
     end
+
+    context 'Struct' do
+      StructDate = Struct.new(:year, :month, :day)
+
+      let(:pattern) { 'StructDate(2017, month, _)' }
+
+      it { is_expected.to be_defined_at(StructDate.new(2017, 2, 15)) }
+      it { is_expected.not_to be_defined_at(StructDate.new(2018, 2, 15)) }
+    end
   end
 
   describe '#call' do
