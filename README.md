@@ -880,6 +880,21 @@ Fear.match(user) do |m|
 end
 ```
 
+#### Extracting struct
+
+There is predefined `Struct` extractor:
+
+```ruby
+Envelope = Struct.new(:id, :receiver, :sender, :message)
+
+Fear.match(envelope) do |m|
+  m.xcase('acknowledge @ Envelope(id, _, sender, _)') do |id:, sender:, envelope:|
+    acknowledge(id, sender)
+    process(acknowledge)
+  end
+end
+```
+
 #### More examples
 
 Factorial using pattern matching
