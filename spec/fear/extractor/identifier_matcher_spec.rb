@@ -63,7 +63,7 @@ RSpec.describe Fear::Extractor::IdentifierMatcher do
       let(:pattern) { '1' }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected 2 to match 1 here:
+Expected `2` to match:
 1
 ^
       ERROR

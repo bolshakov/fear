@@ -67,7 +67,7 @@ RSpec.describe Fear::Extractor::TypedIdentifierMatcher do
       let(:other) { 1.0 }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected 1.0 to match var : Integer here:
+Expected `1.0` to match:
 var : Integer
 ~~~~~~^
       ERROR

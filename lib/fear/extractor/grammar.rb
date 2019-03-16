@@ -5,10 +5,6 @@ module Fear
     # generate matchers
     module Grammar
       class Node < Treetop::Runtime::SyntaxNode
-        def show_position
-          "#{input}\n" \
-          "#{'~' * interval.first}^"
-        end
       end
 
       class ArrayLiteral < Node

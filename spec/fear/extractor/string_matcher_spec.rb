@@ -83,7 +83,7 @@ RSpec.describe Fear::Extractor::StringMatcher do
       let(:pattern) { '"foo"' }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected bar to match \"foo\" here:
+Expected `"bar"` to match:
 "foo"
 ^
       ERROR

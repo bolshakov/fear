@@ -82,7 +82,7 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
         let(:other) { Fear.some('42') }
 
         it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
-Expected 42 to match Fear::Some(a : Integer) here:
+Expected `"42"` to match:
 Fear::Some(a : Integer)
 ~~~~~~~~~~~^
         MSG
@@ -102,7 +102,7 @@ Fear::Some(a : Integer)
         let(:other) { Date.parse('2017-04-15') }
 
         it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
-Expected 4 to match Date(year, 02, day) here:
+Expected `4` to match:
 Date(year, 02, day)
 ~~~~~~~~~~^
         MSG

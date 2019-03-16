@@ -208,7 +208,7 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
       let(:pattern) { '[2, 2]' }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected 1 to match [2, 2] here:
+Expected `1` to match:
 [2, 2]
 ~~~^
       ERROR

@@ -35,8 +35,16 @@ module Fear
         if defined_at?(other)
           Fear.none
         else
-          Fear.some("Expected #{other} to match #{node.input} here:\n#{node.show_position}")
+          Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
         end
+      end
+
+      private def input
+        node.input
+      end
+
+      private def input_position
+        node.interval.first
       end
     end
   end

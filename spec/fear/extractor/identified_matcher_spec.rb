@@ -45,7 +45,7 @@ RSpec.describe Fear::Extractor::IdentifiedMatcher do
       let(:other) { [2, 2] }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected [2, 2] to match array @ [1, *tail] here:
+Expected `[2, 2]` to match:
 array @ [1, *tail]
 ~~~~~~~~^
       ERROR
