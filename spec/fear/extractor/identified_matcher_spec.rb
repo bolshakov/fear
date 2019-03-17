@@ -1,4 +1,4 @@
-RSpec.describe Fear::Extractor::IdentifiedMatcher do
+RSpec.describe 'Fear::Extractor::IdentifiedMatcher' do
   let(:parser) { Fear::Extractor::GrammarParser.new }
   let(:matcher) { parser.parse(pattern).to_matcher }
 
@@ -19,14 +19,7 @@ RSpec.describe Fear::Extractor::IdentifiedMatcher do
       let(:other) { [1, 2] }
       let(:pattern) { 'array @ [1, *tail]' }
 
-      it { is_expected.to eq(Fear.some(array: [1, 2], tail: [2])) }
-    end
-
-    context 'not defined' do
-      let(:other) { [2, 2] }
-      let(:pattern) { 'array @ [1, *tail]' }
-
-      it { is_expected.to eq(Fear.none) }
+      it { is_expected.to eq(array: [1, 2], tail: [2]) }
     end
   end
 
@@ -45,9 +38,9 @@ RSpec.describe Fear::Extractor::IdentifiedMatcher do
       let(:other) { [2, 2] }
 
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
-Expected `[2, 2]` to match:
+Expected `2` to match:
 array @ [1, *tail]
-~~~~~~~~^
+~~~~~~~~~^
       ERROR
     end
   end

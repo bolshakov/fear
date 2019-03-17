@@ -15,11 +15,9 @@ module Fear
     autoload :ArraySplatMatcher, 'fear/extractor/array_splat_matcher'
     autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
     autoload :ExtractorMatcher, 'fear/extractor/extractor_matcher'
-    autoload :IdentifiedMatcher, 'fear/extractor/identified_matcher'
     autoload :IdentifierMatcher, 'fear/extractor/identifier_matcher'
     autoload :NamedArraySplatMatcher, 'fear/extractor/named_array_splat_matcher'
     autoload :TypedIdentifierMatcher, 'fear/extractor/typed_identifier_matcher'
-    autoload :TypeMatcher, 'fear/extractor/type_matcher'
     autoload :ValueMatcher, 'fear/extractor/value_matcher'
 
     ExtractorNotFound = Class.new(Error)

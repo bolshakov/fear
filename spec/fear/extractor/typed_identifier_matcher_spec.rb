@@ -27,32 +27,18 @@ RSpec.describe Fear::Extractor::TypedIdentifierMatcher do
       let(:other) { 1 }
       let(:pattern) { 'var : Integer' }
 
-      it { is_expected.to eq(Fear.some(var: 1)) }
+      it { is_expected.to eq(var: 1) }
     end
 
     context 'defined within array' do
       let(:other) { [4, 2, 1, 6] }
       let(:pattern) { '[head : Integer, *tail]' }
 
-      it { is_expected.to eq(Fear.some(head: 4, tail: [2, 1, 6])) }
-    end
-
-    context 'not defined within array' do
-      let(:other) { ['foo', 2, 1, 6] }
-      let(:pattern) { '[head : Integer, *tail]' }
-
-      it { is_expected.to eq(Fear.none) }
-    end
-
-    context 'not defined' do
-      let(:other) { '2' }
-      let(:pattern) { 'var : Integer' }
-
-      it { is_expected.to eq(Fear.none) }
+      it { is_expected.to eq(head: 4, tail: [2, 1, 6]) }
     end
   end
 
-  describe '#failure_reason' do
+  describe '#' do
     subject { matcher.failure_reason(other) }
 
     let(:pattern) { 'var : Integer' }

@@ -58,13 +58,7 @@ RSpec.describe Fear::Extractor::ValueMatcher, 'String' do
     context 'defined' do
       let(:other) { 'foo' }
 
-      it { is_expected.to eq(Fear.some({})) }
-    end
-
-    context 'not defined' do
-      let(:other) { 'bar' }
-
-      it { is_expected.to eq(Fear.none) }
+      it { is_expected.to eq({}) }
     end
   end
 

@@ -18,9 +18,7 @@ module Fear
       end
 
       def extracted_arguments(other)
-        matcher.call(other).get_or_else do
-          raise ArgumentError, 'extracting arguments of not matcher pattern'
-        end
+        matcher.call(other)
       end
 
       private def syntax_error_message(parser, pattern)

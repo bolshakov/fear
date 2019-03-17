@@ -7,63 +7,34 @@ module Fear
       class Node < Treetop::Runtime::SyntaxNode
       end
 
-      class ArrayLiteral < Node
+      class EmptyArray < Node
         def to_matcher
-          list = elements.slice(1...-1).reject(&:empty?)
-          if list.empty?
-            EmptyListMatcher.new(
-              index: 0,
-              node: self,
-            )
-          else
-            list.first.to_matcher
-          end
+          EmptyListMatcher.new(node: self)
         end
       end
 
-      class Array < Node
+      class ArrayLiteral < Node
         def to_matcher
-          head, tail = elements.reject(&:empty?)
-          ArrayMatcher.new(
-            head: head.to_matcher(0),
-            tail: tail ? tail.to_matcher(1) : EmptyListMatcher.new(index: 1, node: self),
-            index: 0,
-            node: self,
-          )
+          elements[1].to_matcher
+        end
+      end
+
+      class NonEmptyArray < Node
+        def to_matcher
+          head, tail = elements
+          ArrayMatcher.new(head: head.to_matcher, tail: tail.to_matcher, node: self)
         end
       end
 
       class ArrayTail < Node
-        def to_matcher(index)
-          head, tail = elements[1].elements
-          ArrayMatcher.new(
-            head: head.to_matcher(index),
-            tail: tail.empty? ? EmptyListMatcher.new(index: 1, node: self) : tail.to_matcher(1),
-            index: index,
-            node: self,
-          )
-        end
-      end
-
-      class ArrayTailSplat < Node
-        def to_matcher(index)
-          splat, = elements[1]
-          ArrayMatcher.new(
-            head: splat.to_matcher,
-            tail: EmptyListMatcher.new(index: index + 1, node: self),
-            index: index,
-            node: self,
-          )
+        def to_matcher
+          elements[1].to_matcher
         end
       end
 
       class ArrayHead < Node
-        def to_matcher(index)
-          ArrayHeadMatcher.new(
-            element: elements[1].to_matcher,
-            index: index,
-            node: self,
-          )
+        def to_matcher
+          ArrayHeadMatcher.new(matcher: elements[1].to_matcher, node: elements[1])
         end
       end
 
@@ -163,29 +134,25 @@ module Fear
 
       class TypeLiteral < Node
         def to_matcher
-          TypeMatcher.new(class_name: text_value, node: self)
+          ValueMatcher.new(value: value, node: self)
+        end
+
+        def value
+          Object.const_get(text_value)
         end
       end
 
       class TypedIdentifier < Node
         def to_matcher
           identifier, type = elements.values_at(0, 2)
-          TypedIdentifierMatcher.new(
-            identifier: identifier.to_matcher,
-            type: type.to_matcher,
-            node: type,
-          )
+          type.to_matcher.and(identifier.to_matcher)
         end
       end
 
       class IdentifiedMatcher < Node
         def to_matcher
           identifier, matcher = elements.values_at(0, -1)
-          Extractor::IdentifiedMatcher.new(
-            identifier: identifier.to_matcher,
-            matcher: matcher.to_matcher,
-            node: matcher,
-          )
+          identifier.to_matcher.and(matcher.to_matcher)
         end
       end
 

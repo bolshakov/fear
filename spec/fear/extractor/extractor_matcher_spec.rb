@@ -44,34 +44,16 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
 
     context 'single argument extractor' do
       let(:pattern) { 'Fear::Some(a : Integer)' }
+      let(:other) { Fear.some(42) }
 
-      context 'defined' do
-        let(:other) { Fear.some(42) }
-
-        it { is_expected.to eq(Fear.some(a: 42)) }
-      end
-
-      context 'not defined' do
-        let(:other) { Fear.some('42') }
-
-        it { is_expected.to eq(Fear.none) }
-      end
+      it { is_expected.to eq(a: 42) }
     end
 
     context 'multiple arguments extractor' do
       let(:pattern) { 'Date(2017, month, day)' }
+      let(:other) { Date.parse('2017-02-15') }
 
-      context 'defined' do
-        let(:other) { Date.parse('2017-02-15') }
-
-        it { is_expected.to eq(Fear.some(month: 2, day: 15)) }
-      end
-
-      context 'not defined' do
-        let(:other) { Date.parse('2018-02-15') }
-
-        it { is_expected.to eq(Fear.none) }
-      end
+      it { is_expected.to eq(month: 2, day: 15) }
     end
   end
 
@@ -93,7 +75,7 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
         it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
 Expected `"42"` to match:
 Fear::Some(a : Integer)
-~~~~~~~~~~~^
+~~~~~~~~~~~~~~~^
         MSG
       end
     end
@@ -113,7 +95,7 @@ Fear::Some(a : Integer)
         it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
 Expected `4` to match:
 Date(year, 02, day)
-~~~~~~~~~~^
+~~~~~~~~~~~^
         MSG
       end
     end

@@ -126,70 +126,77 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
       let(:other) { [1] }
       let(:pattern) { '[1]' }
 
-      it { is_expected.to eq(Fear.some({})) }
+      it { is_expected.to eq({}) }
     end
 
     context 'on another array' do
       let(:other) { [2, 1] }
       let(:pattern) { '[2, 2]' }
 
-      it { is_expected.to eq(Fear.none) }
+      it { is_expected.to eq({}) }
     end
 
     context 'with splat on another array' do
       let(:other) { [2, 1] }
       let(:pattern) { '[2, *]' }
 
-      it { is_expected.to eq(Fear.some({})) }
+      it { is_expected.to eq({}) }
     end
 
     context 'with identifier at the middle of an array' do
       let(:other) { [2, 1, 3] }
       let(:pattern) { '[2, var, 3]' }
 
-      it { is_expected.to eq(Fear.some(var: 1)) }
+      it { is_expected.to eq(var: 1) }
     end
 
     context 'with identifier at the end of an array' do
       let(:other) { [2, 1, 3] }
       let(:pattern) { '[2, 1, var]' }
 
-      it { is_expected.to eq(Fear.some(var: 3)) }
+      it { is_expected.to eq(var: 3) }
+    end
+
+    context 'with named splat matching all the array' do
+      let(:other) { [2, 1, 3, 4] }
+      let(:pattern) { '[*var]' }
+
+      it { is_expected.to eq(var: [2, 1, 3, 4]) }
     end
 
     context 'with named splat matching tail of an array' do
       let(:other) { [2, 1, 3, 4] }
       let(:pattern) { '[2, 1, *var]' }
 
-      it { is_expected.to eq(Fear.some(var: [3, 4])) }
+      it { is_expected.to eq(var: [3, 4]) }
     end
 
     context 'with named splat at the end of an array' do
       let(:other) { [2, 1] }
       let(:pattern) { '[2, 1, *var]' }
 
-      it { is_expected.to eq(Fear.some(var: [])) }
+      it { is_expected.to eq(var: []) }
     end
 
     context 'with several identifiers in an array' do
       let(:other) { [2, 1, 3] }
       let(:pattern) { '[a, 1, b]' }
 
-      it { is_expected.to eq(Fear.some(a: 2, b: 3)) }
+      it { is_expected.to eq(a: 2, b: 3) }
     end
 
     context 'head and tail' do
       let(:other) { [2, 1, 3] }
       let(:pattern) { '[head, *tail]' }
 
-      it { is_expected.to eq(Fear.some(head: 2, tail: [1, 3])) }
+      it { is_expected.to eq(head: 2, tail: [1, 3]) }
     end
 
     context 'ignore head, capture tail' do
       let(:other) { [2, 1, 3] }
       let(:pattern) { '[_, *tail]' }
 
-      it { is_expected.to eq(Fear.some(tail: [1, 3])) }
+      it { is_expected.to eq(tail: [1, 3]) }
     end
   end
 
@@ -210,7 +217,18 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
       it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
 Expected `1` to match:
 [2, 2]
-~~~^
+~~~~^
+      ERROR
+    end
+
+    context 'element type mismatch' do
+      let(:other) { [2, 1] }
+      let(:pattern) { '[[2], 1]' }
+
+      it { is_expected.to eq(Fear.some(<<-ERROR.strip)) }
+Expected `2` to match:
+[[2], 1]
+~~^
       ERROR
     end
   end

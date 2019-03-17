@@ -29,13 +29,7 @@ RSpec.describe Fear::Extractor::IdentifierMatcher do
     context 'defined' do
       let(:other) { 1 }
 
-      it { is_expected.to eq(Fear.some({})) }
-    end
-
-    context 'not defined' do
-      let(:other) { 2 }
-
-      it { is_expected.to eq(Fear.none) }
+      it { is_expected.to eq({}) }
     end
   end
 

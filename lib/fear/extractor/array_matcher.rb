@@ -4,22 +4,13 @@ module Fear
     #
     class ArrayMatcher < Matcher
       # @!attribute head
-      #   @return [ArrayHeadMatcher | ArraySplatMatcher]
+      #   @return [ArrayHeadMatcher]
       # @!attribute tail
       #   @return [ArrayMatcher | EmptyListMatcher]
-      # @!attribute index
-      #   @return [Types::Strict::Integer]
 
       def defined_at?(other)
         if other.is_a?(Array)
-          if head.is_a?(ArraySplatMatcher)
-            true
-          else
-            unless other.empty?
-              other_head, *other_tail = other
-              head.defined_at?(other_head) && tail.defined_at?(other_tail)
-            end
-          end
+          head.defined_at?(other) && tail.defined_at?(other.slice(1..-1))
         end
       end
 
@@ -27,21 +18,19 @@ module Fear
         if head.is_a?(ArraySplatMatcher)
           head.bindings(other)
         else
-          other_head, *other_tail = other
-          head.bindings(other_head).merge(tail.bindings(other_tail))
+          head.bindings(other).merge(tail.bindings(other.slice(1..-1)))
         end
       end
 
       def failure_reason(other)
-        if head.is_a?(ArraySplatMatcher)
-          super
-        else
-          other_head, *other_tail = other
-          if head.defined_at?(other_head)
-            tail.failure_reason(other_tail)
+        if other.is_a?(Array)
+          if head.defined_at?(other)
+            tail.failure_reason(other.slice(1..-1))
           else
-            head.failure_reason(other_head)
+            head.failure_reason(other)
           end
+        else
+          super
         end
       end
     end

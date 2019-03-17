@@ -6,7 +6,7 @@ module Fear
       # @!attribute identifier
       #   @return [IdentifierMatcher]
       # @!attribute type
-      #   @return [TypeMatcher]
+      #   @return [ValueMatcher]
 
       def defined_at?(other)
         type.defined_at?(other)
