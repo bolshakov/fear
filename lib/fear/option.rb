@@ -185,6 +185,10 @@ module Fear
       def matcher(&matcher)
         OptionPatternMatch.new(&matcher)
       end
+
+      def match(value, &block)
+        matcher(&block).call(value)
+      end
     end
 
     # Include this mixin to access convenient factory methods.

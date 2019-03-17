@@ -5,6 +5,14 @@ module Fear
     include RightBiased::Right
     include SomePatternMatch.mixin
 
+    EXTRACTOR = proc do |option|
+      if Fear::Some === option
+        Fear.some(option.get)
+      else
+        Fear.none
+      end
+    end
+
     attr_reader :value
     protected :value
 
@@ -49,5 +57,15 @@ module Fear
 
     # @return [String]
     alias to_s inspect
+
+    class << self
+      def _fear_extract(option)
+        if option.is_a?(Some)
+          option
+        else
+          Fear.none
+        end
+      end
+    end
   end
 end

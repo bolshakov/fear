@@ -126,4 +126,20 @@ RSpec.describe Fear::None do
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe 'pattern matching' do
+    subject { Fear.xcase('None()') { 'matched' }.call_or_else(var) { 'nothing' } }
+
+    context 'none' do
+      let(:var) { Fear.none }
+
+      it { is_expected.to eq('matched') }
+    end
+
+    context 'not none' do
+      let(:var) { '42' }
+
+      it { is_expected.to eq('nothing') }
+    end
+  end
 end

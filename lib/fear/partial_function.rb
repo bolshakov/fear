@@ -35,6 +35,13 @@ module Fear
   #    numbers = sample.map(is_even.or_else(is_odd).to_proc)
   #
   # @see https://github.com/scala/scala/commit/5050915eb620af3aa43d6ddaae6bbb83ad74900d
+  # @!method condition
+  #   describes the domain of partial function
+  #   @return [#===]
+  #   @abstract
+  # @!method function
+  #   @return [#call]
+  #   @abstract
   module PartialFunction
     autoload :AndThen, 'fear/partial_function/and_then'
     autoload :Any, 'fear/partial_function/any'
@@ -43,16 +50,6 @@ module Fear
     autoload :Guard, 'fear/partial_function/guard'
     autoload :Lifted, 'fear/partial_function/lifted'
     autoload :OrElse, 'fear/partial_function/or_else'
-
-    # @param condition [#call] describes the domain of partial function
-    # @param function [Proc] function definition
-    def initialize(condition, &function)
-      @condition = condition
-      @function = function
-    end
-    attr_reader :condition, :function
-    private :condition
-    private :function
 
     # Checks if a value is contained in the function's domain.
     #

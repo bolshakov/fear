@@ -4,6 +4,13 @@ module Fear
     include Dry::Equalizer(:exception)
     include RightBiased::Left
     include FailurePatternMatch.mixin
+    EXTRACTOR = proc do |try|
+      if Fear::Failure === try
+        Fear.some(try.exception)
+      else
+        Fear.none
+      end
+    end
 
     # @param [StandardError]
     def initialize(exception)

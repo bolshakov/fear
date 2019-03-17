@@ -4,8 +4,6 @@ module Fear
   class EmptyPartialFunction
     include PartialFunction
 
-    def initialize; end
-
     def defined_at?(_)
       false
     end

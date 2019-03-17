@@ -158,4 +158,26 @@ RSpec.describe Fear::Right do
 
     it { is_expected.to eq('#<Fear::Right value="value">') }
   end
+
+  describe 'pattern matching' do
+    subject { Fear.xcase('Right(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+
+    context 'right of int' do
+      let(:var) { Fear.right(42) }
+
+      it { is_expected.to eq('matched 42') }
+    end
+
+    context 'right of string' do
+      let(:var) { Fear.right('42') }
+
+      it { is_expected.to eq('nothing') }
+    end
+
+    context 'not right' do
+      let(:var) { '42' }
+
+      it { is_expected.to eq('nothing') }
+    end
+  end
 end

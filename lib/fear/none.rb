@@ -6,6 +6,8 @@ module Fear
     include RightBiased::Left
     include NonePatternMatch.mixin
 
+    EXTRACTOR = ->(option) { Fear::None === option }
+
     # @raise [NoSuchElementError]
     def get
       raise NoSuchElementError

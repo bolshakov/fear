@@ -3,6 +3,16 @@ module Fear
   class PartialFunctionClass
     include PartialFunction
 
+    # @param condition [#call] describes the domain of partial function
+    # @param function [Proc] function definition
+    def initialize(condition, &function)
+      @condition = condition
+      @function = function
+    end
+    attr_reader :condition, :function
+    private :condition
+    private :function
+
     # @param arg [any]
     # @return [any] Calls this partial function with the given argument when it
     #   is contained in the function domain.
