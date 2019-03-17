@@ -887,8 +887,8 @@ There is predefined `Struct` extractor:
 ```ruby
 Envelope = Struct.new(:id, :receiver, :sender, :message)
 
-Fear.match(envelope) do |m|
-  m.xcase('acknowledge @ Envelope(id, _, sender, _)') do |id:, sender:, envelope:|
+Fear.matcher do |m|
+  m.xcase('envelope @ Envelope(id, _, sender, _)') do |id:, sender:, envelope:|
     acknowledge(id, sender)
     process(acknowledge)
   end
