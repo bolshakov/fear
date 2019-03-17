@@ -58,6 +58,13 @@ RSpec.describe Fear::ExtractorApi do
     assert_not(Fear["'foo'"] === 'bar')
   end
 
+  specify 'Symbol' do
+    assert(Fear[':"foo"'] === :foo)
+    assert(Fear[":'foo'"] === :foo)
+    assert(Fear[':foo'] === :foo)
+    assert_not(Fear[':foo'] === :bar)
+  end
+
   specify 'Boolean' do
     assert(Fear['true'] === true)
     assert(Fear['false'] === false)

@@ -92,6 +92,16 @@ module Fear
         end
       end
 
+      class SymbolLiteral < Node
+        def to_matcher
+          ValueMatcher.new(value: value, node: self)
+        end
+
+        def value
+          elements[1].value.to_sym
+        end
+      end
+
       class TrueLiteral < Node
         def to_matcher
           ValueMatcher.new(value: true, node: self)
@@ -118,7 +128,11 @@ module Fear
 
       class Identifier < Node
         def to_matcher
-          IdentifierMatcher.new(name: text_value.to_sym, node: self)
+          IdentifierMatcher.new(name: value, node: self)
+        end
+
+        def value
+          text_value.to_sym
         end
       end
 
