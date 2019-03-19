@@ -2,7 +2,6 @@ module Fear
   # @api private
   class NoneClass
     include Option
-    include Dry::Equalizer()
     include RightBiased::Left
     include NonePatternMatch.mixin
 
@@ -34,7 +33,18 @@ module Fear
     end
 
     # @return [String]
+    def inspect
+      '#<Fear::NoneClass>'
+    end
+
+    # @return [String]
     alias to_s inspect
+
+    # @param other [Any]
+    # @return [Boolean]
+    def ==(other)
+      other.is_a?(NoneClass)
+    end
 
     # @param other
     # @return [Boolean]

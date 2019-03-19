@@ -1,7 +1,6 @@
 module Fear
   class Some
     include Option
-    include Dry::Equalizer(:get)
     include RightBiased::Right
     include SomePatternMatch.mixin
 
@@ -15,8 +14,6 @@ module Fear
 
     attr_reader :value
     protected :value
-
-    # FIXME: nice inspect
 
     def initialize(value)
       @value = value
@@ -55,17 +52,18 @@ module Fear
       end
     end
 
+    # @param other [Any]
+    # @return [Boolean]
+    def ==(other)
+      other.is_a?(Some) && get == other.get
+    end
+
+    # @return [String]
+    def inspect
+      "#<Fear::Some get=#{value.inspect}>"
+    end
+
     # @return [String]
     alias to_s inspect
-
-    class << self
-      def _fear_extract(option)
-        if option.is_a?(Some)
-          option
-        else
-          Fear.none
-        end
-      end
-    end
   end
 end

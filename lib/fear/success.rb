@@ -1,7 +1,6 @@
 module Fear
   class Success
     include Try
-    include Dry::Equalizer(:value)
     include RightBiased::Right
     include SuccessPatternMatch.mixin
 
@@ -90,6 +89,17 @@ module Fear
     # @return [Right]
     def to_either
       Right.new(value)
+    end
+
+    # @param other [Any]
+    # @return [Boolean]
+    def ==(other)
+      other.is_a?(Success) && value == other.value
+    end
+
+    # @return [String]
+    def inspect
+      "#<Fear::Success value=#{value.inspect}>"
     end
 
     # @return [String]

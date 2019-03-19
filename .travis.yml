@@ -11,6 +11,3 @@ before_script:
 script:
 - bundle exec rspec
 - bundle exec rubocop --fail-level C
-gemfile:
-- gemfiles/dry_equalizer_0.2.1.gemfile
-- gemfiles/dry_equalizer_0.1.0.gemfile

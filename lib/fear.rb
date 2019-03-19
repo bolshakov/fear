@@ -1,4 +1,3 @@
-require 'dry-equalizer'
 require 'fear/either_api'
 require 'fear/for_api'
 require 'fear/option_api'

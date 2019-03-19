@@ -24,10 +24,8 @@ Gem::Specification.new do |spec|
     Successfully installed fear-#{Fear::VERSION}
   MSG
 
-  spec.add_runtime_dependency 'dry-equalizer', '<= 0.2.1'
   spec.add_runtime_dependency 'treetop'
 
-  spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'benchmark-ips'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'dry-matcher'
