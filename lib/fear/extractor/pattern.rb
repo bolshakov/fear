@@ -1,17 +1,36 @@
+require 'lru_redux'
+
 module Fear
   module Extractor
     # Parse pattern. Used within +Fear[]+
     class Pattern
+      DEFAULT_PATTERN_CACHE_SIZE = 10_000
+      @pattern_cache = LruRedux::Cache.new(ENV.fetch('FEAR_PATTERNS_CACHE_SIZE', DEFAULT_PATTERN_CACHE_SIZE))
+
+      class << self
+        attr_reader :pattern_cache
+      end
+
       def initialize(pattern)
+        @matcher = compile_pattern(pattern)
+      end
+      attr_reader :matcher
+      private :matcher
+
+      private def compile_pattern(pattern)
+        self.class.pattern_cache.getset(pattern) do
+          compile_pattern_without_cache(pattern)
+        end
+      end
+
+      private def compile_pattern_without_cache(pattern)
         parser = Extractor::GrammarParser.new
         if (result = parser.parse(pattern))
-          @matcher = result.to_matcher
+          result.to_matcher
         else
           raise PatternSyntaxError, syntax_error_message(parser, pattern)
         end
       end
-      attr_reader :matcher
-      private :matcher
 
       def ===(other)
         matcher.defined_at?(other)

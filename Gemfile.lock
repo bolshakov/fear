@@ -9,6 +9,7 @@ PATH
   remote: .
   specs:
     fear (0.11.0)
+      lru_redux
       treetop
 
 GEM
@@ -20,6 +21,7 @@ GEM
     diff-lcs (1.3)
     dry-matcher (0.7.0)
     jaro_winkler (1.5.2)
+    lru_redux (1.1.0)
     parallel (1.14.0)
     parser (2.6.0.0)
       ast (~> 2.4.0)
