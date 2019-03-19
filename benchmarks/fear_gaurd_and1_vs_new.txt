@@ -1,0 +1,13 @@
+# It verifies that optimization for Partial Functions with only one guard actually works.
+
+> bundle exec rake perf:fear:guard:and1_vs_new
+Warming up --------------------------------------
+           Guard.new   173.019k i/100ms
+          Guard.and1   268.379k i/100ms
+Calculating -------------------------------------
+           Guard.new    171.291B (± 8.4%) i/s -    561.437B
+          Guard.and1    266.882B (± 5.9%) i/s -    751.316B
+
+Comparison:
+          Guard.and1: 266881817299.6 i/s
+           Guard.new: 171291386467.1 i/s - 1.56x  slower

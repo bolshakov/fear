@@ -1,0 +1,13 @@
+# So, it's better to avoid building pattern match in runtime
+
+> bundle exec rake perf:fear:pattern_matching_construction_vs_execution
+Warming up --------------------------------------
+        construction    24.425k i/100ms
+           execution    80.516k i/100ms
+Calculating -------------------------------------
+        construction    267.887k (± 4.9%) i/s -      1.343M in   5.029005s
+           execution      1.085M (± 2.6%) i/s -      5.475M in   5.049775s
+
+Comparison:
+           execution:  1084968.2 i/s
+        construction:   267886.6 i/s - 4.05x  slower
