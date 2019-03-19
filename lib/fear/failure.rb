@@ -1,7 +1,6 @@
 module Fear
   class Failure
     include Try
-    include Dry::Equalizer(:exception)
     include RightBiased::Left
     include FailurePatternMatch.mixin
     EXTRACTOR = proc do |try|
@@ -76,6 +75,12 @@ module Fear
       Left.new(exception)
     end
 
+    # @param other [Any]
+    # @return [Boolean]
+    def ==(other)
+      other.is_a?(Failure) && exception == other.exception
+    end
+
     # Used in case statement
     # @param other [any]
     # @return [Boolean]
@@ -85,6 +90,11 @@ module Fear
       else
         super
       end
+    end
+
+    # @return [String]
+    def inspect
+      "#<Fear::Failure exception=#{exception.inspect}>"
     end
 
     # @return [String]

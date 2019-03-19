@@ -242,8 +242,6 @@ module Fear
   # @see https://github.com/scala/scala/blob/2.12.x/src/library/scala/util/Either.scala
   #
   module Either
-    include Dry::Equalizer(:value)
-
     # @private
     def left_class
       Left
@@ -260,6 +258,17 @@ module Fear
 
     attr_reader :value
     protected :value
+
+    # @param other [Any]
+    # @return [Boolean]
+    def ==(other)
+      other.is_a?(self.class) && value == other.value
+    end
+
+    # @return [String]
+    def inspect
+      "#<#{self.class} value=#{value.inspect}>"
+    end
 
     # @return [String]
     alias to_s inspect

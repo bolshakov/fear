@@ -1,6 +1,11 @@
+inherit_mode:
+  merge:
+  - Exclude
+
 AllCops:
   Exclude:
   - 'gemfiles/**/*'
+  - 'vendor/bundle/'
 
 Naming/MethodName:
   Enabled: false
