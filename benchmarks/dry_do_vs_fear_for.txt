@@ -1,0 +1,11 @@
+> bundle exec rake perf:dry:do_vs_fear_for
+Warming up --------------------------------------
+                 Dry    31.375k i/100ms
+                Fear    24.131k i/100ms
+Calculating -------------------------------------
+                 Dry    360.990k (± 2.7%) i/s -      1.820M in   5.045364s
+                Fear      7.212B (±27.2%) i/s -     27.210B in   4.656760s
+
+Comparison:
+                Fear: 7212177713.5 i/s
+                 Dry:   360989.8 i/s - 19978.90x  slower

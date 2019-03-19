@@ -1,0 +1,14 @@
+> bundle exec rake perf:pattern_matching:dry_vs_qo_vs_fear_try
+Warming up --------------------------------------
+                  Qo     2.958k i/100ms
+                Fear     7.127k i/100ms
+         Dr::Matcher    13.079k i/100ms
+Calculating -------------------------------------
+                  Qo     38.872k (± 3.1%) i/s -    195.228k in   5.027249s
+                Fear     88.756k (± 3.7%) i/s -    449.001k in   5.066471s
+         Dr::Matcher    166.700k (± 3.0%) i/s -    837.056k in   5.026408s
+
+Comparison:
+         Dr::Matcher:   166699.7 i/s
+                Fear:    88755.7 i/s - 1.88x  slower
+                  Qo:    38871.9 i/s - 4.29x  slower

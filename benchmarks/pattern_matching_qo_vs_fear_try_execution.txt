@@ -1,0 +1,11 @@
+> bundle exec rake perf:pattern_matching:qo_vs_fear_try_execution
+Warming up --------------------------------------
+                  Qo    10.079k i/100ms
+                Fear    25.868k i/100ms
+Calculating -------------------------------------
+                  Qo    142.209k (± 3.8%) i/s -    715.609k in   5.039975s
+                Fear    395.999k (± 2.5%) i/s -      1.992M in   5.033046s
+
+Comparison:
+                Fear:   395999.2 i/s
+                  Qo:   142209.4 i/s - 2.78x  slower
