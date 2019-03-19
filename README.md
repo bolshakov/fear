@@ -880,6 +880,8 @@ Fear.match(user) do |m|
 end
 ```
 
+Note, registered extractor should return either array of arguments, or boolean.
+
 #### Extracting struct
 
 There is predefined `Struct` extractor:

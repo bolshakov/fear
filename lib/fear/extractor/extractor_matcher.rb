@@ -6,11 +6,12 @@ module Fear
     class ExtractorMatcher < Matcher
       # @!attribute name
       #   @return [Types::Strict::String]
-      # attribute :arguments_matcher, ArrayMatcher | EmptyListMatcher
+      # @!attribute arguments_matcher
+      #   @return [ArrayMatcher | EmptyListMatcher]
 
       def defined_at?(other)
         Fear::Option.match(extract(other)) do |m|
-          m.some { |v| arguments_matcher.defined_at?([v].flatten) }
+          m.some { |v| arguments_matcher.defined_at?(v) }
           m.none { false }
           m.case(true, &:itself)
           m.case(false, &:itself)
@@ -23,7 +24,7 @@ module Fear
 
       def bindings(other)
         Fear::Option.match(extract(other)) do |m|
-          m.some { |v| arguments_matcher.bindings([v].flatten) }
+          m.some { |v| arguments_matcher.bindings(v) }
           m.none { EMPTY_ARRAY }
           m.case(false) { EMPTY_ARRAY }
           m.case(true) { EMPTY_ARRAY }
@@ -31,8 +32,12 @@ module Fear
       end
 
       def failure_reason(other)
-        extract(other)
-          .flat_map { |v| arguments_matcher.failure_reason([v].flatten) }
+        Fear::Option.match(extract(other)) do |m|
+          m.some { |v| arguments_matcher.failure_reason(v) }
+          m.none { Fear.none }
+          m.case(false) { super }
+          m.case(true) { Fear.none }
+        end
       end
 
       private def extract(other)

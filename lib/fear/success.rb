@@ -7,7 +7,7 @@ module Fear
 
     EXTRACTOR = proc do |try|
       if Fear::Success === try
-        Fear.some(try.get)
+        Fear.some([try.get])
       else
         Fear.none
       end

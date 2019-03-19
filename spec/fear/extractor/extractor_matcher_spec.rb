@@ -21,6 +21,14 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
       it { is_expected.not_to be_defined_at(Fear.some('foo')) }
     end
 
+    context 'single argument extractor with array as an argument' do
+      let(:pattern) { 'Fear::Some([1, 2])' }
+
+      it { is_expected.to be_defined_at(Fear.some([1, 2])) }
+      it { is_expected.not_to be_defined_at(Fear.some([1, 1])) }
+      it { is_expected.not_to be_defined_at(Fear.some('foo')) }
+    end
+
     context 'multiple arguments extractor' do
       let(:pattern) { 'Date(2017, month, _)' }
 
@@ -60,6 +68,26 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
   describe '#failure_reason' do
     subject { matcher.failure_reason(other) }
 
+    context 'no argument extractor' do
+      let(:pattern) { 'IsEven()' }
+
+      context 'defined' do
+        let(:other) { 42 }
+
+        it { is_expected.to eq(Fear.none) }
+      end
+
+      context 'not defined' do
+        let(:other) { 43 }
+
+        it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
+Expected `43` to match:
+IsEven()
+^
+        MSG
+      end
+    end
+
     context 'single argument extractor' do
       let(:pattern) { 'Fear::Some(a : Integer)' }
 
@@ -75,6 +103,26 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
         it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
 Expected `"42"` to match:
 Fear::Some(a : Integer)
+~~~~~~~~~~~~~~~^
+        MSG
+      end
+    end
+
+    context 'single argument extractor, array argument' do
+      let(:pattern) { 'Fear::Some([1, 2])' }
+
+      context 'defined' do
+        let(:other) { Fear.some([1, 2]) }
+
+        it { is_expected.to eq(Fear.none) }
+      end
+
+      context 'not defined' do
+        let(:other) { Fear.some([1, 1]) }
+
+        it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
+Expected `1` to match:
+Fear::Some([1, 2])
 ~~~~~~~~~~~~~~~^
         MSG
       end

@@ -7,7 +7,7 @@ module Fear
 
     EXTRACTOR = proc do |option|
       if Fear::Some === option
-        Fear.some(option.get)
+        Fear.some([option.get])
       else
         Fear.none
       end
