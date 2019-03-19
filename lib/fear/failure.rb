@@ -6,7 +6,7 @@ module Fear
     include FailurePatternMatch.mixin
     EXTRACTOR = proc do |try|
       if Fear::Failure === try
-        Fear.some(try.exception)
+        Fear.some([try.exception])
       else
         Fear.none
       end

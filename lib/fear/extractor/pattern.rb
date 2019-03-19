@@ -21,6 +21,10 @@ module Fear
         matcher.call(other)
       end
 
+      def failure_reason(other)
+        matcher.failure_reason(other)
+      end
+
       private def syntax_error_message(parser, pattern)
         parser.failure_reason =~ /^(Expected .+) after/m
         "#{Regexp.last_match(1).gsub("\n", '$NEWLINE')}:\n" +

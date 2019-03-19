@@ -6,7 +6,7 @@ module Fear
 
     EXTRACTOR = proc do |either|
       if Fear::Left === either
-        Fear.some(either.left_value)
+        Fear.some([either.left_value])
       else
         Fear.none
       end
