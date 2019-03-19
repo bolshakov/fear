@@ -8,9 +8,21 @@ module Fear
       #   @return [Types::Strict::String]
       # @!attribute arguments_matcher
       #   @return [ArrayMatcher | EmptyListMatcher]
+      #
 
-      def defined_at?(other)
-        Fear::Option.match(extract(other)) do |m|
+      def initialize(*)
+        super
+        @extractor = Extractor.find_extractor(name)
+        @defined_at_matcher = build_defined_at_matcher
+        @find_bindings = build_bindings_finder
+      end
+      attr_reader :extractor, :defined_at_matcher, :find_bindings
+      private :extractor
+      private :defined_at_matcher
+      private :find_bindings
+
+      private def build_defined_at_matcher
+        Fear::Option.matcher do |m|
           m.some { |v| arguments_matcher.defined_at?(v) }
           m.none { false }
           m.case(true, &:itself)
@@ -22,8 +34,8 @@ module Fear
         end
       end
 
-      def bindings(other)
-        Fear::Option.match(extract(other)) do |m|
+      private def build_bindings_finder
+        Fear::Option.matcher do |m|
           m.some { |v| arguments_matcher.bindings(v) }
           m.none { EMPTY_ARRAY }
           m.case(false) { EMPTY_ARRAY }
@@ -31,17 +43,25 @@ module Fear
         end
       end
 
+      def defined_at?(other)
+        extracted = extractor.call(other)
+        build_defined_at_matcher.call(extracted)
+      end
+
+      def bindings(other)
+        extracted = extractor.call(other)
+        find_bindings.call(extracted)
+      end
+
       def failure_reason(other)
-        Fear::Option.match(extract(other)) do |m|
+        extracted = extractor.call(other)
+
+        Fear::Option.match(extracted) do |m|
           m.some { |v| arguments_matcher.failure_reason(v) }
           m.none { Fear.none }
           m.case(false) { super }
           m.case(true) { Fear.none }
         end
-      end
-
-      private def extract(other)
-        Extractor.find_extractor(name).call(other)
       end
     end
   end

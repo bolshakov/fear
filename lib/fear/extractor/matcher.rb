@@ -58,8 +58,12 @@ module Fear
         if defined_at?(other)
           Fear.none
         else
-          Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
+          my_failure_reason(other)
         end
+      end
+
+      private def my_failure_reason(other)
+        Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
       end
     end
   end
