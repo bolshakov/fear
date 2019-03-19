@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
     Successfully installed fear-#{Fear::VERSION}
   MSG
 
+  spec.add_runtime_dependency 'lru_redux'
   spec.add_runtime_dependency 'treetop'
 
   spec.add_development_dependency 'benchmark-ips'

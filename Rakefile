@@ -3,6 +3,27 @@ require 'benchmark/ips'
 require_relative 'lib/fear'
 
 namespace :perf do
+  task :pattern_matching_with_without_cache do
+    some = Fear.some([:err, 'not found'])
+
+    class WOCache < Fear::Extractor::Pattern
+      def initialize(pattern)
+        @matcher = compile_pattern_without_cache(pattern)
+      end
+    end
+
+    Benchmark.ips do |x|
+      x.report('With cache') do |_n|
+        Fear::Extractor::Pattern.new('Fear::Some([:err, code])') === some
+      end
+
+      x.report('Without cache') do |_n|
+        WOCache.new('Fear::Some([:err, code])') === some
+      end
+
+      x.compare!
+    end
+  end
   namespace :guard do
     task :and1 do
       condition = Integer
