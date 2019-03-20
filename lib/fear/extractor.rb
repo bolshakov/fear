@@ -90,7 +90,13 @@ module Fear
     end)
     register_extractor(Struct, Fear.case(Struct, &:to_a).lift)
     # No argument boolean extractor example
-    register_extractor('IsEven', proc { |int| int.is_a?(Integer) && int.even? })
+    register_extractor('IsEven', proc do |int|
+      if int.is_a?(Integer) && int.even?
+        Fear.some([])
+      else
+        Fear.none
+      end
+    end)
     # Single argument extractor example
     register_extractor('Fear::Some', 'Some', Some::EXTRACTOR)
     register_extractor('Fear::None', 'None', NoneClass::EXTRACTOR)

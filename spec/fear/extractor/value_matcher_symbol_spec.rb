@@ -39,7 +39,7 @@ RSpec.describe Fear::Extractor::ValueMatcher, 'Symbol' do
     let(:pattern) { ':foo' }
 
     context 'defined' do
-      let(:other) { 'foo' }
+      let(:other) { :foo }
 
       it { is_expected.to eq({}) }
     end

@@ -36,8 +36,8 @@ module Fear
         matcher.defined_at?(other)
       end
 
-      def extracted_arguments(other)
-        matcher.call(other)
+      def and_then(other)
+        Fear::PartialFunction::Combined.new(matcher, other)
       end
 
       def failure_reason(other)

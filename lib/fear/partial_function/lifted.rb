@@ -7,6 +7,7 @@ module Fear
         @pf = pf
       end
       attr_reader :pf
+      private :pf
 
       # @param arg [any]
       # @return [Fear::Option]

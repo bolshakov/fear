@@ -190,7 +190,7 @@ module Fear
 
         private def extractor_arguments
           if elements[2].empty?
-            EmptyListMatcher.new(node: self, index: 0)
+            EmptyListMatcher.new(node: self)
           else
             elements[2].to_matcher
           end

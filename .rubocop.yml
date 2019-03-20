@@ -7,6 +7,9 @@ AllCops:
   - 'gemfiles/**/*'
   - 'vendor/bundle/'
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Naming/MethodName:
   Enabled: false
 
