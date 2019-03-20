@@ -41,7 +41,7 @@ module Fear
       end
 
       def failure_reason(other)
-        matcher.failure_reason(other)
+        matcher.failure_reason(other).get_or_else { 'It matches' }
       end
 
       private def syntax_error_message(parser, pattern)

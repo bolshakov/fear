@@ -22,7 +22,7 @@ RSpec.describe Fear::Extractor::Pattern do
     context 'not defined' do
       subject { pattern.failure_reason(Fear.some([:err, 445])) }
 
-      it { is_expected.to eq(Fear.some(<<-MSG.strip)) }
+      it { is_expected.to eq(<<-MSG.strip) }
 Expected `445` to match:
 Some([:err, 444])
 ~~~~~~~~~~~~^
