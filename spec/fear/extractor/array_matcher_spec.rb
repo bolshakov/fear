@@ -129,13 +129,6 @@ RSpec.describe Fear::Extractor::ArrayMatcher do
       it { is_expected.to eq({}) }
     end
 
-    context 'on another array' do
-      let(:other) { [2, 1] }
-      let(:pattern) { '[2, 2]' }
-
-      it { is_expected.to eq({}) }
-    end
-
     context 'with splat on another array' do
       let(:other) { [2, 1] }
       let(:pattern) { '[2, *]' }

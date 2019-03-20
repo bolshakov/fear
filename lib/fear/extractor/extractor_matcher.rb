@@ -13,54 +13,28 @@ module Fear
       def initialize(*)
         super
         @extractor = Extractor.find_extractor(name)
-        @defined_at_matcher = build_defined_at_matcher
-        @find_bindings = build_bindings_finder
       end
-      attr_reader :extractor, :defined_at_matcher, :find_bindings
+      attr_reader :extractor
       private :extractor
-      private :defined_at_matcher
-      private :find_bindings
-
-      private def build_defined_at_matcher
-        Fear::Option.matcher do |m|
-          m.some { |v| arguments_matcher.defined_at?(v) }
-          m.none { false }
-          m.case(true, &:itself)
-          m.case(false, &:itself)
-          m.else do |v|
-            raise TypeError, "Extractor for `#{name}'` should"\
-              " return ether boolean, or Fear::Option. Got `#{v.inspect}`"
-          end
-        end
-      end
-
-      private def build_bindings_finder
-        Fear::Option.matcher do |m|
-          m.some { |v| arguments_matcher.bindings(v) }
-          m.none { EMPTY_ARRAY }
-          m.case(false) { EMPTY_ARRAY }
-          m.case(true) { EMPTY_ARRAY }
-        end
-      end
 
       def defined_at?(other)
-        extracted = extractor.call(other)
-        build_defined_at_matcher.call(extracted)
+        extractor
+          .call(other)
+          .map { |v| arguments_matcher.defined_at?(v) }
+          .get_or_else(false)
       end
 
-      def bindings(other)
-        extracted = extractor.call(other)
-        find_bindings.call(extracted)
+      def call_or_else(arg)
+        extractor.call(arg)
+          .map { |v| arguments_matcher.call_or_else(v) { yield arg } }
+          .get_or_else { yield arg }
       end
 
       def failure_reason(other)
-        extracted = extractor.call(other)
-
-        Fear::Option.match(extracted) do |m|
+        extractor.call(other).match do |m|
+          m.some(->(v) { arguments_matcher.defined_at?(v) }) { Fear.none }
           m.some { |v| arguments_matcher.failure_reason(v) }
-          m.none { Fear.none }
-          m.case(false) { super }
-          m.case(true) { Fear.none }
+          m.none { super }
         end
       end
     end

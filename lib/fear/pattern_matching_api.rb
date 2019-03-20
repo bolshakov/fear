@@ -131,9 +131,7 @@ module Fear
     #   pf = Fear.xcase('['ok', Some(body)]', ->(body:) { !body.empty? }) { }
     #
     def xcase(pattern, *guards, &function)
-      guard = Fear[pattern]
-      extractor = self.case(guard) { |arg| guard.extracted_arguments(arg) }
-      extractor.and_then(self.case(*guards, &function))
+      Fear[pattern].and_then(self.case(*guards, &function))
     end
   end
 end

@@ -13,40 +13,28 @@ module Fear
       def initialize(node:, **attributes)
         @input = node.input
         @input_position = node.interval.first
-        super(**attributes)
+        super(attributes)
       end
       attr_reader :input_position, :input
       private :input
       private :input_position
 
-      # Checks if matcher match against provided argument
-      # @param other [any]
-      # @return [Boolean]
-      def defined_at?(other)
-        value === other
-      end
-
-      # @param arg [any]
-      # @return [any] Calls this partial function with the given argument when it
-      #   is contained in the function domain.
-      # @raise [MatchError] when this partial function is not defined.
       def call(arg)
-        if defined_at?(arg)
-          bindings(arg)
-        else
-          EMPTY_HASH
-        end
+        call_or_else(arg, &PartialFunction::EMPTY)
       end
 
       def and(other)
         And.new(self, other)
       end
 
-      # Extracts binding from matcher
       # @param arg [any]
-      # @return [Hash<Symbol => any>]
-      protected def bindings(_arg)
-        EMPTY_HASH
+      # @yield [arg] if function not defined
+      def call_or_else(arg)
+        if defined_at?(arg)
+          bindings(arg)
+        else
+          yield arg
+        end
       end
 
       # Shows why matcher has failed. Use it for debugging.
@@ -58,12 +46,8 @@ module Fear
         if defined_at?(other)
           Fear.none
         else
-          my_failure_reason(other)
+          Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
         end
-      end
-
-      private def my_failure_reason(other)
-        Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
       end
     end
   end

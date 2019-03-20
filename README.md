@@ -897,6 +897,25 @@ Fear.matcher do |m|
 end
 ```
 
+#### How to debug pattern extractors?
+
+You can build pattern manually and ask for failure reason:
+
+```ruby
+Fear['Some([:err, 444])'].failure_reason(Fear.some([:err, 445]))
+# =>
+Expected `445` to match:
+Some([:err, 444])
+~~~~~~~~~~~~^
+```
+
+by the way you can also match against such pattern
+
+```ruby
+Fear['Some([:err, 444])'] === Fear.some([:err, 445]) #=> false
+Fear['Some([:err, 444])'] === Fear.some([:err, 445]) #=> true
+```
+
 #### More examples
 
 Factorial using pattern matching

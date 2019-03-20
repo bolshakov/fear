@@ -9,6 +9,10 @@ module Fear
       def defined_at?(other)
         other.empty?
       end
+
+      def bindings(_)
+        EMPTY_HASH
+      end
     end
   end
 end

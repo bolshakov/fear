@@ -125,8 +125,8 @@ namespace :perf do
         and3 = Fear::PartialFunction::Guard.and3(first, second, third)
 
         and_and_and = Fear::PartialFunction::Guard.new(first)
-                                                  .and(Fear::PartialFunction::Guard.new(second))
-                                                  .and(Fear::PartialFunction::Guard.new(third))
+          .and(Fear::PartialFunction::Guard.new(second))
+          .and(Fear::PartialFunction::Guard.new(third))
 
         Benchmark.ips do |x|
           x.report('Guard.and3') do |n|

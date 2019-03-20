@@ -166,8 +166,8 @@ module Fear
 
     class << self
       # Build pattern matcher to be used later, despite off
-      # +Option#match+ method, id doesn't apply matcher immanently,
-      # but build it instead. Unusually in sake of efficiency it's better
+      # +Option#match+ method, it doesn't apply matcher immanently,
+      # but build it instead. Usually in sake of efficiency it's better
       # to statically build matcher and reuse it later.
       #
       # @example
