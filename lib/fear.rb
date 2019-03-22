@@ -1,23 +1,26 @@
 require 'fear/either_api'
+require 'fear/extractor_api'
 require 'fear/for_api'
+require 'fear/future_api'
 require 'fear/option_api'
 require 'fear/pattern_matching_api'
-require 'fear/extractor_api'
 require 'fear/try_api'
 require 'fear/version'
 
 module Fear
   Error = Class.new(StandardError)
-  NoSuchElementError = Class.new(Error)
+  IllegalStateException = Class.new(Error)
   MatchError = Class.new(Error)
+  NoSuchElementError = Class.new(Error)
   PatternSyntaxError = Class.new(Error)
 
   extend EitherApi
+  extend ExtractorApi
   extend ForApi
+  extend FutureApi
   extend OptionApi
   extend PatternMatchingApi
   extend TryApi
-  extend ExtractorApi
 
   autoload :EmptyPartialFunction, 'fear/empty_partial_function'
   autoload :PartialFunction, 'fear/partial_function'
@@ -51,6 +54,8 @@ module Fear
   autoload :LeftPatternMatch, 'fear/left_pattern_match'
   autoload :Right, 'fear/right'
   autoload :RightPatternMatch, 'fear/right_pattern_match'
+
+  autoload :Future, 'fear/future'
 
   module Mixin
     include Either::Mixin

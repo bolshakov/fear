@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'benchmark-ips'
   spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'concurrent-ruby'
   spec.add_development_dependency 'dry-matcher'
   spec.add_development_dependency 'dry-monads'
   spec.add_development_dependency 'qo'

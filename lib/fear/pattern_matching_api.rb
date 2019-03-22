@@ -65,7 +65,7 @@ module Fear
     #
     #     response = failures.or_else(success)
     #
-    # @yieldparam matcher [Fear::PartialFunction]
+    # @yieldparam matcher [Fear::PatternMatch]
     # @return [Fear::PartialFunction]
     # @see Fear::OptionPatternMatch for example of custom matcher
     def matcher(&block)
