@@ -10,6 +10,9 @@ AllCops:
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
+Metrics/ClassLength:
+  Enabled: false
+
 Naming/MethodName:
   Enabled: false
 
@@ -41,6 +44,9 @@ Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
 Style/NumericPredicate:
+  Enabled: false
+
+Style/CommentedKeyword:
   Enabled: false
 
 Layout/IndentHeredoc:

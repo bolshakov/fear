@@ -26,6 +26,7 @@ Or install it yourself as:
 * [Option](#option-documentation) 
 * [Try](#try-documentation)
 * [Either](#either-documentation)
+* [Future](#future-documentation)
 * [For composition](#for-composition)
 * [Pattern Matching](#pattern-matching-api-documentation)
 
@@ -634,6 +635,153 @@ Fear.left(Fear.right("flower")).join_left #=> Fear.right("flower")
 Fear.left(Fear.left(12)).join_left        #=> Fear.left(12)
 Fear.right("daisy").join_left        #=> Fear.right("daisy")
 Fear.right(Fear.left("daisy")).join_left  #=> Fear.right(Fear.left("daisy"))
+```
+
+### Future ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Future))
+
+Asynchronous computations that yield futures are created
+with the `Fear.future` call
+
+```ruby
+success = "Hello"
+f = Fear.future { success + ' future!' }
+f.on_success do |result|
+  puts result
+end
+```
+
+Multiple callbacks may be registered; there is no guarantee
+that they will be executed in a particular order.
+
+The future may contain an exception and this means
+that the future failed. Futures obtained through combinators
+have the same error as the future they were obtained from.
+
+```ruby 
+f = Fear.future { 5 }
+g = Fear.future { 3 }
+
+f.flat_map do |x|
+  g.map { |y| x + y }
+end
+```
+
+Futures use [Concurrent::Promise](https://ruby-concurrency.github.io/concurrent-ruby/1.1.5/Concurrent/Promise.html#constructor_details)
+under the hood. `Fear.future` accepts optional configuration Hash passed directly to underlying promise. For example, 
+run it on custom thread pool.
+
+```ruby
+require 'open-uri'
+pool = Concurrent::FixedThreadPool.new(5)
+future = Fear.future(executor: pool) { open('https://example.com/') }
+future.map(&:read).each do |body| 
+  puts "#{body}"
+end
+
+``` 
+
+Futures support common monadic operations -- `#map`, `#flat_map`, and `#each`. That's why it's possible to combine them 
+using `Fear.for`, It returns the Future containing Success of `5 + 3` eventually.
+
+```ruby 
+f = Fear.future { 5 }
+g = Fear.future { 3 }
+
+Fear.for(f, g) do |x, y|
+  x + y
+end 
+``` 
+
+Future goes with the number of callbacks. You can register several callbacks, but the order of execution isn't guaranteed 
+
+```ruby
+f = Fear.future { ... } #  call external service
+f.on_success do |result|
+  # handle service response
+end
+
+f.on_failure do |error|
+  # handle exception
+end
+```
+
+or you can wait for Future completion
+
+```ruby 
+f.on_complete do |result|
+  result.match do |m|
+    m.success { |value| ... }
+    m.failure { |error| ... }
+  end
+end 
+```
+
+In sake of convenience `#on_success` callback aliased as `#each`.
+
+It's possible to get future value directly, but since it may be incomplete, `#value` method returns `Fear::Option`. So, 
+there are three possible responses:
+
+```ruby 
+future.value #=>
+# Fear::Some<Fear::Success> #=> future completed with value
+# Fear::Some<Fear::Failure> #=> future completed with error
+# Fear::None #=> future not yet completed
+```    
+
+There is a variety of methods to manipulate with futures. 
+
+```ruby
+Fear.future { open('http://example.com').read }
+  .transform(
+     ->(value) { ... },
+     ->(error) { ... },
+  )
+
+future = Fear.future { 5 }
+future.select(&:odd?) # evaluates to Fear.success(5)
+future.select(&:even?) # evaluates to Fear.error(NoSuchElementError)
+```
+
+You can zip several asynchronous computations into one future. For you can call two external services and 
+then zip the results into one future containing array of both responses:  
+
+```ruby 
+future1 = Fear.future { call_service1 }
+future1 = Fear.future { call_service2 }
+future1.zip(future2)
+``` 
+
+It  returns the same result as `Fear.future { [call_service1, call_service2] }`,  but the first version performs
+two simultaneous calls.
+
+There are two ways to recover from failure. `Future#recover` is live `#map` for failures:
+
+```ruby
+Fear.future { 2 / 0 }.recover do |m|
+  m.case(ZeroDivisionError) { 0 }
+end #=> returns new future of Fear.success(0)
+```
+
+If the future resolved to success or recovery matcher did not matched, it returns the future `Fear::Failure`.
+
+The second option is `Future#fallbock_to` method. It allows to fallback to result of another future in case of failure
+
+```ruby
+future = Fear.future { fail 'error' }
+fallback = Fear.future { 5 }
+future.fallback_to(fallback) # evaluates to 5
+```
+
+You can run callbacks in specific order using `#and_then` method:
+
+```ruby 
+f = Fear.future { 5 }
+f.and_then do
+  fail 'runtime error'
+end.and_then do |m|
+  m.success { |value| puts value } # it evaluates this branch
+  m.failure { |error| puts error.massage }
+end
 ```
 
 ### For composition ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/ForApi))
