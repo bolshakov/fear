@@ -50,15 +50,27 @@ RSpec.describe Fear::Failure do
   end
 
   context '#recover_with' do
-    context 'block does not fail' do
+    context 'block matches the error and does not fail' do
       subject do
-        failure.recover_with do |error|
-          Fear.success(error.message)
+        failure.recover_with do |m|
+          m.case(RuntimeError) { |error| Fear.success(error.message) }
         end
       end
 
       it 'returns result of evaluation of the block against the error' do
         is_expected.to eq(Fear::Success.new('error'))
+      end
+    end
+
+    context 'block does not match the error' do
+      subject do
+        failure.recover_with do |m|
+          m.case(ZeroDivisionError) { Fear.success(0) }
+        end
+      end
+
+      it 'returns the same failure' do
+        is_expected.to eq(failure)
       end
     end
 
@@ -71,16 +83,36 @@ RSpec.describe Fear::Failure do
   end
 
   context '#recover' do
-    context 'block does not fail' do
-      subject { failure.recover(&:message) }
+    context 'block matches the error and does not fail' do
+      subject do
+        failure.recover do |m|
+          m.case(RuntimeError, &:message)
+        end
+      end
 
       it 'returns Success of evaluation of the block against the error' do
         is_expected.to eq(Fear.success('error'))
       end
     end
 
+    context 'block does not match the error' do
+      subject do
+        failure.recover do |m|
+          m.case(ZeroDivisionError, &:message)
+        end
+      end
+
+      it 'returns the same failure' do
+        is_expected.to eq(failure)
+      end
+    end
+
     context 'block fails' do
-      subject(:recover) { failure.recover { raise 'unexpected error' } }
+      subject(:recover) do
+        failure.recover do
+          raise 'unexpected error'
+        end
+      end
 
       it { is_expected.to be_kind_of(described_class) }
       it { expect { recover.get }.to raise_error(RuntimeError, 'unexpected error') }

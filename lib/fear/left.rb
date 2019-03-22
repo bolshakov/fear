@@ -49,12 +49,6 @@ module Fear
       Right.new(value)
     end
 
-    # @param reduce_left [Proc]
-    # @return [any]
-    def reduce(reduce_left, _reduce_right)
-      reduce_left.call(value)
-    end
-
     # @return [self]
     def join_right
       self

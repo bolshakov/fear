@@ -358,30 +358,50 @@ Fear.failure(ArgumentError.new).select { |v| v < 40 }
   #=> Fear.failure(ArgumentError.new)
 ```
 
-#### Try#recover_with
+#### Recovering from errors
 
-Applies the given block to exception. This is like `flat_map` for the exception.
+There are two ways to recover from the error. `Try#recover_with` method  is like `flat_map` for the exception. And 
+you can pattern match against the error!
 
 ```ruby
-Fear.success(42).recover_with { |e| Fear.success(e.massage) }
-  #=> Fear.success(42)
-Fear.failure(ArgumentError.new).recover_with { |e| Fear.success(e.massage) }
-  #=> Fear.success('ArgumentError')
-Fear.failure(ArgumentError.new).recover_with { |e| raise }
-  #=> Fear.failure(RuntimeError)
+Fear.success(42).recover_with do |m|
+  m.case(ZeroDivisionError) { Fear.success(0) }
+end #=> Fear.success(42)
+
+Fear.failure(ArgumentError.new).recover_with do |m|
+  m.case(ZeroDivisionError) { Fear.success(0) }
+  m.case(ArgumentError) { |error| Fear.success(error.class.name) }
+end #=> Fear.success('ArgumentError')
 ```
 
-#### Try#recover
-
-Applies the given block to exception. This is like `map` for the exception.
+If the block raises error, this new error returned as an result
 
 ```ruby
-Fear.success(42).recover { |e| e.massage }
-  #=> Fear.success(42)
-Fear.failure(ArgumentError.new).recover { |e| e.massage }
-  #=> Fear.success('ArgumentError')
-Fear.failure(ArgumentError.new).recover { |e| raise }
-  #=> Fear.failurefRuntimeError)
+Fear.failure(ArgumentError.new).recover_with do
+  raise
+end #=> Fear.failure(RuntimeError)
+```
+
+The second possibility for recovery is `Try#recover` method. It is like `map` for the exception. And it's also heavely
+relies on pattern matching.
+
+```ruby
+Fear.success(42).recover do |m|
+  m.case(&:message)
+end #=> Fear.success(42)
+
+Fear.failure(ArgumentError.new).recover do |m|
+  m.case(ZeroDivisionError) { 0 }
+  m.case(&:message)
+end #=> Fear.success('ArgumentError')
+```
+
+If the block raises an error, this new error returned as an result
+
+```ruby
+Fear.failure(ArgumentError.new).recover do |m|
+  raise
+end #=> Fear.failure(RuntimeError)
 ```
 
 #### Try#to_either
@@ -585,9 +605,9 @@ Applies `reduce_left` if this is a `Left` or `reduce_right` if this is a `Right`
 ```ruby
 result = possibly_failing_operation()
 log(
-  result.reduce(
-    ->(ex) { "Operation failed with #{ex}" },
-    ->(v) { "Operation produced value: #{v}" },
+  result.reduce do |m|
+    m.left { |error| "Operation failed with #{error}" }
+    m.right { |value| "Operation produced value: #{value}" }
   )
 )
 ```

@@ -82,7 +82,7 @@ RSpec.describe Fear::Success do
   end
 
   describe '#recover' do
-    subject { success.recover { |v| v * 2 } }
+    subject { success.recover { |m| m.case { |v| v * 2 } } }
     it { is_expected.to eq(success) }
   end
 

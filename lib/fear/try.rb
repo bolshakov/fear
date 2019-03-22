@@ -179,29 +179,45 @@ module Fear
   # @!method recover_with(&block)
   #   Applies the given block to exception. This is like +flat_map+
   #   for the exception.
-  #   @yieldparam [Exception] exception
-  #   @yieldreturn [Try]
-  #   @return [Try]
+  #   @yieldparam [Fear::PatternMatch] matcher
+  #   @yieldreturn [Fear::Try]
+  #   @return [Fear::Try]
   #   @example
-  #     Fear.success(42).recover_with { |e| Fear.success(e.massage) }
-  #       #=> Fear.success(42)
-  #     Fear.failure(ArgumentError.new).recover_with { |e| Fear.success(e.massage) }
-  #       #=> Fear.success('ArgumentError')
-  #     Fear.failure(ArgumentError.new).recover_with { |e| raise }
-  #       #=> Fear.failure(RuntimeError)
+  #     Fear.success(42).recover_with do |m|
+  #       m.case(ZeroDivisionError) { Fear.success(0) }
+  #     end #=> Fear.success(42)
+  #
+  #     Fear.failure(ArgumentError.new).recover_with do |m|
+  #       m.case(ZeroDivisionError) { Fear.success(0) }
+  #       m.case(ArgumentError) { |error| Fear.success(error.class.name) }
+  #     end #=> Fear.success('ArgumentError')
+  #
+  #     # If the block raises error, this new error returned as an result
+  #
+  #     Fear.failure(ArgumentError.new).recover_with do |m|
+  #       raise
+  #     end #=> Fear.failure(RuntimeError)
   #
   # @!method recover(&block)
   #   Applies the given block to exception. This is like +map+ for the exception.
-  #   @yieldparam [Exception] exception
+  #   @yieldparam [Fear::PatternMatch] matcher
   #   @yieldreturn [any]
-  #   @return [Try]
+  #   @return [Fear::Try]
   #   @example #recover
-  #     Fear.success(42).recover { |e| e.massage }
-  #       #=> Fear.success(42)
-  #     Fear.failure(ArgumentError.new).recover { |e| e.massage }
-  #       #=> Fear.success('ArgumentError')
-  #     Fear.failure(ArgumentError.new).recover { |e| raise }
-  #       #=> Fear.failure(RuntimeError)
+  #     Fear.success(42).recover do |m|
+  #       m.case(&:message)
+  #     end #=> Fear.success(42)
+  #
+  #     Fear.failure(ArgumentError.new).recover do |m|
+  #       m.case(ZeroDivisionError) { 0 }
+  #       m.case(&:message)
+  #     end #=> Fear.success('ArgumentError')
+  #
+  #     # If the block raises error, this new error returned as an result
+  #
+  #     Fear.failure(ArgumentError.new).recover do |m|
+  #       raise
+  #     end #=> Fear.failure(RuntimeError)
   #
   # @!method to_either
   #   Returns +Left+ with exception if this is a +Failure+, otherwise
