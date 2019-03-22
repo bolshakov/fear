@@ -50,22 +50,24 @@ module Fear
       self
     end
 
-    # @yieldparam [Exception]
-    # @yieldreturn [Try]
-    # @return [Try]
+    # @yieldparam [Fear::PatternMatch]
+    # @yieldreturn [Fear::Try]
+    # @return [Fear::Try]
     def recover_with
-      yield(exception).tap do |result|
-        Utils.assert_type!(result, Success, Failure)
-      end
+      Fear.matcher { |m| yield(m) }
+        .and_then { |result| result.tap { Utils.assert_type!(result, Success, Failure) } }
+        .call_or_else(exception) { self }
     rescue StandardError => error
       Failure.new(error)
     end
 
-    # @yieldparam [Exception]
+    # @yieldparam [Fear::PatternMatch]
     # @yieldreturn [any]
-    # @return [Try]
+    # @return [Fear::Try]
     def recover
-      Success.new(yield(exception))
+      Fear.matcher { |m| yield(m) }
+        .and_then { |v| Success.new(v) }
+        .call_or_else(exception) { self }
     rescue StandardError => error
       Failure.new(error)
     end

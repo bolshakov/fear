@@ -62,12 +62,6 @@ module Fear
       Left.new(value)
     end
 
-    # @param reduce_right [Proc]
-    # @return [any]
-    def reduce(_reduce_left, reduce_right)
-      reduce_right.call(value)
-    end
-
     # @return [Either]
     # @raise [TypeError]
     def join_right
