@@ -1072,6 +1072,7 @@ provides a bunch of rspec matchers.
 
 ## Alternatives
 
+* [algebrick](https://github.com/pitr-ch/algebrick)
 * [deterministic](https://github.com/pzol/deterministic)
 * [dry-monads](https://github.com/dry-rb/dry-monads)
 * [kleisli](https://github.com/txus/kleisli)
