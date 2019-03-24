@@ -180,19 +180,21 @@ module Fear
   #     Fear.left('left').swap   #=> Fear.right('left')
   #     Fear.right('right').swap #=> Fear.left('left')
   #
-  # @!method reduce(&matcher)
+  # @!method reduce(reduce_left, reduce_right)
   #   Applies +reduce_left+ if this is a +Left+ or +reduce_right+ if
   #   this is a +Right+.
-  #   @yieldparam [Fear::Matcher]
+  #   @param reduce_left [Proc] the Proc to apply if this is a +Left+
+  #   @param reduce_right [Proc] the Proc to apply if this is a +Right+
   #   @return [any] the results of applying the Proc
   #   @example
   #     result = possibly_failing_operation()
   #     log(
-  #       result.reduce do |m|
-  #         m.left { |error| "Operation failed with #{error}" }
-  #         m.right { |value| "Operation produced value: #{value}" }
+  #       result.reduce(
+  #         ->(ex) { "Operation failed with #{ex}" },
+  #         ->(v) { "Operation produced value: #{v}" },
   #       )
   #     )
+  #
   #
   # @!method join_right
   #   Joins an +Either+ through +Right+. This method requires
@@ -270,12 +272,6 @@ module Fear
 
     # @return [String]
     alias to_s inspect
-
-    # @yieldparam [Fear::PatternMatch]
-    # @return [any]
-    def reduce(&block)
-      match(&block)
-    end
 
     class << self
       # Build pattern matcher to be used later, despite off

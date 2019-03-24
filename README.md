@@ -606,9 +606,9 @@ Applies `reduce_left` if this is a `Left` or `reduce_right` if this is a `Right`
 ```ruby
 result = possibly_failing_operation()
 log(
-  result.reduce do |m|
-    m.left { |error| "Operation failed with #{error}" }
-    m.right { |value| "Operation produced value: #{value}" }
+  result.reduce(
+    ->(ex) { "Operation failed with #{ex}" },
+    ->(v) { "Operation produced value: #{v}" },
   )
 )
 ```
