@@ -72,10 +72,10 @@ RSpec.describe Fear::Right do
 
   describe '#reduce' do
     subject do
-      right.reduce do |m|
-        m.right { |value| "Right: #{value}" }
-        m.left { |value| "Left: #{value}" }
-      end
+      right.reduce(
+        ->(left) { "Left: #{left}" },
+        ->(right) { "Right: #{right}" },
+      )
     end
 
     it { is_expected.to eq('Right: value') }

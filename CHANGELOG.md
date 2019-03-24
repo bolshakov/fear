@@ -1,7 +1,7 @@
 ## 0.x
 
 * Revert commit removing `Fear::Future`. Now you can use `Fear.future` again ([@bolshakov][])
-* Signatures of `Try#recover`, `Try#recover_with` and `Either.reduce` changed. No it pattern match against container
+* Signatures of `Try#recover` and `Try#recover_with` changed. No it pattern match against container
   see https://github.com/bolshakov/fear/issues/41 for details . ([@bolshakov][])
 * Add `#xcase` method to extract patterns ([@bolshakov][])
 * Add `Fear.option`, `Fear.some`, `Fear.none`, `Fear.try`, `Fear.left`, `Fear.right`, and `Fear.for` alternatives to
