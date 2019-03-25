@@ -2,8 +2,8 @@ RSpec.describe Fear::TryPatternMatch do
   context 'Success' do
     let(:matcher) do
       described_class.new do |m|
-        m.success(:even?) { |x| "#{x} is even" }
-        m.success(:odd?) { |x| "#{x} is odd" }
+        m.success(:even?.to_proc) { |x| "#{x} is even" }
+        m.success(:odd?.to_proc) { |x| "#{x} is odd" }
       end
     end
 

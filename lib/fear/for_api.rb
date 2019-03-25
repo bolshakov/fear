@@ -56,7 +56,7 @@ module Fear
     #       "#{user.name} was born on #{birthday}"
     #     end #=> Fear.some('Paul was born on 1987-06-17')
     #
-    # @param monads [Hash{Symbol => {#map, #flat_map}}]
+    # @param monads [{#map, #flat_map}]
     # @return [{#map, #flat_map}]
     #
     def for(*monads, &block)

@@ -58,7 +58,7 @@ module Fear
     #   For(Fear.success(2), Fear.failure(...)) { |a, b| a * b }  #=> Fear.failure(...)
     #
     module Mixin
-      # @param monads [Hash{Symbol => {#map, #flat_map}}]
+      # @param monads [{#map, #flat_map}]
       # @return [{#map, #flat_map}]
       #
       def For(*monads, &block)

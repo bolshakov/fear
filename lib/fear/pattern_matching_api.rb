@@ -34,16 +34,13 @@ module Fear
     #
     #     m.case(20..40) { |m| "#{m} is within range" }
     #     m.case(->(x) { x > 10}) { |m| "#{m} is greater than 10" }
-    #
-    # If you pass a Symbol, it will be converted to proc using +#to_proc+ method
-    #
-    #     m.case(:even?) { |x| "#{x} is even" }
-    #     m.case(:odd?) { |x| "#{x} is odd" }
+    #     m.case(:even?.to_proc) { |x| "#{x} is even" }
+    #     m.case(:odd?.to_proc) { |x| "#{x} is odd" }
     #
     # It's also possible to pass several guardians. All should match to pass
     #
-    #     m.case(Integer, :even?) { |x| ... }
-    #     m.case(Integer, :odd?) { |x| ... }
+    #     m.case(Integer, :even?.to_proc) { |x| ... }
+    #     m.case(Integer, :odd?.to_proc) { |x| ... }
     #
     # If you want to perform pattern destruction, use +#xcase+ method
     #
@@ -76,8 +73,8 @@ module Fear
     #
     # @example
     #   Fear.match(42) do |m|
-    #     m.case(Integer, :even?) { |n| "#{n} is even number" }
-    #     m.case(Integer, :odd?) { |n| "#{n} is odd number" }
+    #     m.case(Integer, :even?.to_proc) { |n| "#{n} is even number" }
+    #     m.case(Integer, :odd?.to_proc) { |n| "#{n} is odd number" }
     #     m.case(Strings) { |n| "#{n} is a string" }
     #     m.else { 'unknown' }
     #   end #=> "42 is even number"
@@ -97,7 +94,7 @@ module Fear
     #   pf.defined_at?('Foo') #=> false
     #
     # @example multiple guards combined using logical "and"
-    #   pf = Fear.case(Integer, :even?) { |x| x / 2 }
+    #   pf = Fear.case(Integer, :even?.to_proc) { |x| x / 2 }
     #   pf.defined_at?(4) #=> true
     #   pf.defined_at?(3) #=> false
     #
@@ -106,7 +103,7 @@ module Fear
     # @example
     #   Fear.case(Qo[age: 20..30]) { |_| 'old enough' }
     #
-    # @param guards [<#===, symbol>]
+    # @param guards [<#===>]
     # @param function [Proc]
     # @return [Fear::PartialFunction]
     def case(*guards, &function)

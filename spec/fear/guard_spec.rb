@@ -15,13 +15,13 @@ RSpec.describe Fear::PartialFunction::Guard do
 
   context 'Symbol' do
     context 'match' do
-      subject { Fear::PartialFunction::Guard.new(:even?) === 4 }
+      subject { Fear::PartialFunction::Guard.new(:even?) === :even? }
 
       it { is_expected.to eq(true) }
     end
 
     context 'not match' do
-      subject { Fear::PartialFunction::Guard.new(:even?) === 3 }
+      subject { Fear::PartialFunction::Guard.new(:even?) === 4 }
 
       it { is_expected.to eq(false) }
     end
@@ -44,14 +44,14 @@ RSpec.describe Fear::PartialFunction::Guard do
   describe '.and' do
     context 'match' do
       subject { guard === 4 }
-      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?, ->(x) { x.even? }]) }
+      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?.to_proc, ->(x) { x.even? }]) }
 
       it { is_expected.to eq(true) }
     end
 
     context 'not match' do
       subject { guard === 3 }
-      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?, ->(x) { x.even? }]) }
+      let(:guard) { Fear::PartialFunction::Guard.and([Integer, :even?.to_proc, ->(x) { x.even? }]) }
 
       it { is_expected.to eq(false) }
     end

@@ -1,5 +1,6 @@
 ## 0.x
 
+* Don't treat symbols as procs while pattern matching. See [#46](https://github.com/bolshakov/fear/pull/46) for motivation ([@bolshakov][])
 * Revert commit removing `Fear::Future`. Now you can use `Fear.future` again ([@bolshakov][])
 * Signatures of `Try#recover` and `Try#recover_with` changed. No it pattern match against container
   see https://github.com/bolshakov/fear/issues/41 for details . ([@bolshakov][])

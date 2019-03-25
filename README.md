@@ -904,14 +904,9 @@ You can use whatever you want as a pattern guard, if it respond to `#===` method
 
 ```ruby
 m.case(20..40) { |m| "#{m} is within range" }
-m.case(->(x) { x > 10}) { |m| "#{m} is greater than 10" }
-```
-
-In sake of convenience, passing a Symbol, converts it to proc using `#to_proc` method
-
-```ruby 
-m.case(:even?) { |x| "#{x} is even" }
-m.case(:odd?) { |x| "#{x} is odd" }
+m.case(->(x) { x > 10}) { |m| "#{m} is greater than 10" } 
+m.case(:even?.to_proc) { |x| "#{x} is even" }
+m.case(:odd?.to_proc) { |x| "#{x} is odd" }
 ```
 
 It's also possible to create matcher and use it several times:
@@ -1129,8 +1124,8 @@ pattern match on enclosed value
 
 ```ruby
 Fear.some(41).match do |m|
-  m.some(:even?) { |x| x / 2 }
-  m.some(:odd?, ->(v) { v > 0 }) { |x| x * 2 }
+  m.some(:even?.to_proc) { |x| x / 2 }
+  m.some(:odd?.to_proc, ->(v) { v > 0 }) { |x| x * 2 }
   m.none { 'none' }
 end #=> 82
 ``` 
@@ -1139,7 +1134,7 @@ it raises `Fear::MatchError` error if nothing matched. To avoid exception, you c
 
 ```ruby
 Fear.some(42).match do |m|
-  m.some(:odd?) { |x| x * 2 }
+  m.some(:odd?.to_proc) { |x| x * 2 }
   m.else { 'nothing' }
 end #=> nothing
 ```
@@ -1179,8 +1174,7 @@ It uses `#===` method under the hood, so you can pass:
 
 * Class to check kind of an object.
 * Lambda to evaluate it against an object.
-* Any literal, like `4`, `"Foobar"`, etc.
-* Symbol -- it is converted to lambda using `#to_proc` method.
+* Any literal, like `4`, `"Foobar"`, `:not_found` etc.
 * Qo matcher -- `m.case(Qo[name: 'John']) { .... }`
  
 Partial functions may be combined with each other:
