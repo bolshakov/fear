@@ -11,28 +11,21 @@ module Fear
       class << self
         # Optimized version for combination of two guardians
         # Two guarding is a very common situation. For example checking for Some, and checking
-        # a value withing contianer.
+        # a value withing container.
         #
         def and2(c1, c2)
-          Guard::And.new(
-            (c1.is_a?(Symbol) ? c1.to_proc : c1),
-            (c2.is_a?(Symbol) ? c2.to_proc : c2),
-          )
+          Guard::And.new(c1, c2)
         end
 
         def and3(c1, c2, c3)
-          Guard::And3.new(
-            (c1.is_a?(Symbol) ? c1.to_proc : c1),
-            (c2.is_a?(Symbol) ? c2.to_proc : c2),
-            (c3.is_a?(Symbol) ? c3.to_proc : c3),
-          )
+          Guard::And3.new(c1, c2, c3)
         end
 
         def and1(c)
-          c.is_a?(Symbol) ? c.to_proc : c
+          c
         end
 
-        # @param conditions [<#===, Symbol>]
+        # @param conditions [<#===>]
         # @return [Fear::PartialFunction::Guard]
         def and(conditions)
           case conditions.size
@@ -46,7 +39,7 @@ module Fear
           end
         end
 
-        # @param conditions [<#===, Symbol>]
+        # @param conditions [<#===>]
         # @return [Fear::PartialFunction::Guard]
         def or(conditions)
           return Any if conditions.empty?
@@ -56,14 +49,9 @@ module Fear
         end
       end
 
-      # @param condition [<#===, Symbol>]
+      # @param condition [#===]
       def initialize(condition)
-        @condition =
-          if condition.is_a?(Symbol)
-            condition.to_proc
-          else
-            condition
-          end
+        @condition = condition
       end
       attr_reader :condition
       private :condition

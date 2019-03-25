@@ -148,7 +148,7 @@ module Fear
     class << self
       # Creates partial function guarded by several condition.
       # All guards should match.
-      # @param guards [<#===, symbol>]
+      # @param guards [<#===>]
       # @param function [Proc]
       # @return [Fear::PartialFunction]
       def and(*guards, &function)
@@ -157,7 +157,7 @@ module Fear
 
       # Creates partial function guarded by several condition.
       # Any condition should match.
-      # @param guards [<#===, symbol>]
+      # @param guards [<#===>]
       # @param function [Proc]
       # @return [Fear::PartialFunction]
       def or(*guards, &function)

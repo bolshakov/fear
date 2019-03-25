@@ -2,8 +2,8 @@ RSpec.describe Fear::OptionPatternMatch do
   context 'Some' do
     let(:matcher) do
       described_class.new do |m|
-        m.some(:even?) { |x| "#{x} is even" }
-        m.some(:odd?) { |x| "#{x} is odd" }
+        m.some(:even?.to_proc) { |x| "#{x} is even" }
+        m.some(:odd?.to_proc) { |x| "#{x} is odd" }
       end
     end
 

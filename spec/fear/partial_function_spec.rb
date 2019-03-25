@@ -15,8 +15,8 @@ RSpec.describe Fear::PartialFunction do
     context 'condition as symbol' do
       subject { Fear.case(:even?) { |x| x } }
 
-      it 'converted to proc' do
-        is_expected.to be_defined_at(4)
+      it 'matches against the same symbol' do
+        is_expected.to be_defined_at(:even?)
         is_expected.not_to be_defined_at(3)
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe Fear::PartialFunction do
     end
 
     context 'multiple condition' do
-      subject { Fear.case(Integer, :even?, ->(x) { x % 3 == 0 }) { |x| x } }
+      subject { Fear.case(Integer, :even?.to_proc, ->(x) { x % 3 == 0 }) { |x| x } }
 
       it do
         is_expected.to be_defined_at(12)

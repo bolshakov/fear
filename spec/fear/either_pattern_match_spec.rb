@@ -2,8 +2,8 @@ RSpec.describe Fear::EitherPatternMatch do
   context 'Right' do
     let(:matcher) do
       described_class.new do |m|
-        m.right(:even?) { |x| "#{x} is even" }
-        m.right(:odd?) { |x| "#{x} is odd" }
+        m.right(:even?.to_proc) { |x| "#{x} is even" }
+        m.right(:odd?.to_proc) { |x| "#{x} is odd" }
       end
     end
 
@@ -19,8 +19,8 @@ RSpec.describe Fear::EitherPatternMatch do
   context 'Left' do
     let(:matcher) do
       described_class.new do |m|
-        m.left(:even?) { |x| "#{x} is even" }
-        m.left(:odd?) { |x| "#{x} is odd" }
+        m.left(:even?.to_proc) { |x| "#{x} is even" }
+        m.left(:odd?.to_proc) { |x| "#{x} is odd" }
       end
     end
 
