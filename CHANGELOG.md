@@ -1,5 +1,6 @@
 ## 0.x
 
+* Rename `Fear::Done` to `Fear::Unit` ([@bolshakov][])
 * Don't treat symbols as procs while pattern matching. See [#46](https://github.com/bolshakov/fear/pull/46) for motivation ([@bolshakov][])
 * Revert commit removing `Fear::Future`. Now you can use `Fear.future` again ([@bolshakov][])
 * Signatures of `Try#recover` and `Try#recover_with` changed. No it pattern match against container
