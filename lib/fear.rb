@@ -28,7 +28,7 @@ module Fear
   autoload :PatternMatch, 'fear/pattern_match'
   autoload :Extractor, 'fear/extractor'
 
-  autoload :Done, 'fear/done'
+  autoload :Unit, 'fear/unit'
   autoload :For, 'fear/for'
   autoload :RightBiased, 'fear/right_biased'
   autoload :Utils, 'fear/utils'
