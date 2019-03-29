@@ -9,12 +9,11 @@ module Fear
   # Asynchronous computations that yield futures are created
   # with the +Fear.future+ call:
   #
-  # @example
-  #   success = "Hello"
-  #   f = Fear.future { success + ' future!' }
-  #   f.on_success do |result|
-  #     puts result
-  #   end
+  #    success = "Hello"
+  #    f = Fear.future { success + ' future!' }
+  #    f.on_success do |result|
+  #      puts result
+  #    end
   #
   # Multiple callbacks may be registered; there is no guarantee
   # that they will be executed in a particular order.
@@ -23,25 +22,36 @@ module Fear
   # that the future failed. Futures obtained through combinators
   # have the same error as the future they were obtained from.
   #
-  # @example
-  #   f = Fear.future { 5 }
-  #   g = Fear.future { 3 }
-  #   f.flat_map do |x|
-  #     g.map { |y| x + y }
-  #   end
+  #    f = Fear.future { 5 }
+  #    g = Fear.future { 3 }
+  #    f.flat_map do |x|
+  #      g.map { |y| x + y }
+  #    end
   #
-  # @example the same program may be written using +Fear.for+
-  #   Fear.for(Fear.future { 5 }, Fear.future { 3 }) do |x, y|
-  #     x + y
-  #   end
+  # The same program may be written using +Fear.for+
+  #
+  #    Fear.for(Fear.future { 5 }, Fear.future { 3 }) do |x, y|
+  #      x + y
+  #    end
+  #
+  # Futures use +Concurrent::Promise+ under the hood. +Fear.future+ accepts optional configuration Hash passed
+  # directly to underlying promise. For example, run it on custom thread pool.
+  #
+  #     require 'open-uri'
+  #
+  #     future = Fear.future(executor: :io) { open('https://example.com/') }
+  #
+  #     future.map(executor: :fast, &:read).each do |body|
+  #       puts "#{body}"
+  #     end
   #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/concurrent/Future.scala
   #
   class Future
     # @param promise [nil, Concurrent::Future] converts
-    #  +Concurrent::Future+ into +Fear::Future+.
+    #  +Concurrent::Promise+ into +Fear::Future+.
     # @param options [see Concurrent::Future] options will be passed
-    #   directly to +Concurrent::Future+
+    #   directly to +Concurrent::Promise+
     # @yield given block and evaluate it in the future.
     # @api private
     def initialize(promise = nil, **options, &block)

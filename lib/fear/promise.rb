@@ -1,7 +1,7 @@
 module Fear
   # @api private
   class Promise < Concurrent::IVar
-    # @param options [Hash] options passed to underlying +Concurrent::Future+
+    # @param options [Hash] options passed to underlying +Concurrent::Promise+
     def initialize(options = {})
       super()
       @options = options
