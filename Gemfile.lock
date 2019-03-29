@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    fear (0.11.0)
+    fear (1.0.0)
       lru_redux
       treetop
 
