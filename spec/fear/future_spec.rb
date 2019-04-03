@@ -103,10 +103,16 @@ RSpec.describe Fear::Future do
   end
 
   context '#value' do
+    context 'future returns nil' do
+      subject { Fear::Future.successful(nil).value }
+
+      it { is_expected.to eq(Fear.some(Fear.success(nil))) }
+    end
+
     it 'None if not completed' do
       not_completed_future =
         Fear.future do
-          sleep 1
+          sleep 0.1
           value
         end
 
@@ -461,6 +467,44 @@ RSpec.describe Fear::Future do
       value = described_class.failed(error).value
 
       expect(value).to eq Fear.some(Fear.failure(error))
+    end
+  end
+
+  describe Fear::Awaitable do
+    describe '#result' do
+      context 'managed to complete within timeout' do
+        subject { Fear::Await.result(Fear.future { 5 }, 0.01) }
+
+        it { is_expected.to eq(Fear.success(5)) }
+      end
+
+      context 'did not manage to complete within timeout' do
+        subject do
+          proc do
+            Fear::Await.result(Fear.future { sleep(1) }, 0.01)
+          end
+        end
+
+        it { is_expected.to raise_error(Timeout::Error) }
+      end
+    end
+
+    describe '#ready' do
+      context 'managed to complete within timeout' do
+        subject { Fear::Await.ready(Fear.future { 5 }, 0.01).value }
+
+        it { is_expected.to eq(Fear.some(Fear.success(5))) }
+      end
+
+      context 'did not manage to complete within timeout' do
+        subject do
+          proc do
+            Fear::Await.ready(Fear.future { sleep(1) }, 0.01)
+          end
+        end
+
+        it { is_expected.to raise_error(Timeout::Error) }
+      end
     end
   end
 end

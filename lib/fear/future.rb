@@ -3,7 +3,6 @@ begin
 rescue LoadError
   puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
 end
-require_relative 'promise'
 
 module Fear
   # Asynchronous computations that yield futures are created
@@ -48,12 +47,16 @@ module Fear
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/concurrent/Future.scala
   #
   class Future
+    include Awaitable
+
     # @param promise [nil, Concurrent::Future] converts
     #  +Concurrent::Promise+ into +Fear::Future+.
     # @param options [see Concurrent::Future] options will be passed
     #   directly to +Concurrent::Promise+
     # @yield given block and evaluate it in the future.
     # @api private
+    # @see Fear.future
+    #
     def initialize(promise = nil, **options, &block)
       if block_given? && promise
         raise ArgumentError, 'pass block or future'
@@ -397,6 +400,20 @@ module Fear
       end
 
       promise.to_future
+    end
+
+    # @api private
+    def __result__(at_most)
+      __ready__(at_most).value.get_or_else { raise 'promise not completed' }
+    end
+
+    # @api private
+    def __ready__(at_most)
+      if promise.wait(at_most).complete?
+        self
+      else
+        raise Timeout::Error
+      end
     end
 
     class << self

@@ -55,7 +55,10 @@ module Fear
   autoload :Right, 'fear/right'
   autoload :RightPatternMatch, 'fear/right_pattern_match'
 
+  autoload :Await, 'fear/await'
+  autoload :Awaitable, 'fear/awaitable'
   autoload :Future, 'fear/future'
+  autoload :Promise, 'fear/promise'
 
   module Mixin
     include Either::Mixin
