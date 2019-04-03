@@ -1,4 +1,8 @@
-## 0.x
+## 1.1.0 
+
+* Add `Fear::Await.ready` and `Fear::Await.result`.
+
+## 1.0.0
 
 * Rename `Fear::Done` to `Fear::Unit` ([@bolshakov][])
 * Don't treat symbols as procs while pattern matching. See [#46](https://github.com/bolshakov/fear/pull/46) for motivation ([@bolshakov][])

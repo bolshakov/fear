@@ -784,6 +784,20 @@ end.and_then do |m|
 end
 ```
 
+#### Testing future values
+
+Sometimes it may be helpful to await for future completion. You can await either future,
+or result. Don't forget to pass timeout in seconds:
+
+
+```ruby 
+future = Fear.future { 42 }
+
+Fear::Await.result(future, 3) #=> 42
+
+Fear::Await.ready(future, 3) #=> Fear::Future.successful(42)
+```
+
 ### For composition ([API Documentation](http://www.rubydoc.info/github/bolshakov/fear/master/Fear/ForApi))
 
 Provides syntactic sugar for composition of multiple monadic operations. 
