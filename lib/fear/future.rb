@@ -70,11 +70,11 @@ module Fear
     attr_reader :promise
     private :promise
 
-    # Calls the provided callback When this future is completed successfully.
+    # Calls the provided callback when this future is completed successfully.
     #
     # If the future has already been completed with a value,
     # this will either be applied immediately or be scheduled asynchronously.
-    # @yieldparam [value]
+    # @yieldparam [any] value
     # @return [self]
     # @see #transform
     #
@@ -86,6 +86,24 @@ module Fear
     def on_success(&block)
       on_complete do |result|
         result.each(&block)
+      end
+    end
+
+    # When this future is completed successfully match against its result
+    #
+    # If the future has already been completed with a value,
+    # this will either be applied immediately or be scheduled asynchronously.
+    # @yieldparam [Fear::PatternMatch] m
+    # @return [self]
+    #
+    # @example
+    #   Fear.future { }.on_success_match do |m|
+    #     m.case(42) { ... }
+    #   end
+    #
+    def on_success_match
+      on_success do |value|
+        Fear.matcher { |m| yield(m) }.call_or_else(value, &:itself)
       end
     end
 
@@ -113,6 +131,26 @@ module Fear
       end
     end
 
+    # When this future is completed with a failure match against the error.
+    #
+    # If the future has already been completed with a failure,
+    # this will either be applied immediately or be scheduled asynchronously.
+    #
+    # Will not be called in case that the future is completed with a value.
+    # @yieldparam [Fear::PatternMatch] m
+    # @return [self]
+    #
+    # @example
+    #   Fear.future { }.on_failure_match do |m|
+    #     m.case(HTTPError) { |error| ... }
+    #   end
+    #
+    def on_failure_match
+      on_failure do |error|
+        Fear.matcher { |m| yield(m) }.call_or_else(error, &:itself)
+      end
+    end
+
     # When this future is completed call the provided block.
     #
     # If the future has already been completed,
@@ -128,6 +166,26 @@ module Fear
     def on_complete
       promise.add_observer do |_time, try, _error|
         yield try
+      end
+      self
+    end
+
+    # When this future is completed match against result.
+    #
+    # If the future has already been completed,
+    # this will either be applied immediately or be scheduled asynchronously.
+    # @yieldparam [Fear::TryPatternMatch]
+    # @return [self]
+    #
+    # @example
+    #   Fear.future { }.on_complete_match do |m|
+    #     m.success { |result| }
+    #     m.failure { |error| }
+    #   end
+    #
+    def on_complete_match
+      promise.add_observer do |_time, try, _error|
+        Fear::Try.matcher { |m| yield(m) }.call_or_else(try, &:itself)
       end
       self
     end
@@ -190,11 +248,9 @@ module Fear
     #
     def transform(success, failure)
       promise = Promise.new(@options)
-      on_complete do |try|
-        try.match do |m|
-          m.success { |value| promise.success(success.call(value)) }
-          m.failure { |error| promise.failure(failure.call(error)) }
-        end
+      on_complete_match do |m|
+        m.success { |value| promise.success(success.call(value)) }
+        m.failure { |error| promise.failure(failure.call(error)) }
       end
       promise.to_future
     end
@@ -237,15 +293,13 @@ module Fear
     #
     def flat_map # rubocop: disable Metrics/MethodLength
       promise = Promise.new(@options)
-      on_complete do |result|
-        result.match do |m|
-          m.failure { promise.complete!(result) }
-          m.success do |value|
-            begin
-              yield(value).on_complete { |callback_result| promise.complete!(callback_result) }
-            rescue StandardError => error
-              promise.failure!(error)
-            end
+      on_complete_match do |m|
+        m.case(Fear::Failure) { |failure| promise.complete!(failure) }
+        m.success do |value|
+          begin
+            yield(value).on_complete { |callback_result| promise.complete!(callback_result) }
+          rescue StandardError => error
+            promise.failure!(error)
           end
         end
       end
@@ -321,16 +375,14 @@ module Fear
     #
     def zip(other) # rubocop: disable Metrics/MethodLength
       promise = Promise.new(@options)
-      on_complete do |try_of_self|
-        try_of_self.match do |m|
-          m.success do |value|
-            other.on_complete do |try_of_other|
-              promise.complete!(try_of_other.map { |other_value| [value, other_value] })
-            end
+      on_complete_match do |m|
+        m.success do |value|
+          other.on_complete do |other_try|
+            promise.complete!(other_try.map { |other_value| [value, other_value] })
           end
-          m.failure do |error|
-            promise.failure!(error)
-          end
+        end
+        m.failure do |error|
+          promise.failure!(error)
         end
       end
 
@@ -354,16 +406,12 @@ module Fear
     # rubocop: disable Metrics/MethodLength
     def fallback_to(fallback)
       promise = Promise.new(@options)
-      on_complete do |try|
-        try.match do |m|
-          m.success { |value| promise.complete!(value) }
-          m.failure do |error|
-            fallback.on_complete do |fallback_try|
-              fallback_try.match do |m2|
-                m2.success { |value| promise.complete!(value) }
-                m2.failure { promise.failure!(error) }
-              end
-            end
+      on_complete_match do |m|
+        m.success { |value| promise.complete!(value) }
+        m.failure do |error|
+          fallback.on_complete_match do |m2|
+            m2.success { |value| promise.complete!(value) }
+            m2.failure { promise.failure!(error) }
           end
         end
       end
@@ -386,16 +434,18 @@ module Fear
     # @example The following example prints out +5+:
     #   f = Fear.future { 5 }
     #   f.and_then do
-    #     fail 'runtime error'
+    #     m.success { }fail| 'runtime error' }
     #   end.and_then do |m|
     #     m.success { |value| puts value } # it evaluates this branch
     #     m.failure { |error| puts error.massage }
     #   end
     #
-    def and_then(&block)
+    def and_then
       promise = Promise.new(@options)
       on_complete do |try|
-        Fear.try { try.match(&block) }
+        Fear.try do
+          Fear::Try.matcher { |m| yield(m) }.call_or_else(try, &:itself)
+        end
         promise.complete!(try)
       end
 

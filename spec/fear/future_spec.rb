@@ -1,23 +1,69 @@
 RSpec.describe Fear::Future do
-  let(:value) { 5 }
-  let(:error) { StandardError.new('something went wrong') }
-  let(:immediate) { Concurrent::ImmediateExecutor.new }
-
-  def future(&block)
-    described_class.new(executor: Concurrent::ImmediateExecutor.new, &block)
-  end
-
   context '#on_complete' do
     it 'run callback with value' do
       expect do |callback|
-        Fear.future(executor: immediate) { value }.on_complete(&callback)
-      end.to yield_with_args(Fear.success(value))
+        Fear::Future.successful(5).on_complete(&callback)
+      end.to yield_with_args(Fear.success(5))
     end
+
+    let(:error) { StandardError.new }
 
     it 'run callback with error' do
       expect do |callback|
-        Fear.future(executor: immediate) { raise error }.on_complete(&callback)
+        Fear::Future.failed(error).on_complete(&callback)
       end.to yield_with_args(Fear.failure(error))
+    end
+  end
+
+  context '#on_complete_match' do
+    context 'successful covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.successful(5).on_complete_match do |m|
+            m.success(&callback)
+          end
+        end
+      end
+
+      it { is_expected.to yield_with_args(5) }
+    end
+
+    context 'successful not covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.successful(5).on_complete_match do |m|
+            m.failure(&callback)
+          end
+        end
+      end
+
+      it { is_expected.not_to yield_control }
+    end
+
+    context 'failed' do
+      subject do
+        proc do |callback|
+          Fear::Future.failed(error).on_complete_match do |m|
+            m.failure(&callback)
+          end
+        end
+      end
+      let(:error) { StandardError.new }
+
+      it { is_expected.to yield_with_args(error) }
+    end
+
+    context 'failed not covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.failed(error).on_complete_match do |m|
+            m.success(&callback)
+          end
+        end
+      end
+      let(:error) { StandardError.new }
+
+      it { is_expected.not_to yield_control }
     end
   end
 
@@ -46,7 +92,7 @@ RSpec.describe Fear::Future do
       specify 'call all registered callbacks' do
         expect do |second|
           expect do |first|
-            Fear.future(executor: immediate) { 5 }
+            Fear::Future.successful(5)
               .__send__(method_name, &first)
               .__send__(method_name, &second)
           end.to yield_with_args(5)
@@ -58,27 +104,103 @@ RSpec.describe Fear::Future do
   include_examples :on_success, :on_success
   include_examples :on_success, :each
 
+  context '#on_success_match' do
+    context 'successful covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.successful(5).on_success_match do |m|
+            m.case(5, &callback)
+          end
+        end
+      end
+
+      it { is_expected.to yield_with_args(5) }
+    end
+
+    context 'successful not covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.successful(5).on_success_match do |m|
+            m.case(0, &callback)
+          end
+        end
+      end
+
+      it { is_expected.not_to yield_control }
+    end
+
+    context 'failed' do
+      subject do
+        proc do |callback|
+          Fear::Future.failed(StandardError.new).on_success_match(&callback)
+        end
+      end
+
+      it { is_expected.not_to yield_control }
+    end
+  end
+
   context '#on_failure' do
+    let(:error) { StandardError.new }
+
     it 'do not run callback if no error' do
       expect do |callback|
-        Fear.future(executor: immediate) { value }.on_failure(&callback)
+        Fear::Future.successful(5).on_failure(&callback)
       end.not_to yield_with_args
     end
 
     it 'run callback if error occurred' do
       expect do |callback|
-        Fear.future(executor: immediate) { raise error }.on_failure(&callback)
+        Fear::Future.failed(error).on_failure(&callback)
       end.to yield_with_args(error)
     end
 
     specify 'call all registered callbacks' do
       expect do |second|
         expect do |first|
-          Fear.future(executor: immediate) { raise error }
+          Fear::Future.failed(error)
             .on_failure(&first)
             .on_failure(&second)
         end.to yield_with_args(error)
       end.to yield_with_args(error)
+    end
+  end
+
+  context '#on_failure_match' do
+    context 'failure covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.failed(error).on_failure_match do |m|
+            m.case(StandardError, &callback)
+          end
+        end
+      end
+      let(:error) { StandardError.new }
+
+      it { is_expected.to yield_with_args(error) }
+    end
+
+    context 'failure not covered' do
+      subject do
+        proc do |callback|
+          Fear::Future.failed(error).on_failure_match do |m|
+            m.case(RuntimeError, &callback)
+          end
+        end
+      end
+      let(:error) { StandardError.new }
+
+      it { is_expected.not_to yield_control }
+    end
+
+    context 'successful' do
+      subject do
+        proc do |callback|
+          Fear::Future.successful(5).on_failure_match(&callback)
+        end
+      end
+
+      it { is_expected.not_to yield_control }
     end
   end
 
@@ -354,11 +476,9 @@ RSpec.describe Fear::Future do
         end
 
         context 'callback is failing' do
-          let(:future) { Fear.future { 5 }.and_then { raise } }
+          let(:future) { Fear.future { 5 }.and_then { |m| m.success { raise 'foo' } } }
 
-          it 'returns the same future' do
-            is_expected.to eq(Fear.success(5))
-          end
+          it { is_expected.to eq(Fear.success(5)) }
         end
       end
 
@@ -496,15 +616,17 @@ RSpec.describe Fear::Future do
 
   context '.successful' do
     it 'returns already succeed Future' do
-      future = described_class.successful(value)
+      future = described_class.successful(5)
 
       future_value = future.value
 
-      expect(future_value).to eq Fear.some(Fear.success(value))
+      expect(future_value).to eq Fear.some(Fear.success(5))
     end
   end
 
   context '.failed' do
+    let(:error) { StandardError.new }
+
     it 'returns already failed Future' do
       value = described_class.failed(error).value
 
