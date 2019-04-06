@@ -1,6 +1,7 @@
 RSpec.describe Fear::Future do
   let(:value) { 5 }
   let(:error) { StandardError.new('something went wrong') }
+  let(:immediate) { Concurrent::ImmediateExecutor.new }
 
   def future(&block)
     described_class.new(executor: Concurrent::ImmediateExecutor.new, &block)
@@ -9,58 +10,71 @@ RSpec.describe Fear::Future do
   context '#on_complete' do
     it 'run callback with value' do
       expect do |callback|
-        future { value }.on_complete(&callback)
+        Fear.future(executor: immediate) { value }.on_complete(&callback)
       end.to yield_with_args(Fear.success(value))
     end
 
     it 'run callback with error' do
       expect do |callback|
-        future { raise error }.on_complete(&callback)
+        Fear.future(executor: immediate) { raise error }.on_complete(&callback)
       end.to yield_with_args(Fear.failure(error))
     end
   end
 
-  context '#on_success' do
-    it 'run callback if no error' do
-      expect do |callback|
-        future { value }.on_success(&callback)
-      end.to yield_with_args(value)
-    end
+  shared_examples :on_success do |method_name|
+    context "##{method_name}" do
+      context 'successful' do
+        subject do
+          proc do |callback|
+            Fear::Future.successful(5).__send__(method_name, &callback)
+          end
+        end
 
-    it 'do not run callback if error occurred' do
-      expect do |callback|
-        future { raise error }.on_success(&callback)
-      end.not_to yield_with_args
-    end
+        it { is_expected.to yield_with_args(5) }
+      end
 
-    specify 'call all registered callbacks' do
-      expect do |second|
-        expect do |first|
-          future { value }
-            .on_success(&first)
-            .on_success(&second)
-        end.to yield_with_args(value)
-      end.to yield_with_args(value)
+      context 'failed' do
+        subject do
+          proc do |callback|
+            Fear::Future.failed(StandardError.new).__send__(method_name, &callback)
+          end
+        end
+
+        it { is_expected.not_to yield_control }
+      end
+
+      specify 'call all registered callbacks' do
+        expect do |second|
+          expect do |first|
+            Fear.future(executor: immediate) { 5 }
+              .__send__(method_name, &first)
+              .__send__(method_name, &second)
+          end.to yield_with_args(5)
+        end.to yield_with_args(5)
+      end
     end
   end
+
+  include_examples :on_success, :on_success
+  include_examples :on_success, :each
 
   context '#on_failure' do
     it 'do not run callback if no error' do
       expect do |callback|
-        future { value }.on_failure(&callback)
+        Fear.future(executor: immediate) { value }.on_failure(&callback)
       end.not_to yield_with_args
     end
 
     it 'run callback if error occurred' do
       expect do |callback|
-        future { raise error }.on_failure(&callback)
+        Fear.future(executor: immediate) { raise error }.on_failure(&callback)
       end.to yield_with_args(error)
     end
 
     specify 'call all registered callbacks' do
       expect do |second|
         expect do |first|
-          future { raise error }
+          Fear.future(executor: immediate) { raise error }
             .on_failure(&first)
             .on_failure(&second)
         end.to yield_with_args(error)
@@ -69,257 +83,256 @@ RSpec.describe Fear::Future do
   end
 
   context '#completed?' do
-    it 'completed with value' do
-      completed_future = future { value }
-
-      expect(completed_future).to be_completed
-    end
-
-    it 'completed with error' do
-      completed_future = future { raise error }
-
-      expect(completed_future).to be_completed
-    end
-
-    it 'not completed with value' do
-      not_completed_future =
-        Fear.future do
-          sleep 1
-          value
-        end
-
-      expect(not_completed_future).not_to be_completed
-    end
-
-    it 'not completed with error' do
-      not_completed_future =
-        Fear.future do
-          sleep 1
-          raise error
-        end
-
-      expect(not_completed_future).not_to be_completed
-    end
-  end
-
-  context '#value' do
-    context 'future returns nil' do
-      subject { Fear::Future.successful(nil).value }
-
-      it { is_expected.to eq(Fear.some(Fear.success(nil))) }
-    end
-
-    it 'None if not completed' do
-      not_completed_future =
+    context 'not completed' do
+      subject do
         Fear.future do
           sleep 0.1
           value
         end
+      end
 
-      future_value = not_completed_future.value
-
-      expect(future_value).to eq(Fear.none)
+      it { is_expected.not_to be_completed }
     end
 
-    it 'Some of Success if completed with result' do
-      future_value = future { value }.value
+    context 'completed with error' do
+      subject { Fear::Await.ready(Fear.future { raise StandardError }, 1) }
 
-      expect(future_value).to eq Fear.some(Fear.success(value))
+      it { is_expected.to be_completed }
     end
 
-    it 'Some of Failure if completed with error' do
-      value = future { raise error }.value
+    context 'completed with value' do
+      subject { Fear::Await.ready(Fear.future { 5 }, 0.5) }
 
-      expect(value).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to be_completed }
+    end
+  end
+
+  context '#value' do
+    subject { future.value }
+
+    context 'future returns nil' do
+      let(:future) { Fear::Future.successful(nil) }
+
+      it { is_expected.to eq(Fear.some(Fear.success(nil))) }
+    end
+
+    context 'not completed' do
+      let(:future) do
+        Fear.future do
+          sleep 0.1
+          value
+        end
+      end
+
+      it { is_expected.to eq(Fear.none) }
+    end
+
+    context 'completed with success' do
+      let(:future) { Fear::Future.successful(5) }
+
+      it { is_expected.to eq(Fear.some(Fear.success(5))) }
+    end
+
+    context 'completed with failure' do
+      let(:future) { Fear::Future.failed(error) }
+      let(:error) { StandardError.new }
+
+      it { is_expected.to eq(Fear.some(Fear.failure(error))) }
     end
   end
 
   context '#transform' do
-    let(:failure) { ->(e) { e.message } }
-    let(:success) { ->(v) { v * 2 } }
+    context 'successful' do
+      subject { Fear::Await.result(future, 1) }
 
-    it 'call first callback if successful' do
-      value = future { 2 }.transform(success, failure).value
+      let(:future) { Fear.future { 2 }.transform(->(v) { v * 2 }, :itself.to_proc) }
 
-      expect(value).to eq Fear.some(Fear.success(4))
+      it { is_expected.to eq(Fear.success(4)) }
     end
 
-    it 'call second callback if failed' do
-      value = future { raise error }.transform(success, failure).value
+    context 'failed' do
+      subject { Fear::Await.result(future, 1) }
 
-      expect(value).to eq Fear.some(Fear.failure('something went wrong'))
+      let(:future) { Fear.future { raise error }.transform(:itself.to_proc, :message.to_proc) }
+      let!(:error) { StandardError.new('fooo') }
+
+      it { is_expected.to eq(Fear.failure('fooo')) }
     end
   end
 
   context '#map' do
-    it 'successful result' do
-      result = future { value }.map { |r| r * 2 }.value
+    subject { Fear::Await.result(future.map { |x| x * 2 }, 1) }
 
-      expect(result).to eq Fear.some(Fear.success(10))
+    context 'successful' do
+      let(:future) { Fear.future { 5 } }
+
+      it { is_expected.to eq(Fear.success(10)) }
     end
 
-    it 'failed result' do
-      result = future { raise error }.map { |r| r * 2 }.value
+    context 'failed' do
+      let(:future) { Fear.future { raise error } }
+      let!(:error) { StandardError.new('foo') }
 
-      expect(result).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
   end
 
   context '#flat_map' do
-    it 'successful result' do
-      result = future { value }.flat_map { |r| future { r * 2 } }.value
+    subject { Fear::Await.result(future, 1) }
 
-      expect(result).to eq Fear.some(Fear.success(10))
+    context 'successful' do
+      let(:future) { Fear.future { 5 }.flat_map { |r| Fear.future { r * 2 } } }
+
+      it { is_expected.to eq(Fear.success(10)) }
     end
 
-    it 'failed result' do
-      result = future { raise error }.flat_map { |r| future { r * 2 } }.value
+    context 'failed' do
+      let(:future) { Fear.future { raise error }.flat_map { |r| Fear.future { r * 2 } } }
+      let!(:error) { StandardError.new('foo') }
 
-      expect(result).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
 
-    it 'failed callback future' do
-      result = future { value }.flat_map { future { raise error } }.value
+    context 'failed callback future' do
+      let(:future) { Fear.future { 5 }.flat_map { Fear.future { raise error } } }
+      let!(:error) { StandardError.new('foo') }
 
-      expect(result).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
 
-    it 'failured callback' do
-      result = future { value }.flat_map { raise error }.value
+    context 'failed callback' do
+      let(:future) { Fear.future { 5 }.flat_map { raise error } }
+      let!(:error) { StandardError.new('foo') }
 
-      expect(result).to eq Fear.some(Fear.failure(error))
-    end
-  end
-
-  context '#each' do
-    it 'successful result' do
-      expect do |callback|
-        future { value }.each(&callback)
-      end.to yield_with_args(value)
-    end
-
-    it 'failed result' do
-      expect do |callback|
-        future { raise error }.each(&callback)
-      end.not_to yield_with_args
+      it { is_expected.to eq(Fear.failure(error)) }
     end
   end
 
   context '#select' do
-    it 'satisfy predicate' do
-      value = future { 2 }.select(&:even?).value
+    context 'successful and satisfies predicate' do
+      subject { Fear::Await.result(future, 1) }
 
-      expect(value).to eq Fear.some(Fear.success(2))
+      let(:future) { Fear.future { 2 }.select(&:even?) }
+
+      it { is_expected.to eq(Fear.success(2)) }
     end
 
-    it 'does not satisfy predicate' do
-      value = future { 3 }.select(&:even?).value
+    context 'successful and does not satisfy predicate' do
+      subject { Fear::Await.result(future, 1).exception }
 
-      expect(value.get.exception).to be_kind_of(Fear::NoSuchElementError)
+      let(:future) { Fear.future { 3 }.select(&:even?) }
+
+      it { is_expected.to be_kind_of(Fear::NoSuchElementError) }
     end
 
-    it 'failure' do
-      value = future { raise error }.select(&:even?).value
+    context 'failure' do
+      subject { Fear::Await.result(future, 1).exception }
 
-      expect(value.get.exception).to eq error
+      let(:future) { Fear.future { raise error }.select(&:even?) }
+      let!(:error) { StandardError.new }
+
+      it { is_expected.to eq(error) }
     end
   end
 
   context '#recover' do
-    it 'success' do
-      value = future { 2 / 1 }.recover do |m|
-        m.case { 0 }
-      end.value
+    subject { Fear::Await.result(future, 1) }
 
-      expect(value).to eq Fear.some(Fear.success(2))
+    context 'successful' do
+      let(:future) do
+        Fear.future { 2 }.recover do |m|
+          m.case { 0 }
+        end
+      end
+
+      it { is_expected.to eq(Fear.success(2)) }
     end
 
-    it 'failure and error case covered by pattern match' do
-      value = future { 2 / 0 }.recover do |m|
-        m.case(RuntimeError, &:message)
-        m.case(ZeroDivisionError) { 0 }
-      end.value
+    context 'failure and managed to recover' do
+      let(:future) do
+        Fear.future { 2 / 0 }.recover do |m|
+          m.case(RuntimeError, &:message)
+          m.case(ZeroDivisionError) { Float::INFINITY }
+        end
+      end
 
-      expect(value).to eq Fear.some(Fear.success(0))
+      it { is_expected.to eq(Fear.success(Float::INFINITY)) }
     end
 
-    it 'failure and error case not covered by pattern match' do
-      value = future { 2 / 0 }.recover do |m|
-        m.case(RuntimeError, &:message)
-      end.value
+    context 'failure and error case not covered by pattern match' do
+      let(:future) do
+        Fear.future { 2 / 0 }.recover do |m|
+          m.case(RuntimeError, &:message)
+        end
+      end
 
-      expect(value.get).to be_kind_of(Fear::Failure)
-      expect(value.get.exception).to be_kind_of(ZeroDivisionError)
+      it { is_expected.to match(Fear.failure(be_kind_of(ZeroDivisionError))) }
     end
   end
 
   context '#zip' do
-    it 'success' do
-      this = future { 1 }
-      that = future { 2 }
+    subject { Fear::Await.result(future, 1) }
 
-      value = this.zip(that).value
+    context 'successful' do
+      let(:future) { this.zip(that) }
+      let!(:this) { Fear.future { 1 } }
+      let!(:that) { Fear.future { 2 } }
 
-      expect(value).to eq Fear.some(Fear.success([1, 2]))
+      it { is_expected.to eq(Fear.success([1, 2])) }
     end
 
-    it 'self fails' do
-      this = future { raise error }
-      that = future { 2 }
+    context 'first failed' do
+      let(:future) { this.zip(that) }
+      let!(:error) { StandardError.new }
+      let!(:this) { Fear.future { raise error } }
+      let!(:that) { Fear.future { 2 } }
 
-      value = this.zip(that).value
-
-      expect(value).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
 
-    it 'other fails' do
-      this = future { 1 }
-      that = future { raise error }
+    context 'second failed' do
+      let(:future) { this.zip(that) }
+      let!(:error) { StandardError.new }
+      let!(:this) { Fear.future { 1 } }
+      let!(:that) { Fear.future { raise error } }
 
-      value = this.zip(that).value
-
-      expect(value).to eq Fear.some(Fear.failure(error))
-    end
-
-    it 'both fail' do
-      this = future { raise error }
-      that = future { raise ArgumentError }
-
-      value = this.zip(that).value
-
-      expect(value).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
   end
 
   context '#fallback_to' do
-    it 'success' do
-      fallback = future { 42 }
-      value = future { 2 }.fallback_to(fallback).value
+    subject { Fear::Await.result(future, 1) }
 
-      expect(value).to eq Fear.some(Fear.success(2))
+    context 'successful' do
+      let(:future) { Fear.future { 2 }.fallback_to(fallback) }
+      let!(:fallback) { Fear.future { 42 } }
+
+      it { is_expected.to eq(Fear.success(2)) }
     end
 
-    it 'failure' do
-      fallback = future { 42 }
-      value = future { raise error }.fallback_to(fallback).value
+    context 'failed' do
+      let(:future) { Fear.future { raise error }.fallback_to(fallback) }
+      let!(:fallback) { Fear.future { 42 } }
+      let!(:error) { StandardError.new }
 
-      expect(value).to eq Fear.some(Fear.success(42))
+      it { is_expected.to eq(Fear.success(42)) }
     end
 
-    it 'failure with failed fallback' do
-      fallback = future { raise ArumentError }
-      value = future { raise error }.fallback_to(fallback).value
+    context 'fallback failed' do
+      let(:future) { Fear.future { raise error }.fallback_to(fallback) }
+      let!(:fallback) { Fear.future { raise } }
+      let!(:error) { StandardError.new }
 
-      expect(value).to eq Fear.some(Fear.failure(error))
+      it { is_expected.to eq(Fear.failure(error)) }
     end
   end
 
   context '#and_then' do
     context 'single callback' do
       context 'callback is called' do
-        it 'returns result of future' do
+        it 'calls callback' do
           expect do |callback|
-            future { 5 }.and_then do |m|
+            Fear::Future.successful(5).and_then do |m|
               m.success(&callback)
             end
           end.to yield_with_args(5)
@@ -327,45 +340,61 @@ RSpec.describe Fear::Future do
       end
 
       context 'future with Success' do
-        context 'callback is not failing' do
-          it 'returns result of future' do
-            value = future { 5 }.and_then {}.value
+        subject { Fear::Await.result(future, 1) }
 
-            expect(value).to eq Fear.some(Fear.success(5))
+        context 'callback is not failing' do
+          let(:future) do
+            Fear.future { 5 }
+              .and_then { |m| m.success { |x| x * 2 } }
+          end
+
+          it 'returns the same future' do
+            is_expected.to eq(Fear.success(5))
           end
         end
 
         context 'callback is failing' do
-          it 'returns result of future' do
-            value = future { 5 }.and_then { raise error }.value
+          let(:future) { Fear.future { 5 }.and_then { raise } }
 
-            expect(value).to eq Fear.some(Fear.success(5))
+          it 'returns the same future' do
+            is_expected.to eq(Fear.success(5))
           end
         end
       end
 
       context 'future with Failure' do
+        let(:error) { StandardError.new }
+
         it 'ensure callback is called' do
           expect do |callback|
-            future { raise error }.and_then do |m|
+            Fear::Future.failed(error).and_then do |m|
               m.failure(&callback)
             end
           end.to yield_with_args(error)
         end
 
         context 'callback is not failing' do
-          it 'returns result of future' do
-            value = future { raise error }.and_then {}.value
+          subject { Fear::Await.result(future, 1) }
 
-            expect(value).to eq Fear.some(Fear.failure(error))
+          let(:future) { Fear.future { raise error }.and_then {} }
+          let!(:error) { StandardError.new }
+
+          it 'returns result of future' do
+            is_expected.to eq(Fear.failure(error))
           end
         end
 
         context 'callback is failing' do
-          it 'returns result of future' do
-            value = future { raise error }.and_then { raise ArgumentError }.value
+          subject { Fear::Await.result(future, 1) }
 
-            expect(value).to eq Fear.some(Fear.failure(error))
+          let(:future) do
+            Fear.future { raise error }
+              .and_then { raise ArgumentError }
+          end
+          let!(:error) { StandardError.new }
+
+          it 'returns result of future' do
+            is_expected.to eq(Fear.failure(error))
           end
         end
       end
@@ -376,7 +405,9 @@ RSpec.describe Fear::Future do
         it 'ensure callbacks are called' do
           expect do |first|
             expect do |second|
-              future { 5 }.and_then { |m| m.success(&first) }.and_then { |m| m.success(&second) }
+              Fear::Future.successful(5)
+                .and_then { |m| m.success(&first) }
+                .and_then { |m| m.success(&second) }
             end.to yield_with_args(5)
           end.to yield_with_args(5)
         end
@@ -404,48 +435,59 @@ RSpec.describe Fear::Future do
 
         context 'first callback is not failing' do
           context 'and second callback is not failing' do
-            it 'returns result of the Future' do
-              value = future { 5 }.and_then {}.and_then {}.value
+            subject { Fear::Await.result(future, 1) }
 
-              expect(value).to eq Fear.some(Fear.success(5))
+            let(:future) do
+              Fear.future { 5 }
+                .and_then {}
+                .and_then {}
             end
+
+            it { is_expected.to eq(Fear.success(5)) }
           end
 
           context 'and second callback is failing' do
-            it 'returns result of the Future' do
-              value = future { 5 }.and_then {}.and_then do
-                raise ArgumentError
-              end.value
+            subject { Fear::Await.result(future, 1) }
 
-              expect(value).to eq Fear.some(Fear.success(5))
+            let(:future) do
+              Fear.future { 5 }
+                .and_then {}
+                .and_then { raise }
             end
+
+            it { is_expected.to eq(Fear.success(5)) }
           end
         end
 
         context 'first callback is failing' do
           it 'calls second callback' do
             expect do |callback|
-              future { 5 }.and_then { raise error }.and_then { |m| m.success(&callback) }
+              Fear::Future.successful(5).and_then { raise error }.and_then { |m| m.success(&callback) }
             end.to yield_with_args(5)
           end
 
           context 'and second callback is not failing' do
-            it 'returns result of the Future' do
-              value = future { 5 }.and_then { raise error }.and_then {}.value
+            subject { Fear::Await.result(future, 1) }
 
-              expect(value).to eq Fear.some(Fear.success(5))
+            let(:future) do
+              Fear.future { 5 }
+                .and_then { raise }
+                .and_then {}
             end
+
+            it { is_expected.to eq(Fear.success(5)) }
           end
 
           context 'and second callback is failing' do
-            it 'returns result of the Future' do
-              value = future { 5 }
-                .and_then { raise error }
-                .and_then { raise ArgumentError }
-                .value
+            subject { Fear::Await.result(future, 1) }
 
-              expect(value).to eq Fear.some(Fear.success(5))
+            let(:future) do
+              Fear.future { 5 }
+                .and_then { raise }
+                .and_then { raise ArgumentError }
             end
+
+            it { is_expected.to eq(Fear.success(5)) }
           end
         end
       end
@@ -476,6 +518,14 @@ RSpec.describe Fear::Future do
         subject { Fear::Await.result(Fear.future { 5 }, 0.01) }
 
         it { is_expected.to eq(Fear.success(5)) }
+      end
+
+      context 'managed to complete within timeout with error' do
+        subject { Fear::Await.result(Fear.future { raise error }, 0.01) }
+
+        let!(:error) { StandardError.new }
+
+        it { is_expected.to eq(Fear.failure(error)) }
       end
 
       context 'did not manage to complete within timeout' do
