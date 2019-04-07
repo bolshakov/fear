@@ -1,6 +1,7 @@
 ## 1.1.0 
 
 * Add `Fear::Await.ready` and `Fear::Await.result`.
+* Add callback versions with pattern matching `Fear::Future#on_success_match`, `#on_failure_match` and `#on_complete_match`.
 
 ## 1.0.0
 
