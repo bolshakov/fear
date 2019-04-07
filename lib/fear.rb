@@ -60,6 +60,8 @@ module Fear
   autoload :Future, 'fear/future'
   autoload :Promise, 'fear/promise'
 
+  autoload :Struct, 'fear/struct'
+
   module Mixin
     include Either::Mixin
     include For::Mixin

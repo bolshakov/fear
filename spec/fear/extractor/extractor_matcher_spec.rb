@@ -38,7 +38,7 @@ RSpec.describe Fear::Extractor::ExtractorMatcher do
     end
 
     context 'Struct' do
-      StructDate = Struct.new(:year, :month, :day)
+      StructDate = ::Struct.new(:year, :month, :day)
 
       let(:pattern) { 'StructDate(2017, month, _)' }
 
