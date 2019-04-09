@@ -1,6 +1,6 @@
 RSpec.describe Fear::Extractor do
   describe '.register_extractor' do
-    Foo = Struct.new(:v1, :v2)
+    Foo = ::Struct.new(:v1, :v2)
     let(:matcher) do
       Fear.matcher do |m|
         m.case(Fear['Foo(43, second : Integer)']) { |second| "43 and #{second}" }

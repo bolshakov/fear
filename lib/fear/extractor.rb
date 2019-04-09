@@ -88,7 +88,7 @@ module Fear
         Fear.none
       end
     end)
-    register_extractor(Struct, Fear.case(Struct, &:to_a).lift)
+    register_extractor(::Struct, Fear.case(::Struct, &:to_a).lift)
     # No argument boolean extractor example
     register_extractor('IsEven', proc do |int|
       if int.is_a?(Integer) && int.even?
