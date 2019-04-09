@@ -143,9 +143,9 @@ Fear.none.flat_map { |v| Fear.some(v/2) }     #=> None
 Returns `false` if `None` or returns the result of the application of the given predicate to the `Some` value.
 
 ```ruby 
-Fear.some(12).any?( |v| v > 10)  #=> true
-Fear.some(7).any?( |v| v > 10)   #=> false
-Fear.none.any?( |v| v > 10)    #=> false
+Fear.some(12).any? { |v| v > 10 }  #=> true
+Fear.some(7).any? { |v| v > 10 }   #=> false
+Fear.none.any? { |v| v > 10 }    #=> false
 ```
 
 #### Option#select
@@ -300,9 +300,9 @@ Fear.failure(ArgumentError.new).to_option  #=> None
 Returns `false` if `Failure` or returns the result of the application of the given predicate to the `Success` value.
 
 ```ruby
-Fear.success(12).any?( |v| v > 10)                #=> true
-Fear.success(7).any?( |v| v > 10)                 #=> false
-Fear.failure(ArgumentError.new).any?( |v| v > 10) #=> false
+Fear.success(12).any? { |v| v > 10 }                #=> true
+Fear.success(7).any? { |v| v > 10 }                 #=> false
+Fear.failure(ArgumentError.new).any? { |v| v > 10 } #=> false
 ```
 
 #### Try#success? and Try#failure?
@@ -533,9 +533,9 @@ Fear.left('undefined').to_option  #=> Fear::None
 Returns `false` if `Left` or returns the result of the application of the given predicate to the `Right` value.
 
 ```ruby
-Fear.right(12).any?( |v| v > 10)         #=> true
-Fear.right(7).any?( |v| v > 10)          #=> false
-Fear.left('undefined').any?( |v| v > 10) #=> false
+Fear.right(12).any? { |v| v > 10 }         #=> true
+Fear.right(7).any? { |v| v > 10 }          #=> false
+Fear.left('undefined').any? { |v| v > 10 } #=> false
 ```
 
 #### Either#right?, Either#success?
