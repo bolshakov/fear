@@ -101,7 +101,7 @@ Fear.none.or_else { Fear.some(21) }   #=> Fear.some(21)
 Fear.none.or_else { None }     #=> None
 ```
 
-#### Option#inlude?
+#### Option#include?
 
 Checks if `Option` has an element that is equal (as determined by `==`) to given values.
 
@@ -764,7 +764,7 @@ end #=> returns new future of Fear.success(0)
 
 If the future resolved to success or recovery matcher did not matched, it returns the future `Fear::Failure`.
 
-The second option is `Future#fallbock_to` method. It allows to fallback to result of another future in case of failure
+The second option is `Future#fallback_to` method. It allows to fallback to result of another future in case of failure
 
 ```ruby
 future = Fear.future { fail 'error' }
@@ -1109,13 +1109,13 @@ factorial.(10) #=> 3628800
 Fibonacci number
 
 ```ruby
-fibonnaci = Fear.matcher do |m|
+fibonacci = Fear.matcher do |m|
   m.case(0) { 0 }
   m.case(1) { 1 }
-  m.case(->(n) { n > 1}) { |n| fibonnaci.(n - 1) + fibonnaci.(n - 2) }
+  m.case(->(n) { n > 1}) { |n| fibonacci.(n - 1) + fibonacci.(n - 2) }
 end
 
-fibonnaci.(10) #=> 55
+fibonacci.(10) #=> 55
 ```
 
 Binary tree set implemented using pattern matching https://gist.github.com/bolshakov/3c51bbf7be95066d55d6d1ac8c605a1d
