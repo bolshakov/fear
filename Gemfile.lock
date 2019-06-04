@@ -38,7 +38,7 @@ GEM
     powerpack (0.1.2)
     psych (3.1.0)
     rainbow (3.0.0)
-    rake (10.5.0)
+    rake (12.3.2)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -81,7 +81,7 @@ DEPENDENCIES
   fear!
   irb
   qo!
-  rake (~> 10.0)
+  rake (~> 12.3)
   rspec (~> 3.1)
   rubocop (= 0.65.0)
   rubocop-rspec (= 1.32.0)
