@@ -1,45 +1,8 @@
 module Fear
   # @private
   module RightBiased
-    # Performs necessary interface and type checks.
-    #
-    module Interface
-      # Returns the value from this `RightBiased::Right` or the given argument if
-      # this is a `RightBiased::Left`.
-      def get_or_else(*args, &block)
-        Utils.assert_arg_or_block!('get_or_else', *args, &block)
-        super
-      end
-
-      # Returns this `RightBiased::Right` or the given alternative if
-      # this is a `RightBiased::Left`.
-      def or_else(*args, &block)
-        Utils.assert_arg_or_block!('or_else', *args, &block)
-        super.tap do |result|
-          Utils.assert_type!(result, left_class, right_class)
-        end
-      end
-
-      def flat_map
-        super.tap do |result|
-          Utils.assert_type!(result, left_class, right_class)
-        end
-      end
-
-      # Ensures that returned value either left, or right.
-      def select(*)
-        super.tap do |result|
-          Utils.assert_type!(result, left_class, right_class)
-        end
-      end
-    end
-
     module Right
-      class << self
-        def included(base)
-          base.prepend Interface
-        end
-      end
+      include RightBiased
 
       # @overload get_or_else(&default)
       #   @return [any] the `#value`.
@@ -104,8 +67,7 @@ module Fear
     end
 
     module Left
-      prepend Interface
-      include Utils
+      include RightBiased
 
       # @!method get_or_else(&default)
       #   @return [any] result of evaluating a block.

@@ -60,20 +60,10 @@ RSpec.shared_examples Fear::RightBiased::Right do
   end
 
   describe '#flat_map' do
-    context 'block returns neither left, nor right' do
-      subject { proc { right.flat_map { 42 } } }
+    subject { right.flat_map { |e| described_class.new("Result: #{e}") } }
 
-      it 'fails with TypeError' do
-        is_expected.to raise_error(TypeError)
-      end
-    end
-
-    context 'block returns RightBiased' do
-      subject { right.flat_map { |e| described_class.new("Result: #{e}") } }
-
-      it 'maps to block result' do
-        is_expected.to eq(described_class.new('Result: value'))
-      end
+    it 'maps to block result' do
+      is_expected.to eq(described_class.new('Result: value'))
     end
   end
 
