@@ -51,14 +51,6 @@ RSpec.describe Fear::None do
     it { is_expected.to eq(Fear::None) }
   end
 
-  describe '.inherited' do
-    subject { -> { Class.new(Fear.none.class) } }
-
-    it 'raises error' do
-      is_expected.to raise_error(RuntimeError, 'you are not allowed to inherit from NoneClass, use Fear::None instead')
-    end
-  end
-
   describe '#to_s' do
     subject { none.to_s }
 

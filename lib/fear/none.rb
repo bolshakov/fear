@@ -64,13 +64,9 @@ module Fear
   # The only instance of NoneClass
   None = NoneClass.new.freeze
 
-  class << NoneClass
+  class << self
     def new
       None
-    end
-
-    def inherited(*)
-      raise 'you are not allowed to inherit from NoneClass, use Fear::None instead'
     end
   end
 end
