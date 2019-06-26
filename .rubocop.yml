@@ -23,6 +23,9 @@ Naming/MethodName:
 Naming/UncommunicativeMethodParamName:
   Enabled: false
 
+Naming/AccessorMethodName:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 

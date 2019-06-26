@@ -12,9 +12,9 @@ module Fear
     #
     def option(value)
       if value.nil?
-        none
+        NoneClass.new
       else
-        some(value)
+        Some.new(value)
       end
     end
 
