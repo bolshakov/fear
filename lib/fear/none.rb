@@ -29,12 +29,12 @@ module Fear
     end
 
     # @return [None]
-    def select(*)
+    def select
       self
     end
 
     # @return [None]
-    def reject(*)
+    def reject
       self
     end
 
