@@ -1,3 +1,7 @@
+## x.x.x
+
+* Change `#get_or_else` and `#or_else` signatures, so it doesn't accept argument anymore (only block variant allowed)
+
 ## 1.1.0 
 
 * Add `Fear::Await.ready` and `Fear::Await.result`.

@@ -41,14 +41,10 @@ module Fear
         end
       end
 
-      # @overload get_or_else(default)
-      #   @param default [any]
-      #   @return [any] the `#value`.
-      #
       # @overload get_or_else(&default)
       #   @return [any] the `#value`.
       #
-      def get_or_else(*_args)
+      def get_or_else
         value
       end
 
@@ -110,21 +106,18 @@ module Fear
     module Left
       prepend Interface
       include Utils
-      # @!method get_or_else(default)
-      #   @param default [any]
-      #   @return [any] default value
-      #
+
       # @!method get_or_else(&default)
       #   @return [any] result of evaluating a block.
       #
-      def get_or_else(*args)
-        args.fetch(0) { yield }
+      def get_or_else
+        yield
       end
 
       # @!method get_or_else(&alternative)
       #   @return [RightBiased] result of evaluating a block.
       #
-      def or_else(*_args)
+      def or_else
         yield
       end
 

@@ -46,20 +46,14 @@ module Fear
   # @note all +Try+ combinators will catch exceptions and return failure unless
   #   otherwise specified in the documentation.
   #
-  # @!method get_or_else(*args)
+  # @!method get_or_else(&default)
   #   Returns the value from this +Success+ or evaluates the given
   #   default argument if this is a +Failure+.
-  #   @overload get_or_else(&default)
-  #     @yieldreturn [any]
-  #     @return [any]
-  #     @example
-  #       Fear.success(42).get_or_else { 24/2 }                #=> 42
-  #       Fear.failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
-  #   @overload get_or_else(default)
-  #     @return [any]
-  #     @example
-  #       Fear.success(42).get_or_else(12)                #=> 42
-  #       Fear.failure(ArgumentError.new).get_or_else(12) #=> 12
+  #   @yieldreturn [any]
+  #   @return [any]
+  #   @example
+  #     Fear.success(42).get_or_else { 24/2 }                #=> 42
+  #     Fear.failure(ArgumentError.new).get_or_else { 24/2 } #=> 12
   #
   # @!method include?(other_value)
   #   Returns +true+ if it has an element that is equal

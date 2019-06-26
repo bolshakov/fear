@@ -33,20 +33,15 @@ module Fear
   # operate on. If it is +Left+, operations like +#map+, +#flat_map+, ... return the +Left+ value
   # unchanged:
   #
-  # @!method get_or_else(*args)
+  # @!method get_or_else(&default)
   #   Returns the value from this +Right+ or evaluates the given
   #   default argument if this is a +Left+.
-  #   @overload get_or_else(&default)
-  #     @yieldreturn [any]
-  #     @return [any]
-  #     @example
-  #       Fear.right(42).get_or_else { 24/2 }         #=> 42
-  #       Fear.left('undefined').get_or_else { 24/2 } #=> 12
-  #   @overload get_or_else(default)
-  #     @return [any]
-  #     @example
-  #       Fear.right(42).get_or_else(12)         #=> 42
-  #       Fear.left('undefined').get_or_else(12) #=> 12
+  #   @yieldreturn [any]
+  #   @return [any]
+  #
+  #   @example
+  #     Fear.right(42).get_or_else { 24/2 }         #=> 42
+  #     Fear.left('undefined').get_or_else { 24/2 } #=> 12
   #
   # @!method or_else(&alternative)
   #   Returns this +Right+ or the given alternative if this is a +Left+.

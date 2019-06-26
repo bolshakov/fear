@@ -40,7 +40,7 @@ The most idiomatic way to use an `Option` instance is to treat it as a collectio
 ```ruby
 name = Fear.option(params[:name])
 upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
-puts upper.get_or_else('')
+puts upper.get_or_else { '' }
 ```
 
 This allows for sophisticated chaining of `Option` values without
@@ -86,9 +86,6 @@ Returns the value from this `Some` or evaluates the given default argument if th
 ```ruby
 Fear.some(42).get_or_else { 24/2 } #=> 42
 Fear.none.get_or_else { 24/2 }   #=> 12
-
-Fear.some(42).get_or_else(12)  #=> 42
-Fear.none.get_or_else(12)    #=> 12
 ```
 
 #### Option#or_else
@@ -468,8 +465,8 @@ Returns the value from this `Right` or evaluates the given default argument if t
 Fear.right(42).get_or_else { 24/2 }         #=> 42
 Fear.left('undefined').get_or_else { 24/2 } #=> 12
 
-Fear.right(42).get_or_else(12)         #=> 42
-Fear.left('undefined').get_or_else(12) #=> 12
+Fear.right(42).get_or_else { 12 }         #=> 42
+Fear.left('undefined').get_or_else { 12 } #=> 12
 ```
 
 #### Either#or_else

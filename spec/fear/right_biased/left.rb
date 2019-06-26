@@ -13,24 +13,8 @@ RSpec.shared_examples Fear::RightBiased::Left do
       end
     end
 
-    context 'with default argument' do
-      subject { left.get_or_else('default') }
-
-      it 'returns default value' do
-        is_expected.to eq('default')
-      end
-    end
-
-    context 'with false argument' do
-      subject { left.get_or_else(false) }
-
-      it 'returns default value' do
-        is_expected.to eq(false)
-      end
-    end
-
     context 'with nil argument' do
-      subject { left.get_or_else(nil) }
+      subject { left.get_or_else { nil } }
 
       it 'returns default value' do
         is_expected.to eq(nil)

@@ -5,7 +5,7 @@ module Fear
   # @example The most idiomatic way to use an +Option+ instance is to treat it as a collection
   #   name = Fear.option(params[:name])
   #   upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
-  #   puts upper.get_or_else('')
+  #   puts upper.get_or_else { '' }
   #
   # This allows for sophisticated chaining of +Option+ values without
   # having to check for the existence of a value.
@@ -24,20 +24,14 @@ module Fear
   #     puts name.strip.upcase
   #   end
   #
-  # @!method get_or_else(*args)
+  # @!method get_or_else(&default)
   #   Returns the value from this +Some+ or evaluates the given
   #   default argument if this is a +None+.
-  #   @overload get_or_else(&default)
-  #     @yieldreturn [any]
-  #     @return [any]
-  #     @example
-  #       Fear.some(42).get_or_else { 24/2 } #=> 42
-  #       Fear.none.get_or_else { 24/2 }   #=> 12
-  #   @overload get_or_else(default)
-  #     @return [any]
-  #     @example
-  #       Fear.some(42).get_or_else(12)  #=> 42
-  #       Fear.none.get_or_else(12)    #=> 12
+  #  @yieldreturn [any]
+  #  @return [any]
+  #  @example
+  #   Fear.some(42).get_or_else { 12 }  #=> 42
+  #   Fear.none.get_or_else { }12 }    #=> 12
   #
   # @!method or_else(&alternative)
   #   Returns this +Some+ or the given alternative if this is a +None+.

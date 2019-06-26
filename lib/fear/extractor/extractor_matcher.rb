@@ -21,7 +21,7 @@ module Fear
         extractor
           .call(other)
           .map { |v| arguments_matcher.defined_at?(v) }
-          .get_or_else(false)
+          .get_or_else { false }
       end
 
       def call_or_else(arg)
