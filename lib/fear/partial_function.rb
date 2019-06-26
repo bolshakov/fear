@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # A partial function is a unary function defined on subset of all possible inputs.
   # The method +defined_at?+ allows to test dynamically if an arg is in

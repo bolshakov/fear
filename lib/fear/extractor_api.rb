@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module ExtractorApi
     # Allows to pattern match and extract matcher variables

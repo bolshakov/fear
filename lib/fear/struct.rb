@@ -1,3 +1,4 @@
+# typed: ignore
 module Fear
   # Structs are like regular classes and good for modeling immutable data.
   #

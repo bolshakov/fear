@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PartialFunction, '#or_else' do
   subject(:first_or_else_second) { first.or_else(second) }
 

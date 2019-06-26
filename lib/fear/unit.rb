@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # Represents lack of value. It's typically returned when function completed without a value.
   #

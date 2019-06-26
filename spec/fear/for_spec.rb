@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::For do
   context 'unary' do
     context 'Some' do

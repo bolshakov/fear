@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Extractor::ValueMatcher, 'Symbol' do
   let(:parser) { Fear::Extractor::GrammarParser.new }
   let(:matcher) { parser.parse(pattern).to_matcher }

@@ -1,3 +1,4 @@
+# typed: false
 RSpec.shared_examples Fear::RightBiased::Left do
   describe '#include?' do
     subject { left }

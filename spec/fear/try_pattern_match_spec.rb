@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::TryPatternMatch do
   context 'Success' do
     let(:matcher) do

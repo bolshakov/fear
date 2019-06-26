@@ -1,3 +1,4 @@
+# typed: ignore
 module Fear
   class Failure
     include Try

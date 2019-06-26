@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # @api private
   # @see Fear.for

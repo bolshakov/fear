@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module Extractor
     # Match and extract pattern using registered extractor objects

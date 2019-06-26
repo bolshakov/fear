@@ -1,3 +1,4 @@
+# typed: ignore
 RSpec.describe Fear::ExtractorApi do
   def assert(value)
     expect(value).to eq(true)

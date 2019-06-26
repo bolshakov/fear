@@ -7,6 +7,10 @@ AllCops:
   - 'gemfiles/**/*'
   - 'vendor/bundle/'
 
+Lint/UnusedMethodArgument:
+  Exclude:
+    - '**/*.rbi'
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 

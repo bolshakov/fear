@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Extractor::Pattern do
   describe '.new' do
     context 'invalid syntax' do

@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # @api private
   class NonePatternMatch < OptionPatternMatch

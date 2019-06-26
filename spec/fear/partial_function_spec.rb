@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PartialFunction do
   describe 'Fear.case()' do
     context 'condition is extractor' do

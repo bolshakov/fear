@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Promise do
   let(:value) { 42 }
   let(:error) { StandardError.new('something went wrong') }

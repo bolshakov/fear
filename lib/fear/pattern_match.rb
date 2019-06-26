@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # Pattern match builder. Provides DSL for building pattern matcher
   # Pattern match is just a combination of partial functions

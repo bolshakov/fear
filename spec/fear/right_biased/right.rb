@@ -1,3 +1,4 @@
+# typed: false
 RSpec.shared_examples Fear::RightBiased::Right do
   describe '#include?' do
     context 'contains value' do

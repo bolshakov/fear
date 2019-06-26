@@ -1,3 +1,4 @@
+# typed: ignore
 RSpec.describe Fear::Extractor do
   describe '.register_extractor' do
     Foo = ::Struct.new(:v1, :v2)

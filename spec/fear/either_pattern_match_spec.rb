@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::EitherPatternMatch do
   context 'Right' do
     let(:matcher) do

@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Left do
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { Fear.left('value') }

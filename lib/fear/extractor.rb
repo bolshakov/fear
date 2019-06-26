@@ -1,3 +1,4 @@
+# typed: false
 require 'treetop'
 require 'fear/extractor/grammar'
 Treetop.load File.expand_path('extractor/grammar.treetop', __dir__)

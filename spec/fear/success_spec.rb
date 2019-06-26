@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Success do
   let(:success) { Fear.success('value') }
 

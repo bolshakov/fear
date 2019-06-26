@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   # Represents optional values. Instances of +Option+
   # are either an instance of +Some+ or the object +None+.

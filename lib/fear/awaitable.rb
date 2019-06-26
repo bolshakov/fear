@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # An object which may eventually be completed and awaited using blocking methods.
   #

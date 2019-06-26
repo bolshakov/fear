@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Either::Mixin do
   include Fear::Either::Mixin
 

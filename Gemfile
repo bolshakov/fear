@@ -7,3 +7,6 @@ gemspec
 
 gem 'irb'
 gem 'qo', github: 'baweaver/qo'
+
+gem 'sorbet', group: :development
+gem 'sorbet-runtime'

@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PartialFunction, '#and_then' do
   context 'proc' do
     subject(:pf_and_f) { partial_function.and_then(&function) }

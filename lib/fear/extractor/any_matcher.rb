@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   module Extractor
     # Always match, E.g. `_ : Integer` without capturing variable

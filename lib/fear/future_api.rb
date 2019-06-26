@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   # rubocop: disable Metrics/LineLength
   module FutureApi

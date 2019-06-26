@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   # The +Try+ represents a computation that may either result
   # in an exception, or return a successfully computed value. Instances of +Try+,

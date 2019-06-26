@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module Extractor
     # Part of recursive array matcher. Match against its head.

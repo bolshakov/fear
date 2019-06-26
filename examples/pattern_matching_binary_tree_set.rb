@@ -1,3 +1,4 @@
+# typed: true
 require 'fear'
 
 # @example Usage

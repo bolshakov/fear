@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   # Try pattern matcher
   #

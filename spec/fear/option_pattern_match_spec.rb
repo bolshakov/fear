@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::OptionPatternMatch do
   context 'Some' do
     let(:matcher) do

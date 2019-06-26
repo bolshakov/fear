@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Failure do
   let(:exception) { RuntimeError.new('error') }
   let(:failure) { Fear.failure(exception) }

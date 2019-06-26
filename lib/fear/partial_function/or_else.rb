@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   module PartialFunction
     # Composite function produced by +PartialFunction#or_else+ method

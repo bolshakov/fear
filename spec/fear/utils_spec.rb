@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Utils do
   describe '.assert_arg_or_block!' do
     def assert_arg_or_block!(*args, &block)

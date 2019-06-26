@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   module PartialFunction
     # Guard represents PartialFunction guardian

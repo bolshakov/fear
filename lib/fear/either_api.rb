@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module EitherApi
     # @param value [any]

@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module TryApi
     # Constructs a +Try+ using the block. This

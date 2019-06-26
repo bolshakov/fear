@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Unit do
   describe '#to_s' do
     subject { described_class.to_s }

@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   # Use singleton version of EmptyPartialFunction -- PartialFunction::EMPTY
   # @api private

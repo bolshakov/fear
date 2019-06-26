@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   # @api private
   class PartialFunctionClass

@@ -1,3 +1,4 @@
+# typed: strong
 require 'fear/either_api'
 require 'fear/extractor_api'
 require 'fear/for_api'

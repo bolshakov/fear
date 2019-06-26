@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PartialFunction::Guard do
   context 'Class' do
     context 'match' do

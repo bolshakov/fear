@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   class Some
     include Option

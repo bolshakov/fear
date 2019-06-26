@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   module OptionApi
     # An +Option+ factory which creates +Some+ if the argument is

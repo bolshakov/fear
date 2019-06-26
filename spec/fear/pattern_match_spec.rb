@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PatternMatch do
   context 'extracting' do
     let(:matcher) do

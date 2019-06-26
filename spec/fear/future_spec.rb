@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Future do
   context '#on_complete' do
     it 'run callback with value' do

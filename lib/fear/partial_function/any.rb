@@ -1,3 +1,4 @@
+# typed: true
 module Fear
   module PartialFunction
     # Any is an object which is always truthy

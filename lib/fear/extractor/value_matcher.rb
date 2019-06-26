@@ -1,3 +1,4 @@
+# typed: false
 module Fear
   module Extractor
     # Match against values -- true, false, 1, "foo" etc.

@@ -1,3 +1,4 @@
+# typed: false
 # This file contains tests from
 # https://github.com/scala/scala/blob/2.13.x/test/junit/scala/PartialFunctionCompositionTest.scala
 RSpec.describe Fear::PartialFunction do

@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::PartialFunction::EMPTY do
   describe '#defined?' do
     subject { described_class.defined_at?(42) }

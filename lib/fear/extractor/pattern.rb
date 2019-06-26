@@ -1,3 +1,4 @@
+# typed: false
 require 'lru_redux'
 
 module Fear

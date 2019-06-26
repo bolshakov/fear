@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe Fear::Struct do
   describe '.with_attributes' do
     context 'same arguments' do
