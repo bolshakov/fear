@@ -322,16 +322,6 @@ Fear.success(42).get                 #=> 42
 Fear.failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
 ```
 
-#### Try#or_else
-
-Returns self `Try` if it's a `Success` or the given alternative if this is a `Failure`.
-
-```ruby
-Fear.success(42).or_else { Fear.success(-1) }                 #=> Fear.success(42)
-Fear.failure(ArgumentError.new).or_else { Fear.success(-1) }  #=> Fear.success(-1)
-Fear.failure(ArgumentError.new).or_else { Fear.try { 1/0 } }  #=> Fear.failure(ZeroDivisionError.new('divided by 0'))
-```
-
 #### Try#flatten
 
 Transforms a nested `Try`, ie, a `Success` of `Success`, into an un-nested `Try`, ie, a `Success`.
@@ -467,16 +457,6 @@ Fear.left('undefined').get_or_else { 24/2 } #=> 12
 
 Fear.right(42).get_or_else { 12 }         #=> 42
 Fear.left('undefined').get_or_else { 12 } #=> 12
-```
-
-#### Either#or_else
-
-Returns self `Right` or the given alternative if this is a `Left`.
-
-```ruby
-Fear.right(42).or_else { Fear.right(21) }           #=> Fear.right(42)
-Fear.left('unknown').or_else { Fear.right(21) }     #=> Fear.right(21)
-Fear.left('unknown').or_else { Fear.left('empty') } #=> Fear.left('empty')
 ```
 
 #### Either#include?

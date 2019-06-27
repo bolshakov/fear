@@ -26,19 +26,6 @@ RSpec.describe Fear::Failure do
     it { is_expected.to raise_error(RuntimeError, 'error') }
   end
 
-  describe '#or_else' do
-    context 'default does not fail' do
-      subject { failure.or_else { Fear::Success.new('value') } }
-      it { is_expected.to eq(Fear::Success.new('value')) }
-    end
-
-    context 'default fails with error' do
-      subject(:or_else) { failure.or_else { raise 'unexpected error' } }
-      it { is_expected.to be_kind_of(described_class) }
-      it { expect { or_else.get }.to raise_error(RuntimeError, 'unexpected error') }
-    end
-  end
-
   describe '#flatten' do
     subject { failure.flatten }
     it { is_expected.to eq(failure) }

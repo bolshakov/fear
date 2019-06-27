@@ -43,6 +43,16 @@ RSpec.describe Fear::Some do
     it { is_expected.to eq(42) }
   end
 
+  describe '#or_else' do
+    it 'does not call block' do
+      expect { |probe| some.or_else(&probe) }.not_to yield_control
+    end
+
+    it 'returns the same object' do
+      expect(some.or_else { 42 }).to eql(some)
+    end
+  end
+
   describe '#empty?' do
     subject { some.empty? }
     it { is_expected.to eq(false) }

@@ -13,6 +13,12 @@ module Fear
       end
     end
 
+    # @return [Option] result of evaluating a block.
+    #
+    def or_else
+      yield
+    end
+
     # @raise [NoSuchElementError]
     def get
       raise NoSuchElementError

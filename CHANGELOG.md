@@ -1,6 +1,7 @@
 ## x.x.x
 
 * Change `#get_or_else` and `#or_else` signatures, so it doesn't accept argument anymore (only block variant allowed)
+* Remove `Try#or_else` and `Either#or_else` methods. Their signatures too complex for practical usage.
 
 ## 1.1.0 
 

@@ -37,15 +37,6 @@ RSpec.describe Fear::Left do
     end
   end
 
-  describe '#or_else' do
-    subject { left.or_else { alternative } }
-    let(:alternative) { Fear.left(42) }
-
-    it 'returns alternative' do
-      is_expected.to eq(alternative)
-    end
-  end
-
   describe '#select' do
     subject do
       left.select { |v| v == 'value' }

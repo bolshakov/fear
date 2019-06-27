@@ -34,11 +34,6 @@ RSpec.describe Fear::Success do
     it { is_expected.not_to be_failure }
   end
 
-  describe '#or_else' do
-    subject { success.or_else { described_class.new('another value') } }
-    it { is_expected.to eq(success) }
-  end
-
   describe '#flatten' do
     subject { described_class.new(value).flatten }
 

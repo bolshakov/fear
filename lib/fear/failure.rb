@@ -33,13 +33,6 @@ module Fear
       raise exception
     end
 
-    # @return [Try] of calling block
-    def or_else(*args)
-      super
-    rescue StandardError => error
-      Failure.new(error)
-    end
-
     # @return [Failure] self
     def flatten
       self

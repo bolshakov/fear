@@ -11,11 +11,6 @@ module Fear
         value
       end
 
-      # @return [self]
-      def or_else
-        self
-      end
-
       # @param [any]
       # @return [Boolean]
       def include?(other_value)
@@ -73,13 +68,6 @@ module Fear
       #   @return [any] result of evaluating a block.
       #
       def get_or_else
-        yield
-      end
-
-      # @!method get_or_else(&alternative)
-      #   @return [RightBiased] result of evaluating a block.
-      #
-      def or_else
         yield
       end
 

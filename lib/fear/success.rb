@@ -35,11 +35,6 @@ module Fear
       false
     end
 
-    # @return [Success]
-    def or_else
-      self
-    end
-
     # @return [Try]
     def flatten
       if value.is_a?(Try)

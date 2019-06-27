@@ -19,6 +19,11 @@ module Fear
       @value = value
     end
 
+    # @return [Option]
+    def or_else
+      self
+    end
+
     # @return [any]
     def get
       @value

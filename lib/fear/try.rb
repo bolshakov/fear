@@ -138,15 +138,6 @@ module Fear
   #     Fear.success(42).get                 #=> 42
   #     Fear.failure(ArgumentError.new).get  #=> ArgumentError: ArgumentError
   #
-  # @!method or_else(&alternative)
-  #   Returns this +Try+ if it's a +Success+ or the given alternative if this is a +Failure+.
-  #   @return [Try]
-  #   @example
-  #     Fear.success(42).or_else { Fear.success(-1) }                 #=> Fear.success(42)
-  #     Fear.failure(ArgumentError.new).or_else { Fear.success(-1) }  #=> Fear.success(-1)
-  #     Fear.failure(ArgumentError.new).or_else { Fear.try { 1/0 } }
-  #       #=> Fear.failure(ZeroDivisionError.new('divided by 0'))
-  #
   # @!method flatten
   #   Transforms a nested +Try+, ie, a +Success+ of +Success+,
   #   into an un-nested +Try+, ie, a +Success+.
