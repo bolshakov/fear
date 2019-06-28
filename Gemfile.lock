@@ -67,7 +67,7 @@ GEM
     treetop (1.6.10)
       polyglot (~> 0.3)
     unicode-display_width (1.4.1)
-    yard (0.9.19)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
