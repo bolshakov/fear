@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # Match against values -- true, false, 1, "foo" etc.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # Pattern match builder. Provides DSL for building pattern matcher
   # Pattern match is just a combination of partial functions
@@ -59,7 +61,7 @@ module Fear
 
         Module.new do
           define_method(as) do |&matchers|
-            matcher_class.new(&matchers).call(self)
+            matcher_class.new(&matchers).(self)
           end
         end
       end

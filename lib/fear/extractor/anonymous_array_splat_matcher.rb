@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # Match against array splat, E.g. `[1, 2, *]` or `[1, 2, *_]`

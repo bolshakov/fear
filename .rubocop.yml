@@ -1,66 +1,7 @@
-inherit_mode:
-  merge:
-  - Exclude
+inherit_gem:
+  ruby_coding_standard: .rubocop.yml
 
 AllCops:
+  TargetRubyVersion: 2.4
   Exclude:
-  - 'gemfiles/**/*'
-  - 'vendor/bundle/'
-
-Layout/MultilineMethodCallIndentation:
-  EnforcedStyle: indented
-
-Metrics/ClassLength:
-  Enabled: false
-
-Naming/MethodName:
-  Enabled: false
-
-Naming/UncommunicativeMethodParamName:
-  Enabled: false
-
-Style/Documentation:
-  Enabled: false
-
-Style/CaseEquality:
-  Enabled: false
-
-Style/AccessModifierDeclarations:
-  EnforcedStyle: inline
-
-Style/GuardClause:
-  Enabled: false
-
-Style/IfUnlessModifier:
-  Enabled: false
-
-Style/TrailingCommaInArguments:
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: comma
-
-Style/NumericPredicate:
-  Enabled: false
-
-Style/CommentedKeyword:
-  Enabled: false
-
-Layout/IndentHeredoc:
-  Enabled: false
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*
-    - Rakefile
-    - fear.gemspec
-    - examples/**/*
-
-Metrics/LineLength:
-  Max: 120
-
-Lint/UselessComparison:
-  Enabled: false
+    - vendor/**/*

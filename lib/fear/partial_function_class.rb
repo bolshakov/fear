@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # @api private
   class PartialFunctionClass
@@ -25,7 +27,7 @@ module Fear
     # @yield [arg] if function not defined
     def call_or_else(arg)
       if defined_at?(arg)
-        function.call(arg)
+        function.(arg)
       else
         yield arg
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # @api private
   module PatternMatchingApi
@@ -83,7 +85,7 @@ module Fear
     # @yieldparam matcher [Fear::PartialFunction]
     # @return [any]
     def match(value, &block)
-      matcher(&block).call(value)
+      matcher(&block).(value)
     end
 
     # Creates partial function defined on domain described with guards

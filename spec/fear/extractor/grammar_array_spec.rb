@@ -1,9 +1,11 @@
-RSpec.describe Fear::Extractor::Grammar, 'Array' do
+# frozen_string_literal: true
+
+RSpec.describe Fear::Extractor::Grammar, "Array" do
   let(:parser) { Fear::Extractor::GrammarParser.new }
   let(:matcher) { parser.parse(pattern).to_matcher }
 
-  context 'non empty array' do
-    let(:pattern) { '[1, 2, 3, 4]' }
+  context "non empty array" do
+    let(:pattern) { "[1, 2, 3, 4]" }
 
     it do
       first = matcher.head

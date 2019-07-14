@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # Match and capture identifier with specific type. E.g. +foo : Integer+

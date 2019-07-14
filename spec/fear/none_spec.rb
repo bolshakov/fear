@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Fear::None do
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { Fear.none }
@@ -5,105 +7,105 @@ RSpec.describe Fear::None do
 
   subject(:none) { Fear.none }
 
-  describe '#get' do
+  describe "#get" do
     subject { proc { none.get } }
     it { is_expected.to raise_error(Fear::NoSuchElementError) }
   end
 
-  describe '#or_nil' do
+  describe "#or_nil" do
     subject { none.or_nil }
     it { is_expected.to eq(nil) }
   end
 
-  describe '#or_else' do
+  describe "#or_else" do
     subject { none.or_else { alternative } }
     let(:alternative) { Fear.some(42) }
 
-    it 'returns alternative' do
+    it "returns alternative" do
       is_expected.to eq(alternative)
     end
   end
 
-  describe '#empty?' do
+  describe "#empty?" do
     subject { none.empty? }
     it { is_expected.to eq(true) }
   end
 
-  describe '#select' do
+  describe "#select" do
     subject { none.select { |value| value > 42 } }
 
-    it 'always return None' do
+    it "always return None" do
       is_expected.to eq(Fear.none)
     end
   end
 
-  describe '#reject' do
+  describe "#reject" do
     subject { none.reject { |value| value > 42 } }
 
-    it 'always return None' do
+    it "always return None" do
       is_expected.to eq(Fear.none)
     end
   end
 
-  describe '.new' do
+  describe ".new" do
     subject { Fear::None.class.new }
 
     it { is_expected.to eq(Fear::None) }
   end
 
-  describe '.inherited' do
+  describe ".inherited" do
     subject { -> { Class.new(Fear.none.class) } }
 
-    it 'raises error' do
-      is_expected.to raise_error(RuntimeError, 'you are not allowed to inherit from NoneClass, use Fear::None instead')
+    it "raises error" do
+      is_expected.to raise_error(RuntimeError, "you are not allowed to inherit from NoneClass, use Fear::None instead")
     end
   end
 
-  describe '#to_s' do
+  describe "#to_s" do
     subject { none.to_s }
 
-    it { is_expected.to eq('#<Fear::NoneClass>') }
+    it { is_expected.to eq("#<Fear::NoneClass>") }
   end
 
-  describe '#inspect' do
+  describe "#inspect" do
     subject { none.inspect }
 
-    it { is_expected.to eq('#<Fear::NoneClass>') }
+    it { is_expected.to eq("#<Fear::NoneClass>") }
   end
 
-  describe '#===' do
-    context 'None' do
+  describe "#===" do
+    context "None" do
       subject { Fear::None === none }
 
       it { is_expected.to eq(true) }
     end
 
-    context 'Fear::Some' do
+    context "Fear::Some" do
       subject { Fear::None === Fear.some(4) }
 
       it { is_expected.to eq(false) }
     end
 
-    context 'Integer' do
+    context "Integer" do
       subject { Fear::None === 4 }
 
       it { is_expected.to eq(false) }
     end
   end
 
-  describe '#match' do
-    context 'matched' do
+  describe "#match" do
+    context "matched" do
       subject do
         none.match do |m|
           m.some { |x| x * 2 }
-          m.none { 'noop' }
+          m.none { "noop" }
         end
       end
 
-      it { is_expected.to eq('noop') }
+      it { is_expected.to eq("noop") }
     end
 
-    context 'nothing matched and no else given' do
+    context "nothing matched and no else given" do
       subject do
         proc do
           none.match do |m|
@@ -115,7 +117,7 @@ RSpec.describe Fear::None do
       it { is_expected.to raise_error(Fear::MatchError) }
     end
 
-    context 'nothing matched and else given' do
+    context "nothing matched and else given" do
       subject do
         none.match do |m|
           m.some { |x| x * 2 }
@@ -127,19 +129,19 @@ RSpec.describe Fear::None do
     end
   end
 
-  describe 'pattern matching' do
-    subject { Fear.xcase('None()') { 'matched' }.call_or_else(var) { 'nothing' } }
+  describe "pattern matching" do
+    subject { Fear.xcase("None()") { "matched" }.call_or_else(var) { "nothing" } }
 
-    context 'none' do
+    context "none" do
       let(:var) { Fear.none }
 
-      it { is_expected.to eq('matched') }
+      it { is_expected.to eq("matched") }
     end
 
-    context 'not none' do
-      let(:var) { '42' }
+    context "not none" do
+      let(:var) { "42" }
 
-      it { is_expected.to eq('nothing') }
+      it { is_expected.to eq("nothing") }
     end
   end
 end

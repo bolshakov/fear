@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module ExtractorApi
     # Allows to pattern match and extract matcher variables

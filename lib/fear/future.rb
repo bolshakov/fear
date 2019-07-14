@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 begin
-  require 'concurrent'
+  require "concurrent"
 rescue LoadError
   puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
 end
@@ -59,7 +61,7 @@ module Fear
     #
     def initialize(promise = nil, **options, &block)
       if block_given? && promise
-        raise ArgumentError, 'pass block or future'
+        raise ArgumentError, "pass block or future"
       end
 
       @options = options
@@ -249,8 +251,8 @@ module Fear
     def transform(success, failure)
       promise = Promise.new(@options)
       on_complete_match do |m|
-        m.success { |value| promise.success(success.call(value)) }
-        m.failure { |error| promise.failure(failure.call(error)) }
+        m.success { |value| promise.success(success.(value)) }
+        m.failure { |error| promise.failure(failure.(error)) }
       end
       promise.to_future
     end
@@ -291,7 +293,7 @@ module Fear
     #     end
     #   end
     #
-    def flat_map # rubocop: disable Metrics/MethodLength
+    def flat_map
       promise = Promise.new(@options)
       on_complete_match do |m|
         m.case(Fear::Failure) { |failure| promise.complete!(failure) }
@@ -328,7 +330,7 @@ module Fear
         if yield(result)
           result
         else
-          raise NoSuchElementError, '#select predicate is not satisfied'
+          raise NoSuchElementError, "#select predicate is not satisfied"
         end
       end
     end
@@ -373,7 +375,7 @@ module Fear
     #   future1.zip(future2) #=> returns the same result as Fear.future { [call_service1, call_service2] },
     #     # but it performs two calls asynchronously
     #
-    def zip(other) # rubocop: disable Metrics/MethodLength
+    def zip(other)
       promise = Promise.new(@options)
       on_complete_match do |m|
         m.success do |value|
@@ -403,7 +405,6 @@ module Fear
     #   g = Fear.future { 5 }
     #   f.fallback_to(g) # evaluates to 5
     #
-    # rubocop: disable Metrics/MethodLength
     def fallback_to(fallback)
       promise = Promise.new(@options)
       on_complete_match do |m|
@@ -418,7 +419,6 @@ module Fear
 
       promise.to_future
     end
-    # rubocop: enable Metrics/MethodLength
 
     # Applies the side-effecting block to the result of +self+ future,
     # and returns a new future with the result of this future.
@@ -454,7 +454,7 @@ module Fear
 
     # @api private
     def __result__(at_most)
-      __ready__(at_most).value.get_or_else { raise 'promise not completed' }
+      __ready__(at_most).value.get_or_else { raise "promise not completed" }
     end
 
     # @api private

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # require 'codeclimate-test-reporter'
 # CodeClimate::TestReporter.start
 
-require 'fear'
-require File.expand_path('spec/fear/right_biased/right')
-require File.expand_path('spec/fear/right_biased/left')
-require 'date'
+require "fear"
+require File.expand_path("spec/fear/right_biased/right")
+require File.expand_path("spec/fear/right_biased/left")
+require "date"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -56,7 +58,7 @@ RSpec.configure do |config|
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
+    config.default_formatter = "doc"
   end
 
   # Print the 10 slowest examples and example groups at the

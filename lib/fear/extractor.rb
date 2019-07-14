@@ -1,24 +1,26 @@
-require 'treetop'
-require 'fear/extractor/grammar'
-Treetop.load File.expand_path('extractor/grammar.treetop', __dir__)
+# frozen_string_literal: true
+
+require "treetop"
+require "fear/extractor/grammar"
+Treetop.load File.expand_path("extractor/grammar.treetop", __dir__)
 
 module Fear
   # @api private
   module Extractor
-    autoload :Pattern, 'fear/extractor/pattern'
-    autoload :Matcher, 'fear/extractor/matcher'
+    autoload :Pattern, "fear/extractor/pattern"
+    autoload :Matcher, "fear/extractor/matcher"
 
-    autoload :AnonymousArraySplatMatcher, 'fear/extractor/anonymous_array_splat_matcher'
-    autoload :AnyMatcher, 'fear/extractor/any_matcher'
-    autoload :ArrayHeadMatcher, 'fear/extractor/array_head_matcher'
-    autoload :ArrayMatcher, 'fear/extractor/array_matcher'
-    autoload :ArraySplatMatcher, 'fear/extractor/array_splat_matcher'
-    autoload :EmptyListMatcher, 'fear/extractor/empty_list_matcher'
-    autoload :ExtractorMatcher, 'fear/extractor/extractor_matcher'
-    autoload :IdentifierMatcher, 'fear/extractor/identifier_matcher'
-    autoload :NamedArraySplatMatcher, 'fear/extractor/named_array_splat_matcher'
-    autoload :TypedIdentifierMatcher, 'fear/extractor/typed_identifier_matcher'
-    autoload :ValueMatcher, 'fear/extractor/value_matcher'
+    autoload :AnonymousArraySplatMatcher, "fear/extractor/anonymous_array_splat_matcher"
+    autoload :AnyMatcher, "fear/extractor/any_matcher"
+    autoload :ArrayHeadMatcher, "fear/extractor/array_head_matcher"
+    autoload :ArrayMatcher, "fear/extractor/array_matcher"
+    autoload :ArraySplatMatcher, "fear/extractor/array_splat_matcher"
+    autoload :EmptyListMatcher, "fear/extractor/empty_list_matcher"
+    autoload :ExtractorMatcher, "fear/extractor/extractor_matcher"
+    autoload :IdentifierMatcher, "fear/extractor/identifier_matcher"
+    autoload :NamedArraySplatMatcher, "fear/extractor/named_array_splat_matcher"
+    autoload :TypedIdentifierMatcher, "fear/extractor/typed_identifier_matcher"
+    autoload :ValueMatcher, "fear/extractor/value_matcher"
 
     ExtractorNotFound = Class.new(Error)
 
@@ -26,7 +28,7 @@ module Fear
     @registry = PartialFunction::EMPTY
 
     EXTRACTOR_NOT_FOUND = proc do |klass|
-      raise ExtractorNotFound, 'could not find extractor for ' + klass.inspect
+      raise ExtractorNotFound, "could not find extractor for " + klass.inspect
     end
 
     class << self
@@ -58,7 +60,7 @@ module Fear
 
         @mutex.synchronize do
           keys.uniq.each do |key|
-            @registry = BUILD_EXTRACTOR.call(key, extractor).or_else(@registry)
+            @registry = BUILD_EXTRACTOR.(key, extractor).or_else(@registry)
           end
         end
         self
@@ -81,8 +83,8 @@ module Fear
     end
 
     # Multiple arguments extractor example
-    register_extractor('Date', proc do |other|
-      if other.class.name == 'Date'
+    register_extractor("Date", proc do |other|
+      if other.class.name == "Date"
         Fear.some([other.year, other.month, other.day])
       else
         Fear.none
@@ -90,7 +92,7 @@ module Fear
     end)
     register_extractor(::Struct, Fear.case(::Struct, &:to_a).lift)
     # No argument boolean extractor example
-    register_extractor('IsEven', proc do |int|
+    register_extractor("IsEven", proc do |int|
       if int.is_a?(Integer) && int.even?
         Fear.some([])
       else
@@ -98,11 +100,11 @@ module Fear
       end
     end)
     # Single argument extractor example
-    register_extractor('Fear::Some', 'Some', Some::EXTRACTOR)
-    register_extractor('Fear::None', 'None', NoneClass::EXTRACTOR)
-    register_extractor('Fear::Right', 'Right', Right::EXTRACTOR)
-    register_extractor('Fear::Left', 'Left', Left::EXTRACTOR)
-    register_extractor('Fear::Success', 'Success', Success::EXTRACTOR)
-    register_extractor('Fear::Failure', 'Failure', Failure::EXTRACTOR)
+    register_extractor("Fear::Some", "Some", Some::EXTRACTOR)
+    register_extractor("Fear::None", "None", NoneClass::EXTRACTOR)
+    register_extractor("Fear::Right", "Right", Right::EXTRACTOR)
+    register_extractor("Fear::Left", "Left", Left::EXTRACTOR)
+    register_extractor("Fear::Success", "Success", Success::EXTRACTOR)
+    register_extractor("Fear::Failure", "Failure", Failure::EXTRACTOR)
   end
 end

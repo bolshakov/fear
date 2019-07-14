@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # Structs are like regular classes and good for modeling immutable data.
   #
@@ -189,7 +191,7 @@ module Fear
       other.is_a?(other.class) && to_h == other.to_h
     end
 
-    INSPECT_TEMPLATE = '<#Fear::Struct %<class_name>s %<attributes>s>'.freeze
+    INSPECT_TEMPLATE = "<#Fear::Struct %{class_name} %{attributes}>"
 
     # @return [String]
     #
@@ -199,29 +201,29 @@ module Fear
     #   user.inspect #=> "<#Fear::Struct User id=2, email=>'john@exmaple.com'>"
     #
     def inspect
-      attributes = to_h.map { |key, value| "#{key}=#{value.inspect}" }.join(', ')
+      attributes = to_h.map { |key, value| "#{key}=#{value.inspect}" }.join(", ")
 
       format(INSPECT_TEMPLATE, class_name: self.class.name, attributes: attributes)
     end
     alias to_s inspect
 
-    MISSING_KEYWORDS_ERROR = 'missing keywords: %<keywords>s'.freeze
+    MISSING_KEYWORDS_ERROR = "missing keywords: %{keywords}"
 
     private def _check_missing_attributes!(provided_attributes)
       missing_attributes = members - provided_attributes.keys
 
       unless missing_attributes.empty?
-        raise ArgumentError, format(MISSING_KEYWORDS_ERROR, keywords: missing_attributes.join(', '))
+        raise ArgumentError, format(MISSING_KEYWORDS_ERROR, keywords: missing_attributes.join(", "))
       end
     end
 
-    UNKNOWN_KEYWORDS_ERROR = 'unknown keywords: %<keywords>s'.freeze
+    UNKNOWN_KEYWORDS_ERROR = "unknown keywords: %{keywords}"
 
     private def _check_unknown_attributes!(provided_attributes)
       unknown_attributes = provided_attributes.keys - members
 
       unless unknown_attributes.empty?
-        raise ArgumentError, format(UNKNOWN_KEYWORDS_ERROR, keywords: unknown_attributes.join(', '))
+        raise ArgumentError, format(UNKNOWN_KEYWORDS_ERROR, keywords: unknown_attributes.join(", "))
       end
     end
 

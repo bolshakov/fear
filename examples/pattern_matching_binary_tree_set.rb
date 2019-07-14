@@ -1,4 +1,6 @@
-require 'fear'
+# frozen_string_literal: true
+
+require "fear"
 
 # @example Usage
 #   set = BinaryTreeSet.new
@@ -87,7 +89,7 @@ class BinaryTreeSet
   # @param position [Position]
   # @return [Fear::Option<BinaryTreeSet>]
   private def leaf(position)
-    if subtrees.key?(position)
+    if subtrees.has_key?(position)
       Fear.some(subtrees[position])
     else
       Fear.none

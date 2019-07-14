@@ -1,76 +1,78 @@
+# frozen_string_literal: true
+
 RSpec.describe Fear::Right do
   it_behaves_like Fear::RightBiased::Right do
-    let(:right) { Fear.right('value') }
+    let(:right) { Fear.right("value") }
   end
 
-  let(:right) { Fear.right('value') }
+  let(:right) { Fear.right("value") }
 
-  describe '#right?' do
+  describe "#right?" do
     subject { right }
     it { is_expected.to be_right }
   end
 
-  describe '#left?' do
+  describe "#left?" do
     subject { right }
     it { is_expected.not_to be_left }
   end
 
-  describe '#select_or_else' do
+  describe "#select_or_else" do
     subject { right.select_or_else(default, &predicate) }
 
-    context 'predicate evaluates to true' do
-      let(:predicate) { ->(v) { v == 'value' } }
+    context "predicate evaluates to true" do
+      let(:predicate) { ->(v) { v == "value" } }
       let(:default) { -1 }
       it { is_expected.to eq(right) }
     end
 
-    context 'predicate evaluates to false and default is a proc' do
-      let(:predicate) { ->(v) { v != 'value' } }
+    context "predicate evaluates to false and default is a proc" do
+      let(:predicate) { ->(v) { v != "value" } }
       let(:default) { -> { -1 } }
       it { is_expected.to eq(Fear.left(-1)) }
     end
 
-    context 'predicate evaluates to false and default is not a proc' do
-      let(:predicate) { ->(v) { v != 'value' } }
+    context "predicate evaluates to false and default is not a proc" do
+      let(:predicate) { ->(v) { v != "value" } }
       let(:default) { -1 }
       it { is_expected.to eq(Fear.left(-1)) }
     end
   end
 
-  describe '#select' do
+  describe "#select" do
     subject { right.select(&predicate) }
 
-    context 'predicate evaluates to true' do
-      let(:predicate) { ->(v) { v == 'value' } }
+    context "predicate evaluates to true" do
+      let(:predicate) { ->(v) { v == "value" } }
       it { is_expected.to eq(right) }
     end
 
-    context 'predicate evaluates to false' do
-      let(:predicate) { ->(v) { v != 'value' } }
-      it { is_expected.to eq(Fear.left('value')) }
+    context "predicate evaluates to false" do
+      let(:predicate) { ->(v) { v != "value" } }
+      it { is_expected.to eq(Fear.left("value")) }
     end
   end
 
-  describe '#reject' do
+  describe "#reject" do
     subject { right.reject(&predicate) }
 
-    context 'predicate evaluates to true' do
-      let(:predicate) { ->(v) { v == 'value' } }
-      it { is_expected.to eq(Fear.left('value')) }
+    context "predicate evaluates to true" do
+      let(:predicate) { ->(v) { v == "value" } }
+      it { is_expected.to eq(Fear.left("value")) }
     end
 
-    context 'predicate evaluates to false' do
-      let(:predicate) { ->(v) { v != 'value' } }
+    context "predicate evaluates to false" do
+      let(:predicate) { ->(v) { v != "value" } }
       it { is_expected.to eq(right) }
     end
   end
 
-  describe '#swap' do
+  describe "#swap" do
     subject { right.swap }
-    it { is_expected.to eq(Fear.left('value')) }
+    it { is_expected.to eq(Fear.left("value")) }
   end
 
-  describe '#reduce' do
+  describe "#reduce" do
     subject do
       right.reduce(
         ->(left) { "Left: #{left}" },
@@ -78,45 +80,45 @@ RSpec.describe Fear::Right do
       )
     end
 
-    it { is_expected.to eq('Right: value') }
+    it { is_expected.to eq("Right: value") }
   end
 
-  describe '#join_right' do
-    context 'value is Either' do
+  describe "#join_right" do
+    context "value is Either" do
       subject { described_class.new(value).join_right }
-      let(:value) { Fear.left('error') }
+      let(:value) { Fear.left("error") }
 
-      it 'returns value' do
+      it "returns value" do
         is_expected.to eq(value)
       end
     end
 
-    context 'value is not Either' do
-      subject { proc { described_class.new('35').join_right } }
+    context "value is not Either" do
+      subject { proc { described_class.new("35").join_right } }
 
-      it 'fails with type error' do
+      it "fails with type error" do
         is_expected.to raise_error(TypeError)
       end
     end
   end
 
-  describe '#join_left' do
-    context 'value is Either' do
+  describe "#join_left" do
+    context "value is Either" do
       subject { either.join_left }
-      let(:either) { described_class.new(Fear.left('error')) }
+      let(:either) { described_class.new(Fear.left("error")) }
 
       it { is_expected.to eq(either) }
     end
 
-    context 'value is not Either' do
+    context "value is not Either" do
       subject { either.join_left }
-      let(:either) { described_class.new('result') }
+      let(:either) { described_class.new("result") }
       it { is_expected.to eq(either) }
     end
   end
 
-  describe '#match' do
-    context 'matched' do
+  describe "#match" do
+    context "matched" do
       subject do
         right.match do |m|
           m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
@@ -125,15 +127,15 @@ RSpec.describe Fear::Right do
         end
       end
 
-      it { is_expected.to eq('Right: value') }
+      it { is_expected.to eq("Right: value") }
     end
 
-    context 'nothing matched and no else given' do
+    context "nothing matched and no else given" do
       subject do
         proc do
           right.match do |m|
             m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
-            m.left { |_| 'noop' }
+            m.left { |_| "noop" }
           end
         end
       end
@@ -141,7 +143,7 @@ RSpec.describe Fear::Right do
       it { is_expected.to raise_error(Fear::MatchError) }
     end
 
-    context 'nothing matched and else given' do
+    context "nothing matched and else given" do
       subject do
         right.match do |m|
           m.right(->(x) { x.length < 2 }) { |x| "Right: #{x}" }
@@ -153,31 +155,31 @@ RSpec.describe Fear::Right do
     end
   end
 
-  describe '#to_s' do
+  describe "#to_s" do
     subject { right.to_s }
 
     it { is_expected.to eq('#<Fear::Right value="value">') }
   end
 
-  describe 'pattern matching' do
-    subject { Fear.xcase('Right(v : Integer)') { |v:| "matched #{v}" }.call_or_else(var) { 'nothing' } }
+  describe "pattern matching" do
+    subject { Fear.xcase("Right(v : Integer)") { |v:| "matched #{v}" }.call_or_else(var) { "nothing" } }
 
-    context 'right of int' do
+    context "right of int" do
       let(:var) { Fear.right(42) }
 
-      it { is_expected.to eq('matched 42') }
+      it { is_expected.to eq("matched 42") }
     end
 
-    context 'right of string' do
-      let(:var) { Fear.right('42') }
+    context "right of string" do
+      let(:var) { Fear.right("42") }
 
-      it { is_expected.to eq('nothing') }
+      it { is_expected.to eq("nothing") }
     end
 
-    context 'not right' do
-      let(:var) { '42' }
+    context "not right" do
+      let(:var) { "42" }
 
-      it { is_expected.to eq('nothing') }
+      it { is_expected.to eq("nothing") }
     end
   end
 end

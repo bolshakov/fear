@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Fear
   # @api private
   # @see Fear.for
   module For
-    module_function # rubocop: disable Style/AccessModifierDeclarations
+    module_function
 
     # @param monads [<Fear::Option, Fear::Either, Fear::Try, Proc>]
     #
@@ -30,7 +32,7 @@ module Fear
 
     private def resolve(monad_or_proc, inner_values)
       if monad_or_proc.respond_to?(:call)
-        monad_or_proc.call(*inner_values)
+        monad_or_proc.(*inner_values)
       else
         monad_or_proc
       end

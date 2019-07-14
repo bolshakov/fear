@@ -1,10 +1,12 @@
-require 'ostruct'
+# frozen_string_literal: true
+
+require "ostruct"
 
 module Fear
   module Extractor
     # @abstract abstract matcher to inherit from.
     class Matcher < OpenStruct
-      autoload :And, 'fear/extractor/matcher/and'
+      autoload :And, "fear/extractor/matcher/and"
 
       EMPTY_HASH = {}.freeze
       EMPTY_ARRAY = [].freeze
@@ -46,7 +48,7 @@ module Fear
         if defined_at?(other)
           Fear.none
         else
-          Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{'~' * input_position}^")
+          Fear.some("Expected `#{other.inspect}` to match:\n#{input}\n#{"~" * input_position}^")
         end
       end
     end

@@ -1,11 +1,13 @@
-require 'lru_redux'
+# frozen_string_literal: true
+
+require "lru_redux"
 
 module Fear
   module Extractor
     # Parse pattern. Used within +Fear[]+
     class Pattern
       DEFAULT_PATTERN_CACHE_SIZE = 10_000
-      @pattern_cache = LruRedux::Cache.new(ENV.fetch('FEAR_PATTERNS_CACHE_SIZE', DEFAULT_PATTERN_CACHE_SIZE))
+      @pattern_cache = LruRedux::Cache.new(ENV.fetch("FEAR_PATTERNS_CACHE_SIZE", DEFAULT_PATTERN_CACHE_SIZE))
 
       class << self
         attr_reader :pattern_cache
@@ -41,14 +43,14 @@ module Fear
       end
 
       def failure_reason(other)
-        matcher.failure_reason(other).get_or_else { 'It matches' }
+        matcher.failure_reason(other).get_or_else { "It matches" }
       end
 
       private def syntax_error_message(parser, pattern)
         parser.failure_reason =~ /^(Expected .+) after/m
-        "#{Regexp.last_match(1).gsub("\n", '$NEWLINE')}:\n" +
+        "#{Regexp.last_match(1).gsub("\n", "$NEWLINE")}:\n" +
         pattern.split("\n")[parser.failure_line - 1] + "\n" \
-        "#{'~' * (parser.failure_column - 1)}^\n"
+        "#{"~" * (parser.failure_column - 1)}^\n"
       end
     end
   end

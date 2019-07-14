@@ -1,85 +1,87 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples Fear::RightBiased::Left do
-  describe '#include?' do
+  describe "#include?" do
     subject { left }
-    it { is_expected.not_to include('value') }
+    it { is_expected.not_to include("value") }
   end
 
-  describe '#get_or_else' do
-    context 'with block' do
-      subject { left.get_or_else { 'default' } }
+  describe "#get_or_else" do
+    context "with block" do
+      subject { left.get_or_else { "default" } }
 
-      it 'returns default value' do
-        is_expected.to eq('default')
+      it "returns default value" do
+        is_expected.to eq("default")
       end
     end
 
-    context 'with default argument' do
-      subject { left.get_or_else('default') }
+    context "with default argument" do
+      subject { left.get_or_else("default") }
 
-      it 'returns default value' do
-        is_expected.to eq('default')
+      it "returns default value" do
+        is_expected.to eq("default")
       end
     end
 
-    context 'with false argument' do
+    context "with false argument" do
       subject { left.get_or_else(false) }
 
-      it 'returns default value' do
+      it "returns default value" do
         is_expected.to eq(false)
       end
     end
 
-    context 'with nil argument' do
+    context "with nil argument" do
       subject { left.get_or_else(nil) }
 
-      it 'returns default value' do
+      it "returns default value" do
         is_expected.to eq(nil)
       end
     end
   end
 
-  describe '#each' do
+  describe "#each" do
     subject do
       proc do |block|
         expect(left.each(&block)).to eq(left)
       end
     end
 
-    it 'does not call the block' do
+    it "does not call the block" do
       is_expected.not_to yield_control
     end
   end
 
-  describe '#map' do
+  describe "#map" do
     subject { left.map(&:length) }
 
-    it 'returns self' do
+    it "returns self" do
       is_expected.to eq(left)
     end
   end
 
-  describe '#flat_map' do
+  describe "#flat_map" do
     subject { left.flat_map(&:length) }
 
-    it 'returns self' do
+    it "returns self" do
       is_expected.to eq(left)
     end
   end
 
-  describe '#to_option' do
+  describe "#to_option" do
     subject { left.to_option }
     it { is_expected.to eq(Fear::None) }
   end
 
-  describe '#any?' do
-    subject { left.any? { |v| v == 'value' } }
+  describe "#any?" do
+    subject { left.any? { |v| v == "value" } }
     it { is_expected.to eq(false) }
   end
 
-  describe '#===' do
+  describe "#===" do
     subject { match === left }
 
-    context 'the same object' do
+    context "the same object" do
       let(:match) { left }
       it { is_expected.to eq(true) }
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # Use singleton version of EmptyPartialFunction -- PartialFunction::EMPTY
   # @api private
@@ -28,7 +30,7 @@ module Fear
     end
 
     def to_s
-      'Empty partial function'
+      "Empty partial function"
     end
   end
 
