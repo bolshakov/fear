@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # @api private
   class NoneClass
@@ -40,7 +42,7 @@ module Fear
 
     # @return [String]
     def inspect
-      '#<Fear::NoneClass>'
+      "#<Fear::NoneClass>"
     end
 
     # @return [String]
@@ -70,7 +72,7 @@ module Fear
     end
 
     def inherited(*)
-      raise 'you are not allowed to inherit from NoneClass, use Fear::None instead'
+      raise "you are not allowed to inherit from NoneClass, use Fear::None instead"
     end
   end
 end

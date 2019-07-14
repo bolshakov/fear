@@ -1,28 +1,30 @@
-require 'bundler/gem_tasks'
-require 'benchmark/ips'
-require_relative 'lib/fear'
+# frozen_string_literal: true
+
+require "bundler/gem_tasks"
+require "benchmark/ips"
+require_relative "lib/fear"
 
 namespace :perf do
   # Contains benchmarking against Dry-rb
   namespace :dry do
     task :some_fmap_vs_fear_some_map do
-      require 'dry/monads/maybe'
+      require "dry/monads/maybe"
 
       dry = Dry::Monads::Some.new(42)
       fear = Fear.some(42)
 
       Benchmark.ips do |x|
-        x.report('Dry') { dry.fmap(&:itself) }
+        x.report("Dry") { dry.fmap(&:itself) }
 
-        x.report('Fear') { fear.map(&:itself) }
+        x.report("Fear") { fear.map(&:itself) }
 
         x.compare!
       end
     end
 
     task :do_vs_fear_for do
-      require 'dry/monads/maybe'
-      require 'dry/monads/do'
+      require "dry/monads/maybe"
+      require "dry/monads/do"
 
       class Operation
         include Dry::Monads::Maybe::Mixin
@@ -42,9 +44,9 @@ namespace :perf do
       op = Operation.new
 
       Benchmark.ips do |x|
-        x.report('Dry') { op.call }
+        x.report("Dry") { op.() }
 
-        x.report('Fear') do |_n|
+        x.report("Fear") do |_n|
           Fear.for(Fear.some(1), Fear.some(2)) do |one, two|
             one + two
           end
@@ -58,21 +60,21 @@ namespace :perf do
   # Contains internal benchmarking to if optimization works
   namespace :fear do
     task :fear_pattern_extracting_with_vs_without_cache do
-      some = Fear.some([:err, 'not found'])
+      some = Fear.some([:err, "not found"])
 
       class WOCache < Fear::Extractor::Pattern
         def initialize(pattern)
           @matcher = compile_pattern_without_cache(pattern)
         end
       end
-      pattern = 'Fear::Some([:err, code])'
+      pattern = "Fear::Some([:err, code])"
 
       Benchmark.ips do |x|
-        x.report('With cache') do |_n|
+        x.report("With cache") do |_n|
           Fear::Extractor::Pattern.new(pattern).extracted_arguments(some)
         end
 
-        x.report('Without cache') do |_n|
+        x.report("Without cache") do |_n|
           WOCache.new(pattern).extracted_arguments(some)
         end
 
@@ -85,11 +87,11 @@ namespace :perf do
         condition = Integer
 
         Benchmark.ips do |x|
-          x.report('Guard.new') do |n|
+          x.report("Guard.new") do |n|
             Fear::PartialFunction::Guard.new(condition) === n
           end
 
-          x.report('Guard.and1') do |n|
+          x.report("Guard.and1") do |n|
             Fear::PartialFunction::Guard.and1(condition) === n
           end
 
@@ -105,11 +107,11 @@ namespace :perf do
         and_and = Fear::PartialFunction::Guard.new(first).and(Fear::PartialFunction::Guard.new(second))
 
         Benchmark.ips do |x|
-          x.report('and2') do |n|
+          x.report("and2") do |n|
             and2 === n
           end
 
-          x.report('Guard#and') do |n|
+          x.report("Guard#and") do |n|
             and_and === n
           end
 
@@ -120,7 +122,7 @@ namespace :perf do
       task :and3_vs_and_and do
         first = Integer
         second = ->(x) { x > 2 }
-        third = ->(x) {  x < 10 }
+        third = ->(x) { x < 10 }
 
         and3 = Fear::PartialFunction::Guard.and3(first, second, third)
 
@@ -129,11 +131,11 @@ namespace :perf do
           .and(Fear::PartialFunction::Guard.new(third))
 
         Benchmark.ips do |x|
-          x.report('Guard.and3') do |n|
+          x.report("Guard.and3") do |n|
             and3 === n
           end
 
-          x.report('Guard#and') do |n|
+          x.report("Guard#and") do |n|
             and_and_and === n
           end
 
@@ -149,15 +151,15 @@ namespace :perf do
       end
 
       Benchmark.ips do |x|
-        x.report('construction') do
+        x.report("construction") do
           Fear::PatternMatch.new do |m|
             m.case(Integer) { |y| y * 2 }
             m.case(String) { |y| y.to_i(10) * 2 }
           end
         end
 
-        x.report('execution') do
-          matcher.call(42)
+        x.report("execution") do
+          matcher.(42)
         end
 
         x.compare!
@@ -166,23 +168,23 @@ namespace :perf do
   end
 
   namespace :pattern_matching do
-    require 'qo'
-    require 'dry/matcher'
+    require "qo"
+    require "dry/matcher"
 
     task :qo_vs_fear_pattern_extraction do
       User = Struct.new(:id, :name)
-      user = User.new(42, 'Jane')
+      user = User.new(42, "Jane")
 
       Benchmark.ips do |x|
-        x.report('Qo') do
+        x.report("Qo") do
           Qo.case(user, destructure: true) do |m|
             m.when(User) { |id, name| [id, name] }
           end
         end
 
-        x.report('Fear') do
+        x.report("Fear") do
           Fear.match(user) do |m|
-            m.xcase('User(id, name)') { |id:, name:| [id, name] }
+            m.xcase("User(id, name)") { |id:, name:| [id, name] }
           end
         end
 
@@ -198,25 +200,24 @@ namespace :perf do
         end
       end
 
-      SuccessBranch = Qo.create_branch(name: 'success', precondition: Fear::Success, extractor: :get)
-      FailureBranch = Qo.create_branch(name: 'failure', precondition: Fear::Failure, extractor: :exception)
+      SuccessBranch = Qo.create_branch(name: "success", precondition: Fear::Success, extractor: :get)
+      FailureBranch = Qo.create_branch(name: "failure", precondition: Fear::Failure, extractor: :exception)
 
       PatternMatch = Qo.create_pattern_match(
-        branches: [SuccessBranch,
-                   FailureBranch],
+        branches: [SuccessBranch, FailureBranch],
       ).prepend(ExhaustivePatternMatch)
 
       Fear::Success.include(PatternMatch.mixin(as: :qo_match))
 
       success_case = Dry::Matcher::Case.new(
-        match: lambda { |try, *pattern|
+        match: ->(try, *pattern) {
           try.is_a?(Fear::Success) && pattern.all? { |p| p === try.get }
         },
         resolve: ->(try) { try.get },
       )
 
       failure_case = Dry::Matcher::Case.new(
-        match: lambda { |try, *pattern|
+        match: ->(try, *pattern) {
           try.is_a?(Fear::Failure) && pattern.all? { |p| p === try.exception }
         },
         resolve: ->(value) { value.exception },
@@ -228,27 +229,27 @@ namespace :perf do
       success = Fear::Success.new(4)
 
       Benchmark.ips do |x|
-        x.report('Qo') do
+        x.report("Qo") do
           success.qo_match do |m|
             m.failure(&:itself)
             m.success(Integer, ->(y) { y % 5 == 0 }, &:itself)
-            m.success { 'else' }
+            m.success { "else" }
           end
         end
 
-        x.report('Fear') do
+        x.report("Fear") do
           success.match do |m|
             m.failure(&:itself)
             m.success(Integer, ->(y) { y % 5 == 0 }, &:itself)
-            m.success { 'else' }
+            m.success { "else" }
           end
         end
 
-        x.report('Dr::Matcher') do
-          matcher.call(success) do |m|
+        x.report("Dr::Matcher") do
+          matcher.(success) do |m|
             m.failure(&:itself)
             m.success(Integer, ->(y) { y % 5 == 0 }, &:itself)
-            m.success { 'else' }
+            m.success { "else" }
           end
         end
 
@@ -264,8 +265,8 @@ namespace :perf do
         end
       end
 
-      SuccessBranch = Qo.create_branch(name: 'success', precondition: Fear::Success, extractor: :get)
-      FailureBranch = Qo.create_branch(name: 'failure', precondition: Fear::Failure, extractor: :exception)
+      SuccessBranch = Qo.create_branch(name: "success", precondition: Fear::Success, extractor: :get)
+      FailureBranch = Qo.create_branch(name: "failure", precondition: Fear::Failure, extractor: :exception)
 
       QoPatternMatch = Qo.create_pattern_match(
         branches: [SuccessBranch, FailureBranch],
@@ -278,22 +279,22 @@ namespace :perf do
       qo_matcher = QoPatternMatch.new do |m|
         m.success(1, &:itself)
         m.success(4, &:itself)
-        m.failure { 'failure' }
+        m.failure { "failure" }
       end
 
       fear_matcher = Fear::TryPatternMatch.new do |m|
         m.success(1, &:itself)
         m.success(4, &:itself)
-        m.failure { 'failure' }
+        m.failure { "failure" }
       end
 
       Benchmark.ips do |x|
-        x.report('Qo') do
-          qo_matcher.call(success)
+        x.report("Qo") do
+          qo_matcher.(success)
         end
 
-        x.report('Fear') do
-          fear_matcher.call(success)
+        x.report("Fear") do
+          fear_matcher.(success)
         end
 
         x.compare!
@@ -305,33 +306,33 @@ namespace :perf do
         if n <= 1
           1
         else
-          n * factorial_proc.call(n - 1)
+          n * factorial_proc.(n - 1)
         end
       end
 
       factorial_pm = Fear.matcher do |m|
         m.case(1, &:itself)
         m.case(0, &:itself)
-        m.else { |n| n * factorial_pm.call(n - 1) }
+        m.else { |n| n * factorial_pm.(n - 1) }
       end
 
       factorial_qo = Qo.match do |m|
         m.when(1, &:itself)
         m.when(0, &:itself)
-        m.else { |n| n * factorial_qo.call(n - 1) }
+        m.else { |n| n * factorial_qo.(n - 1) }
       end
 
       Benchmark.ips do |x|
-        x.report('Proc') do
-          factorial_proc.call(100)
+        x.report("Proc") do
+          factorial_proc.(100)
         end
 
-        x.report('Fear') do
-          factorial_pm.call(100)
+        x.report("Fear") do
+          factorial_pm.(100)
         end
 
-        x.report('Qo') do
-          factorial_qo.call(100)
+        x.report("Qo") do
+          factorial_qo.(100)
         end
 
         x.compare!

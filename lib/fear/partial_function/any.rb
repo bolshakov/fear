@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module PartialFunction
     # Any is an object which is always truthy

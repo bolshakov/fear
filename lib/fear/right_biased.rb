@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # @private
   module RightBiased
@@ -7,14 +9,14 @@ module Fear
       # Returns the value from this `RightBiased::Right` or the given argument if
       # this is a `RightBiased::Left`.
       def get_or_else(*args, &block)
-        Utils.assert_arg_or_block!('get_or_else', *args, &block)
+        Utils.assert_arg_or_block!("get_or_else", *args, &block)
         super
       end
 
       # Returns this `RightBiased::Right` or the given alternative if
       # this is a `RightBiased::Left`.
       def or_else(*args, &block)
-        Utils.assert_arg_or_block!('or_else', *args, &block)
+        Utils.assert_arg_or_block!("or_else", *args, &block)
         super.tap do |result|
           Utils.assert_type!(result, left_class, right_class)
         end

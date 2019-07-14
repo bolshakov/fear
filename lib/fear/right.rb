@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   class Right
     include Either
@@ -65,7 +67,7 @@ module Fear
     # @param reduce_right [Proc]
     # @return [any]
     def reduce(_reduce_left, reduce_right)
-      reduce_right.call(value)
+      reduce_right.(value)
     end
 
     # @return [Either]

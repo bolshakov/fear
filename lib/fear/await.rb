@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # You're strongly discouraged to use this module since it may lead to deadlocks,
   # and reduced performance. Although, blocking may be useful in some cases (e.g. in tests)

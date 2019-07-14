@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # This module contains AST nodes for GrammarParser
@@ -56,7 +58,7 @@ module Fear
         end
 
         def value
-          text_value.to_f
+          Float(text_value)
         end
       end
 
@@ -66,7 +68,7 @@ module Fear
         end
 
         def value
-          text_value.to_i
+          Integer(text_value, 10)
         end
       end
 
@@ -80,7 +82,7 @@ module Fear
         end
       end
 
-      require 'yaml'
+      require "yaml"
 
       class DoubleQuotedStringLiteral < StringLiteral
         def to_matcher

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module PartialFunction
     # Composite function produced by +PartialFunction#and_then+ method
@@ -22,7 +24,7 @@ module Fear
       # @param arg [any]
       # @return [any ]
       def call(arg)
-        f2.call(f1.call(arg))
+        f2.(f1.(arg))
       end
 
       alias === call

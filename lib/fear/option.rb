@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # Represents optional values. Instances of +Option+
   # are either an instance of +Some+ or the object +None+.
@@ -187,7 +189,7 @@ module Fear
       end
 
       def match(value, &block)
-        matcher(&block).call(value)
+        matcher(&block).(value)
       end
     end
 

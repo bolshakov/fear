@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module PartialFunction
     # Composite function produced by +PartialFunction#and_then+ method
@@ -23,7 +25,7 @@ module Fear
       # @param arg [any]
       # @return [any ]
       def call(arg)
-        function.call(partial_function.call(arg))
+        function.(partial_function.(arg))
       end
 
       # @param arg [any]
@@ -39,7 +41,7 @@ module Fear
         result = partial_function.call_or_else(arg) do
           return yield(arg)
         end
-        function.call(result)
+        function.(result)
       end
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # Recursive array matcher. Match against its head and tail

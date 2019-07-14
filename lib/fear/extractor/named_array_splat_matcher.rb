@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module Extractor
     # Match against array splat, and capture rest of an array

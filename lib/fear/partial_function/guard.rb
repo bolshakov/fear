@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module Fear
   module PartialFunction
     # Guard represents PartialFunction guardian
     #
     # @api private
     class Guard
-      autoload :And, 'fear/partial_function/guard/and'
-      autoload :And3, 'fear/partial_function/guard/and3'
-      autoload :Or, 'fear/partial_function/guard/or'
+      autoload :And, "fear/partial_function/guard/and"
+      autoload :And3, "fear/partial_function/guard/and3"
+      autoload :Or, "fear/partial_function/guard/or"
 
       class << self
         # Optimized version for combination of two guardians
@@ -35,7 +37,7 @@ module Fear
           when 0 then Any
           else
             head, *tail = conditions
-            tail.inject(new(head)) { |acc, condition| acc.and(new(condition)) }
+            tail.reduce(new(head)) { |acc, condition| acc.and(new(condition)) }
           end
         end
 
@@ -45,7 +47,7 @@ module Fear
           return Any if conditions.empty?
 
           head, *tail = conditions
-          tail.inject(new(head)) { |acc, condition| acc.or(new(condition)) }
+          tail.reduce(new(head)) { |acc, condition| acc.or(new(condition)) }
         end
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # @private
   module Utils
@@ -20,13 +22,13 @@ module Fear
 
       def assert_type!(value, *types)
         if types.none? { |type| value.is_a?(type) }
-          raise TypeError, "expected `#{value.inspect}` to be of #{types.join(', ')} class"
+          raise TypeError, "expected `#{value.inspect}` to be of #{types.join(", ")} class"
         end
       end
 
       def return_or_call_proc(value)
         if value.respond_to?(:call)
-          value.call
+          value.()
         else
           value
         end

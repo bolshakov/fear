@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module ForApi
     # Syntactic sugar for composition of  multiple monadic operations. It supports two such
@@ -60,7 +62,7 @@ module Fear
     # @return [{#map, #flat_map}]
     #
     def for(*monads, &block)
-      Fear::For.call(monads, &block)
+      Fear::For.(monads, &block)
     end
   end
 end

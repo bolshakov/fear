@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # A partial function is a unary function defined on subset of all possible inputs.
   # The method +defined_at?+ allows to test dynamically if an arg is in
@@ -43,13 +45,13 @@ module Fear
   #   @return [#call]
   #   @abstract
   module PartialFunction
-    autoload :AndThen, 'fear/partial_function/and_then'
-    autoload :Any, 'fear/partial_function/any'
-    autoload :Combined, 'fear/partial_function/combined'
-    autoload :EMPTY, 'fear/partial_function/empty'
-    autoload :Guard, 'fear/partial_function/guard'
-    autoload :Lifted, 'fear/partial_function/lifted'
-    autoload :OrElse, 'fear/partial_function/or_else'
+    autoload :AndThen, "fear/partial_function/and_then"
+    autoload :Any, "fear/partial_function/any"
+    autoload :Combined, "fear/partial_function/combined"
+    autoload :EMPTY, "fear/partial_function/empty"
+    autoload :Guard, "fear/partial_function/guard"
+    autoload :Lifted, "fear/partial_function/lifted"
+    autoload :OrElse, "fear/partial_function/or_else"
 
     # Checks if a value is contained in the function's domain.
     #
@@ -125,7 +127,7 @@ module Fear
     #   @return [Fear::PartialFunction]
     #
     def and_then(other = Utils::UNDEFINED, &block)
-      Utils.with_block_or_argument('Fear::PartialFunction#and_then', other, block) do |fun|
+      Utils.with_block_or_argument("Fear::PartialFunction#and_then", other, block) do |fun|
         if fun.is_a?(Fear::PartialFunction)
           Combined.new(self, fun)
         else

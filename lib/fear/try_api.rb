@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module TryApi
     # Constructs a +Try+ using the block. This

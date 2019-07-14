@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   module PartialFunction
     # Composite function produced by +PartialFunction#or_else+ method
@@ -36,7 +38,7 @@ module Fear
 
       # @see Fear::PartialFunction#and_then
       def and_then(other = Utils::UNDEFINED, &block)
-        Utils.with_block_or_argument('Fear::PartialFunction::OrElse#and_then', other, block) do |fun|
+        Utils.with_block_or_argument("Fear::PartialFunction::OrElse#and_then", other, block) do |fun|
           OrElse.new(f1.and_then(&fun), f2.and_then(&fun))
         end
       end

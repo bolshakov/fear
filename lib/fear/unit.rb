@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Fear
   # Represents lack of value. It's typically returned when function completed without a value.
   #
@@ -17,12 +19,14 @@ module Fear
   Unit = Object.new.tap do |unit|
     # @return [String]
     def unit.to_s
-      '#<Fear::Unit>'
+      "#<Fear::Unit>"
     end
 
     # @return [String]
     def unit.inspect
-      '#<Fear::Unit>'
+      "#<Fear::Unit>"
     end
   end.freeze
+
+  public_constant :Unit
 end
