@@ -67,5 +67,15 @@ module Fear
 
     # @return [String]
     alias to_s inspect
+
+    # @param other [Fear::Option]
+    # @return [Fear::Option]
+    def zip(other)
+      if other.is_a?(Option)
+        other.map { |x| [value, x].freeze }
+      else
+        raise TypeError, "can't zip with #{other.class}"
+      end
+    end
   end
 end
