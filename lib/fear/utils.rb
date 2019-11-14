@@ -3,6 +3,8 @@
 module Fear
   # @private
   module Utils
+    EMPTY_STRING = ""
+    IDENTITY = :itself.to_proc
     UNDEFINED = Object.new.freeze
 
     class << self
