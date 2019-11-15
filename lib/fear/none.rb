@@ -59,6 +59,16 @@ module Fear
     def ===(other)
       self == other
     end
+
+    # @param other [Fear::Option]
+    # @return [Fear::Option]
+    def zip(other)
+      if other.is_a?(Option)
+        Fear.none
+      else
+        raise TypeError, "can't zip with #{other.class}"
+      end
+    end
   end
 
   private_constant(:NoneClass)

@@ -153,6 +153,16 @@ module Fear
   #       m.else { 'error '}
   #     end
   #
+  # @!method zip(other)
+  #   @param other [Fear::Option]
+  #   @return [Fear::Option] a +Fear::Some+ formed from this option and another option by
+  #     combining the corresponding elements in an array.
+  #
+  #   @example
+  #     Fear.some("foo").zip(Fear.some("bar")) #=> Fear.some(["foo", "bar"])
+  #     Fear.some("foo").zip(Fear.none) #=> Fear.none
+  #     Fear.none.zip(Fear.some("bar")) #=> Fear.none
+  #
   # @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
   #
   module Option
