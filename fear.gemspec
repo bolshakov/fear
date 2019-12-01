@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "qo"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.1"
-  spec.add_development_dependency "rubocop-rspec", "1.34.0"
+  spec.add_development_dependency "rubocop-rspec", "1.37.0"
   spec.add_development_dependency "ruby_coding_standard"
   spec.add_development_dependency "yard"
 end
