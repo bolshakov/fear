@@ -29,7 +29,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.4)
       dry-equalizer
-    irb (1.1.0)
+    irb (1.2.0)
       reline (>= 0.0.1)
     jaro_winkler (1.5.3)
     lru_redux (1.1.0)
