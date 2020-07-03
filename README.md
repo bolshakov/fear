@@ -22,11 +22,11 @@ Or install it yourself as:
 
 ## Usage
 
-* [Option](#option-documentation) 
-* [Try](#try-documentation)
-* [Either](#either-documentation)
-* [Future](#future-documentation)
-* [For composition](#for-composition)
+* [Option](#option-api-documentation) 
+* [Try](#try-api-documentation)
+* [Either](#either-api-documentation)
+* [Future](#future-api-documentation)
+* [For composition](#for-composition-api-documentation)
 * [Pattern Matching](#pattern-matching-api-documentation)
 
 ### Option ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
@@ -624,7 +624,7 @@ Fear.left("flower").join_right        #=> Fear.left("flower")
 Fear.left(Fear.right("flower")).join_right #=> Fear.left(Fear.right("flower"))
 ```
 
-#### Either#join_right
+#### Either#join_left
 
 Joins an `Either` through `Left`. This method requires that the left side of this `Either` is itself an
 `Either` type. This method, and `join_right`, are analogous to `Option#flatten`
