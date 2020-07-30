@@ -1,8 +1,12 @@
+## 1.x 
+
+* Add dry-types extentions to wrap nullable values. ([@bolshakov][])
+
 ## 1.1.0 
 
-* Add `Fear::Await.ready` and `Fear::Await.result`.
-* Add callback versions with pattern matching `Fear::Future#on_success_match`, `#on_failure_match` and `#on_complete_match`.
-* Implement immutable `Fear::Struct` 
+* Add `Fear::Await.ready` and `Fear::Await.result`. ([@bolshakov][])
+* Add callback versions with pattern matching `Fear::Future#on_success_match`, `#on_failure_match` and `#on_complete_match`. ([@bolshakov][])
+* Implement immutable `Fear::Struct`. ([@bolshakov][])
 
 ## 1.0.0
 

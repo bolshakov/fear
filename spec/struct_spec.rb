@@ -15,7 +15,7 @@ RSpec.describe Fear::Struct do
 
       let(:struct_class) { described_class.with_attributes(:a, :b) }
 
-      it { is_expected.to raise_error(ArgumentError, "wrong number of arguments (given 1, expected 0)") }
+      it { is_expected.to raise_error(ArgumentError) }
     end
 
     context "extra argument" do
