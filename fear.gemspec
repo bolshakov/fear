@@ -40,4 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-rspec", "1.34.0"
   spec.add_development_dependency "ruby_coding_standard"
   spec.add_development_dependency "yard"
+  spec.add_development_dependency "dry-types"
+  spec.add_development_dependency "fear-rspec"
 end
