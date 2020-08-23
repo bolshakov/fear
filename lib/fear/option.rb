@@ -82,6 +82,17 @@ module Fear
   #     Fear.some(42).map { |v| v/2 } #=> Fear.some(21)
   #     Fear.none.map { |v| v/2 }   #=> None
   #
+  # @!method filter_map(&block)
+  #   Returns a new +Some+ of truthy results (everything except +false+ or +nil+) of
+  #   running the block or +None+ otherwise.
+  #   @yieldparam [any] value
+  #   @yieldreturn [any]
+  #   @example
+  #     Fear.some(42).filter_map { |v| v/2 if v.even? } #=> Fear.some(21)
+  #     Fear.some(42).filter_map { |v| v/2 if v.odd? } #=> Fear.none
+  #     Fear.some(42).filter_map { |v| false } #=> Fear.none
+  #     Fear.none.filter_map { |v| v/2 }   #=> Fear.none
+  #
   # @!method flat_map(&block)
   #   Returns the given block applied to the value from this +Some+
   #   or returns this if this is a +None+

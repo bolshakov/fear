@@ -32,4 +32,43 @@ RSpec.describe Fear::Option do
       it { is_expected.to eq(Fear.none) }
     end
   end
+
+  describe "#filter_map" do
+    subject { option.filter_map(&filter_map) }
+
+    context "some mapped to nil" do
+      let(:option) { Fear.some(42) }
+      let(:filter_map) { ->(*) { nil } }
+
+      it { is_expected.to be_none }
+    end
+
+    context "some mapped to false" do
+      let(:option) { Fear.some(42) }
+      let(:filter_map) { ->(*) { false } }
+
+      it { is_expected.to be_none }
+    end
+
+    context "some mapped to true" do
+      let(:option) { Fear.some(42) }
+      let(:filter_map) { ->(*) { true } }
+
+      it { is_expected.to be_some_of(true) }
+    end
+
+    context "some mapped to another value" do
+      let(:option) { Fear.some(42) }
+      let(:filter_map) { ->(x) { x / 2 if x.even? } }
+
+      it { is_expected.to be_some_of(21) }
+    end
+
+    context "none" do
+      let(:option) { Fear.none }
+      let(:filter_map) { ->(x) { x / 2 } }
+
+      it { is_expected.to be_none }
+    end
+  end
 end

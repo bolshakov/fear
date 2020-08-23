@@ -152,10 +152,22 @@ Fear.none.any? { |v| v > 10 }    #=> false
 Returns self if it is nonempty and applying the predicate to this `Option`'s value returns `true`. Otherwise, 
 return `None`.
 
-```ruby 
+```ruby
 Fear.some(42).select { |v| v > 40 } #=> Fear.success(21)
 Fear.some(42).select { |v| v < 40 } #=> None
 Fear.none.select { |v| v < 40 }   #=> None
+```
+
+#### Option#filter_map
+
+Returns a new `Some` of truthy results (everything except `false` or `nil`) of
+running the block or `None` otherwise.
+
+```ruby
+Fear.some(42).filter_map { |v| v/2 if v.even? } #=> Fear.some(21)
+Fear.some(42).filter_map { |v| v/2 if v.odd? } #=> Fear.none
+Fear.some(42).filter_map { |v| false } #=> Fear.none
+Fear.none.filter_map { |v| v/2 }   #=> Fear.none
 ```
 
 #### Option#reject

@@ -69,6 +69,11 @@ module Fear
         raise TypeError, "can't zip with #{other.class}"
       end
     end
+
+    # @return [RightBiased::Left]
+    def filter_map
+      self
+    end
   end
 
   private_constant(:NoneClass)

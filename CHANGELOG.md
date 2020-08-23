@@ -1,5 +1,6 @@
 ## 1.x 
 
+* Implement `Fear::Option#filter_map`  ([@bolshakov][])
 * Add dry-types extentions to wrap nullable values. ([@bolshakov][])
 
 ## 1.1.0 
