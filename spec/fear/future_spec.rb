@@ -398,11 +398,20 @@ RSpec.describe Fear::Future do
     subject { Fear::Await.result(future, 1) }
 
     context "successful" do
-      let(:future) { this.zip(that) }
       let!(:this) { Fear.future { 1 } }
       let!(:that) { Fear.future { 2 } }
 
-      it { is_expected.to eq(Fear.success([1, 2])) }
+      context "without a block" do
+        let(:future) { this.zip(that) }
+
+        it { is_expected.to eq(Fear.success([1, 2])) }
+      end
+
+      context "with a block" do
+        let(:future) { this.zip(that) { |x, y| x + y } }
+
+        it { is_expected.to eq(Fear.success(3)) }
+      end
     end
 
     context "first failed" do

@@ -380,7 +380,15 @@ module Fear
       on_complete_match do |m|
         m.success do |value|
           other.on_complete do |other_try|
-            promise.complete!(other_try.map { |other_value| [value, other_value] })
+            promise.complete!(
+              other_try.map do |other_value|
+                if block_given?
+                  yield(value, other_value)
+                else
+                  [value, other_value]
+                end
+              end,
+            )
           end
         end
         m.failure do |error|
