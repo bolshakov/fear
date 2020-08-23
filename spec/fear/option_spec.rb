@@ -8,7 +8,17 @@ RSpec.describe Fear::Option do
       let(:left) { Fear.some(42) }
       let(:right) { Fear.some(664) }
 
-      it { is_expected.to eq(Fear.some([42, 664])) }
+      context "without a block" do
+        subject { left.zip(right) }
+
+        it { is_expected.to eq(Fear.some([42, 664])) }
+      end
+
+      context "with a block" do
+        subject { left.zip(right) { |x, y| x * y } }
+
+        it { is_expected.to eq(Fear.some(27_888)) }
+      end
     end
 
     context "some with none" do

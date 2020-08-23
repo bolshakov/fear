@@ -171,6 +171,7 @@ module Fear
   #
   #   @example
   #     Fear.some("foo").zip(Fear.some("bar")) #=> Fear.some(["foo", "bar"])
+  #     Fear.some("foo").zip(Fear.some("bar")) { |x, y| x + y } #=> Fear.some("foobar")
   #     Fear.some("foo").zip(Fear.none) #=> Fear.none
   #     Fear.none.zip(Fear.some("bar")) #=> Fear.none
   #

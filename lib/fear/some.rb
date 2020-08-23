@@ -72,7 +72,13 @@ module Fear
     # @return [Fear::Option]
     def zip(other)
       if other.is_a?(Option)
-        other.map { |x| [value, x].freeze }
+        other.map do |x|
+          if block_given?
+            yield(value, x)
+          else
+            [value, x]
+          end
+        end
       else
         raise TypeError, "can't zip with #{other.class}"
       end

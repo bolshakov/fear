@@ -193,6 +193,19 @@ Fear.some(42).empty? #=> false
 Fear.none.empty?   #=> true
 ```
 
+#### Option#zip
+
+Returns a `Fear::Some` formed from this Option and another Option by combining the corresponding elements in a pair. 
+If either of the two options is empty, `Fear::None` is returned.
+
+```ruby
+Fear.some("foo").zip(Fear.some("bar")) #=> Fear.some(["foo", "bar"])
+Fear.some("foo").zip(Fear.some("bar")) { |x, y| x + y } #=> Fear.some("foobar")
+Fear.some("foo").zip(Fear.none) #=> Fear.none
+Fear.none.zip(Fear.some("bar")) #=> Fear.none
+
+```
+
 @see https://github.com/scala/scala/blob/2.11.x/src/library/scala/Option.scala
  
 
