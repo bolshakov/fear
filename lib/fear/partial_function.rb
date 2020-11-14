@@ -99,6 +99,12 @@ module Fear
     # @param other [PartialFunction]
     # @return [PartialFunction] a partial function which has as domain the union of the domains
     #   of this partial function and +other+.
+    # @example
+    #   handle_even = Fear.case(:even?.to_proc) { |x| "#{x} is even" }
+    #   handle_odd = Fear.case(:odd?.to_proc) { |x| "#{x} is odd" }
+    #   handle_even_or_odd = handle_even.or_else(odd)
+    #   handle_even_or_odd.(42) #=> 42 is even
+    #   handle_even_or_odd.(42) #=> 21 is odd
     def or_else(other)
       OrElse.new(self, other)
     end

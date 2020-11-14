@@ -186,4 +186,31 @@ RSpec.describe Fear::PartialFunction do
       it { is_expected.not_to raise_error }
     end
   end
+
+  shared_examples "#or_else" do |method_name|
+    subject { is_even.__send__(method_name, is_odd).(value) }
+
+    let(:is_even) { Fear.case(:even?.to_proc) { |x| "#{x} is even" } }
+    let(:is_odd) { Fear.case(:odd?.to_proc) { |x| "#{x} is odd" } }
+
+    context "when left side is defined" do
+      let(:value) { 42 }
+
+      it { is_expected.to eq("42 is even") }
+    end
+
+    context "when left side is not defined" do
+      let(:value) { 21 }
+
+      it { is_expected.to eq("21 is odd") }
+    end
+  end
+
+  describe "#or_else" do
+    include_examples "#or_else", :or_else
+  end
+
+  describe "#|" do
+    include_examples "#or_else", :|
+  end
 end
