@@ -14,6 +14,8 @@ module Fear
       end
     end
 
+    public_constant :EXTRACTOR
+
     attr_reader :value
     protected :value
 

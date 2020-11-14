@@ -71,7 +71,7 @@ RSpec.describe Fear::Struct do
       let(:struct_class) { described_class.with_attributes(:a, :b) }
 
       context "same class and members" do
-        subject { struct_class.new(a: 42, b: 43) == struct_class.new(a: 42, b: 43) } # rubocop: disable Lint/UselessComparison:
+        subject { struct_class.new(a: 42, b: 43) == struct_class.new(a: 42, b: 43) } # rubocop: disable Lint/BinaryOperatorWithIdenticalOperands
 
         it { is_expected.to eq(true) }
       end

@@ -5,6 +5,7 @@ module Fear
     include Try
     include RightBiased::Left
     include FailurePatternMatch.mixin
+
     EXTRACTOR = proc do |try|
       if Fear::Failure === try
         Fear.some([try.exception])
@@ -12,6 +13,7 @@ module Fear
         Fear.none
       end
     end
+    public_constant :EXTRACTOR
 
     # @param [StandardError]
     def initialize(exception)

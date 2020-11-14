@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'simplecov'
+require "simplecov"
 
 require "fear"
 require File.expand_path("spec/fear/right_biased/right")

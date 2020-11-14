@@ -11,10 +11,19 @@ require "fear/version"
 
 module Fear
   Error = Class.new(StandardError)
+  public_constant :Error
+
   IllegalStateException = Class.new(Error)
+  public_constant :IllegalStateException
+
   MatchError = Class.new(Error)
+  public_constant :MatchError
+
   NoSuchElementError = Class.new(Error)
+  public_constant :NoSuchElementError
+
   PatternSyntaxError = Class.new(Error)
+  public_constant :PatternSyntaxError
 
   extend EitherApi
   extend ExtractorApi

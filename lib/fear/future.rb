@@ -298,11 +298,9 @@ module Fear
       on_complete_match do |m|
         m.case(Fear::Failure) { |failure| promise.complete!(failure) }
         m.success do |value|
-          begin
-            yield(value).on_complete { |callback_result| promise.complete!(callback_result) }
-          rescue StandardError => error
-            promise.failure!(error)
-          end
+          yield(value).on_complete { |callback_result| promise.complete!(callback_result) }
+        rescue StandardError => error
+          promise.failure!(error)
         end
       end
       promise.to_future
