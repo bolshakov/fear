@@ -87,7 +87,7 @@ GEM
     ruby-progressbar (1.10.1)
     ruby_coding_standard (0.2.0)
       rubocop
-    treetop (1.6.10)
+    treetop (1.6.11)
       polyglot (~> 0.3)
     unicode-display_width (1.6.0)
     yard (0.9.25)
