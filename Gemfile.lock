@@ -17,7 +17,7 @@ GEM
   specs:
     any (0.1.0)
     ast (2.4.0)
-    benchmark-ips (2.7.2)
+    benchmark-ips (2.8.3)
     concurrent-ruby (1.1.7)
     diff-lcs (1.4.4)
     dry-configurable (0.11.6)
