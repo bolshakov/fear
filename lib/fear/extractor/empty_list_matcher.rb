@@ -13,7 +13,7 @@ module Fear
       end
 
       def bindings(_)
-        EMPTY_HASH
+        Utils::EMPTY_HASH
       end
     end
   end

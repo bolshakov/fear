@@ -13,6 +13,7 @@ module Fear
         Fear.none
       end
     end
+    public_constant :EXTRACTOR
 
     attr_reader :value
     protected :value

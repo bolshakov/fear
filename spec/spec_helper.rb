@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# require 'codeclimate-test-reporter'
-# CodeClimate::TestReporter.start
+require "simplecov"
 
 require "fear"
 require File.expand_path("spec/fear/right_biased/right")

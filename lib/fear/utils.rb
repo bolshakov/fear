@@ -4,8 +4,19 @@ module Fear
   # @private
   module Utils
     EMPTY_STRING = ""
+    public_constant :EMPTY_STRING
+
     IDENTITY = :itself.to_proc
+    public_constant :IDENTITY
+
     UNDEFINED = Object.new.freeze
+    public_constant :UNDEFINED
+
+    EMPTY_HASH = {}.freeze
+    public_constant :EMPTY_HASH
+
+    EMPTY_ARRAY = [].freeze
+    public_constant :EMPTY_ARRAY
 
     class << self
       def assert_arg_or_block!(method_name, *args)

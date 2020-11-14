@@ -2,6 +2,6 @@ inherit_gem:
   ruby_coding_standard: .rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   Exclude:
     - vendor/**/*

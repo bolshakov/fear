@@ -7,7 +7,10 @@ module Fear
   # @api private
   class TryPatternMatch < Fear::PatternMatch
     SUCCESS_EXTRACTOR = :get.to_proc
+    private_constant :SUCCESS_EXTRACTOR
+
     FAILURE_EXTRACTOR = :exception.to_proc
+    private_constant :FAILURE_EXTRACTOR
 
     # Match against +Fear::Success+
     #

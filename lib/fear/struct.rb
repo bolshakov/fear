@@ -192,6 +192,7 @@ module Fear
     end
 
     INSPECT_TEMPLATE = "<#Fear::Struct %{class_name} %{attributes}>"
+    private_constant :INSPECT_TEMPLATE
 
     # @return [String]
     #
@@ -208,6 +209,7 @@ module Fear
     alias to_s inspect
 
     MISSING_KEYWORDS_ERROR = "missing keywords: %{keywords}"
+    private_constant :MISSING_KEYWORDS_ERROR
 
     private def _check_missing_attributes!(provided_attributes)
       missing_attributes = members - provided_attributes.keys
@@ -218,6 +220,7 @@ module Fear
     end
 
     UNKNOWN_KEYWORDS_ERROR = "unknown keywords: %{keywords}"
+    private_constant :UNKNOWN_KEYWORDS_ERROR
 
     private def _check_unknown_attributes!(provided_attributes)
       unknown_attributes = provided_attributes.keys - members

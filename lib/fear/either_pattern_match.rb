@@ -25,7 +25,10 @@ module Fear
   # @api private
   class EitherPatternMatch < Fear::PatternMatch
     LEFT_EXTRACTOR = :left_value.to_proc
+    public_constant :LEFT_EXTRACTOR
+
     RIGHT_EXTRACTOR = :right_value.to_proc
+    public_constant :RIGHT_EXTRACTOR
 
     # Match against +Fear::Right+
     #

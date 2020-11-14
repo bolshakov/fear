@@ -14,6 +14,7 @@ module Fear
         Fear.none
       end
     end
+    public_constant :EXTRACTOR
 
     # @raise [NoSuchElementError]
     def get
@@ -79,7 +80,9 @@ module Fear
   private_constant(:NoneClass)
 
   # The only instance of NoneClass
+  # @api private
   None = NoneClass.new.freeze
+  public_constant :None
 
   class << NoneClass
     def new

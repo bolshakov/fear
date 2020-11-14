@@ -25,6 +25,7 @@ module Fear
   # @api private
   class OptionPatternMatch < Fear::PatternMatch
     GET_METHOD = :get.to_proc
+    private_constant :GET_METHOD
 
     # Match against Some
     #

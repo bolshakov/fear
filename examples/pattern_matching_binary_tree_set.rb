@@ -12,8 +12,11 @@ require "fear"
 #
 class BinaryTreeSet
   Position = Module.new
+  private_constant(:Position)
   Right = Module.new.include(Position)
+  private_constant(:Right)
   Left = Module.new.include(Position)
+  private_constant(:Left)
 
   def initialize(elem = 0, removed: true)
     @elem = elem

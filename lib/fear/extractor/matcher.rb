@@ -8,9 +8,6 @@ module Fear
     class Matcher < OpenStruct
       autoload :And, "fear/extractor/matcher/and"
 
-      EMPTY_HASH = {}.freeze
-      EMPTY_ARRAY = [].freeze
-
       # @param node [Fear::Extractor::Grammar::Node]
       def initialize(node:, **attributes)
         @input = node.input

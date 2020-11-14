@@ -14,6 +14,8 @@ module Fear
       end
     end
 
+    public_constant :EXTRACTOR
+
     # @api private
     def right_value
       value

@@ -7,6 +7,7 @@ module Fear
     # Parse pattern. Used within +Fear[]+
     class Pattern
       DEFAULT_PATTERN_CACHE_SIZE = 10_000
+      private_constant :DEFAULT_PATTERN_CACHE_SIZE
       @pattern_cache = LruRedux::Cache.new(ENV.fetch("FEAR_PATTERNS_CACHE_SIZE", DEFAULT_PATTERN_CACHE_SIZE))
 
       class << self

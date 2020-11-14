@@ -1,0 +1,42 @@
+name: Spec
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.5.x', '2.6.x', '2.7.x' ]
+    name: ${{ matrix.ruby }}
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - name: Install dependencies
+      run: |
+        gem install bundler --force --version=2.0.1
+        bundler --version
+        bundle install --jobs 4 --retry 3
+    - name: Test
+      run: bundle exec rspec
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: ruby-${{ matrix.ruby }}
+        parallel: true
+
+
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true

@@ -23,6 +23,7 @@ module Fear
     autoload :ValueMatcher, "fear/extractor/value_matcher"
 
     ExtractorNotFound = Class.new(Error)
+    public_constant :ExtractorNotFound
 
     @mutex = Mutex.new
     @registry = PartialFunction::EMPTY
@@ -30,6 +31,7 @@ module Fear
     EXTRACTOR_NOT_FOUND = proc do |klass|
       raise ExtractorNotFound, "could not find extractor for " + klass.inspect
     end
+    private_constant :EXTRACTOR_NOT_FOUND
 
     class << self
       # @param klass [Class, String]

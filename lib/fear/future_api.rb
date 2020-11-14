@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Fear
-  # rubocop: disable Metrics/LineLength
+  # rubocop: disable Layout/LineLength
   module FutureApi
     # Asynchronously evaluates the block
     # @param options [Hash] options will be passed directly to underlying +Concurrent::Promise+
@@ -17,5 +17,5 @@ module Fear
       Future.new(options, &block)
     end
   end
-  # rubocop: enable Metrics/LineLength
+  # rubocop: enable Layout/LineLength
 end

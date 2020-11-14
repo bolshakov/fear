@@ -13,6 +13,7 @@ module Fear
         Fear.none
       end
     end
+    public_constant :EXTRACTOR
 
     # @api private
     def left_value

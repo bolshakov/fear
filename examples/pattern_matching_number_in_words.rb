@@ -33,6 +33,7 @@ class ToWords
     80 => "eighty",
     90 => "ninety",
   }.freeze
+  private_constant :NUMBERS
 
   CONVERTER = Fear.matcher do |m|
     NUMBERS.each_pair do |number, in_words|
@@ -46,6 +47,7 @@ class ToWords
     m.case(->(n) { n < 1_000_000 }) { |n| "#{CONVERTER.(n / 1_000)} thousands #{CONVERTER.(n % 1_000)}" }
     m.else { |n| raise "#{n} too big " }
   end
+  private_constant :CONVERTER
 
   def self.call(number)
     Fear.case(Integer, &:itself).and_then(CONVERTER).(number)
