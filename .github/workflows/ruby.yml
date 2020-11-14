@@ -1,10 +1,9 @@
-name: Ruby
+name: Spec
 
 on: [push]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,8 +22,21 @@ jobs:
         bundler --version
         bundle install --jobs 4 --retry 3
     - name: Test
-      run: |
-        bundle exec rspec
-    - name: Lint
-      run: |
-        bundle exec rubocop --fail-level C
+      run: bundle exec rspec
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: ruby-${{ matrix.ruby }}
+        parallel: true
+
+
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
