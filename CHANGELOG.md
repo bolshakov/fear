@@ -4,6 +4,7 @@
 * Drop ruby 2.4.x support, test against ruby 2.7.x ([@bolshakov][])
 * Implement `Fear::Option#filter_map`  ([@bolshakov][])
 * Add dry-types extentions to wrap nullable values. ([@bolshakov][])
+* Implement pattern matching for ruby >= 2.7
 
 ## 1.1.0 
 
