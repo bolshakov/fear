@@ -20,12 +20,6 @@ Gem::Specification.new do |spec|
   spec.test_files = spec.files.grep(%r{^spec\/})
   spec.require_paths = ["lib"]
 
-  spec.post_install_message = <<-MSG
-    Fear v0.11.0 introduces backwards-incompatible changes.
-    Please see https://github.com/bolshakov/fear/blob/master/CHANGELOG.md#0110 for details.
-    Successfully installed fear-#{Fear::VERSION}
-  MSG
-
   spec.add_runtime_dependency "lru_redux"
   spec.add_runtime_dependency "treetop"
 

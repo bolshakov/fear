@@ -1,4 +1,4 @@
-## 1.x 
+## 1.2.0
 
 * Implement `Fear::Option#zip` and `Fear::Future#zip` with block argument ([@bolshakov][]) 
 * Drop ruby 2.4.x support, test against ruby 2.7.x ([@bolshakov][])
