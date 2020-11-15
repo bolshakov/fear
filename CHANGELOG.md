@@ -5,6 +5,7 @@
 * Implement `Fear::Option#filter_map`  ([@bolshakov][])
 * Add dry-types extentions to wrap nullable values. ([@bolshakov][])
 * Implement pattern matching for ruby >= 2.7
+* Deprecate `Fear.xcase`
 
 ## 1.1.0 
 

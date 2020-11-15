@@ -2,13 +2,11 @@
 
 require "fear"
 
-User = Struct.new(:id, :name, :admin)
-
-matcher = Fear.matcher do |m|
-  m.xcase("User(_, name, true)") do |name:|
+matcher = proc do |value|
+  case value
+  in User(admin: true, name:)
     puts "Hi #{name}, you are welcome"
-  end
-  m.xcase("User(_, _, false)") do
+  in User(admin: false)
     puts "Only admins are allowed here"
   end
 end
