@@ -81,4 +81,48 @@ RSpec.describe Fear::Option do
       it { is_expected.to be_none }
     end
   end
+
+  describe "#matcher" do
+    subject(:result) { matcher.(value) }
+
+    let(:matcher) do
+      described_class.matcher do |m|
+        m.some { |x| "some of #{x}" }
+        m.none { "none" }
+      end
+    end
+
+    context "when matches some branch" do
+      let(:value) { Fear.some(42) }
+
+      it { is_expected.to eq("some of 42") }
+    end
+
+    context "when matches none branch" do
+      let(:value) { Fear.none }
+
+      it { is_expected.to eq("none") }
+    end
+  end
+
+  describe "#match" do
+    subject(:matcher) do
+      described_class.match(value) do |m|
+        m.some { |x| "some of #{x}" }
+        m.none { "none" }
+      end
+    end
+
+    context "when matches some branch" do
+      let(:value) { Fear.some(42) }
+
+      it { is_expected.to eq("some of 42") }
+    end
+
+    context "when matches none branch" do
+      let(:value) { Fear.none }
+
+      it { is_expected.to eq("none") }
+    end
+  end
 end
