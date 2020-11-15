@@ -63,6 +63,29 @@ RSpec.describe Fear::PartialFunction do
     end
   end
 
+  describe ".or" do
+    subject { described_class.or(guard_1, guard_2, &Fear::Utils::IDENTITY) }
+
+    let(:guard_1) { ->(x) { x == 42 } }
+    let(:guard_2) { ->(x) { x == 21 } }
+
+    it { is_expected.to be_defined_at(42) }
+    it { is_expected.to be_defined_at(21) }
+    it { is_expected.not_to be_defined_at(20) }
+  end
+
+  describe ".and" do
+    subject { described_class.and(guard_1, guard_2, &Fear::Utils::IDENTITY) }
+
+    let(:guard_1) { ->(x) { x % 5 == 0 } }
+    let(:guard_2) { ->(x) { x % 2 == 0 } }
+
+    it { is_expected.to be_defined_at(10) }
+    it { is_expected.not_to be_defined_at(5) }
+    it { is_expected.not_to be_defined_at(2) }
+    it { is_expected.not_to be_defined_at(3) }
+  end
+
   describe "#lift" do
     let(:lifted) { partial_function.lift }
 
