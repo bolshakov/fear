@@ -130,6 +130,7 @@ module Fear
     #   pf = Fear.xcase('['ok', Some(body)]', ->(body:) { !body.empty? }) { }
     #
     def xcase(pattern, *guards, &function)
+      warn "NOTE: Fear.xcase is deprecated and will be removed in a future version. Use `case .. in ..` instead."
       Fear[pattern].and_then(self.case(*guards, &function))
     end
   end

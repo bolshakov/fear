@@ -171,6 +171,33 @@ namespace :perf do
     require "qo"
     require "dry/matcher"
 
+    task :option_match_vs_native_pattern_match do
+      some = Fear.some(42)
+
+      Benchmark.ips do |x|
+        x.report("case ... in ...") do
+          case some
+          in Fear::Some(41 => x)
+            x
+          in Fear::Some(42 => x)
+            x
+          in Fear::Some(43 => x)
+            x
+          end
+        end
+
+        x.report("Option.match") do
+          some.match do |m|
+            m.some(41, &:itself)
+            m.some(42, &:itself)
+            m.some(45, &:itself)
+          end
+        end
+
+        x.compare!
+      end
+    end
+
     task :qo_vs_fear_pattern_extraction do
       User = Struct.new(:id, :name)
       user = User.new(42, "Jane")
