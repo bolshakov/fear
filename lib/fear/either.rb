@@ -275,6 +275,11 @@ module Fear
     # @return [String]
     alias to_s inspect
 
+    # @return [<any>]
+    def deconstruct
+      [value]
+    end
+
     class << self
       # Build pattern matcher to be used later, despite off
       # +Either#match+ method, id doesn't apply matcher immanently,

@@ -105,5 +105,10 @@ module Fear
 
     # @return [String]
     alias to_s inspect
+
+    # @return [<StandardError>]
+    def deconstruct
+      [exception]
+    end
   end
 end

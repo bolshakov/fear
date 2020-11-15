@@ -90,5 +90,10 @@ module Fear
     def filter_map(&filter)
       map(&filter).select(&:itself)
     end
+
+    # @return [Array<any>]
+    def deconstruct
+      [get]
+    end
   end
 end

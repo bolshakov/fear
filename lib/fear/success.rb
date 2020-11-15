@@ -107,5 +107,10 @@ module Fear
 
     # @return [String]
     alias to_s inspect
+
+    # @return [<any>]
+    def deconstruct
+      [value]
+    end
   end
 end

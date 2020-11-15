@@ -1198,7 +1198,7 @@ matcher.(Fear.some(40)) #=> 'Nope'
 #### Under the hood 
 
 Pattern matcher is a combination of partial functions wrapped into nice DSL. Every partial function 
-defined on domain described with guard.
+defined on domain described with a guard.
 
 ```ruby
 pf = Fear.case(Integer) { |x| x / 2 }
@@ -1258,6 +1258,55 @@ handle = handle_numbers.or_else(handle_strings)
 handle.(0) #=> 'zero'
 handle.(12) #=> 'bigger than ten'
 handle.('one') #=> 1
+```
+
+### Native pattern-matching 
+
+Starting from ruby 2.7 you can use native pattern matching capabilities:
+
+```ruby 
+case Fear.some(42)
+in Fear::Some(x)
+  x * 2
+in Fear::None 
+  'none'
+end #=> 84
+
+case Fear.some(41)
+in Fear::Some(x) if x.even?
+  x / 2
+in Fear::Some(x) if x.odd? && x > 0
+  x * 2
+in Fear::None
+  'none'
+end #=> 82
+
+case Fear.some(42)
+in Fear::Some(x) if x.odd?
+  x * 2 
+else 
+  'nothing'
+end #=> nothing
+```
+
+It's possible to pattern match against Fear::Either and Fear::Try as well:
+
+```ruby 
+case either 
+in Fear::Right(Integer | String => x)
+  "integer or string: #{x}"
+in Fear::Left(String => error_code) if error_code = :not_found 
+  'not found'
+end  
+```
+
+```ruby 
+case Fear.try { 10 / x } 
+in Fear::Failure(ZeroDivisionError)
+  # ..
+in Fear::Success(x) 
+  # ..
+end  
 ```
 
 ### Dry-Types integration
