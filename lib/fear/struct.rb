@@ -234,5 +234,15 @@ module Fear
     private def _set_attribute(name, value)
       instance_variable_set(:"@#{name}", value)
     end
+
+    # @param keys [Hash, nil]
+    # @return [Hash]
+    def deconstruct_keys(keys)
+      if keys
+        to_h.slice(*(self.class.attributes & keys))
+      else
+        to_h
+      end
+    end
   end
 end
