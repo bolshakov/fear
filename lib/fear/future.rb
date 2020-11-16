@@ -61,7 +61,7 @@ module Fear
     #
     def initialize(promise = nil, **options, &block)
       if block_given? && promise
-        raise ArgumentError, "pass block or future"
+        raise ArgumentError, "pass block or promise"
       end
 
       @options = options
