@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe Fear::Future do
+  describe "#initialize" do
+    context "when promise and block are given at the same time" do
+      let(:promise) do
+        Concurrent::Promise.execute { 42 }
+      end
+
+      specify do
+        expect { described_class.new(promise) { 43 } }.to raise_error(ArgumentError, "pass block or promise")
+      end
+    end
+  end
+
   context "#on_complete" do
     it "run callback with value" do
       expect do |callback|
