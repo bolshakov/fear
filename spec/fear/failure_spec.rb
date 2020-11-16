@@ -144,8 +144,15 @@ RSpec.describe Fear::Failure do
       it { is_expected.to eq(true) }
     end
 
-    context "does not matches by class" do
+    context "does not match by class" do
       let(:match) { Fear.failure(ArgumentError) }
+      it { is_expected.to eq(false) }
+    end
+
+    context "does not match non-try" do
+      let(:match) { Fear.failure(ArgumentError) }
+      let(:failure) { ArgumentError.new }
+
       it { is_expected.to eq(false) }
     end
   end
