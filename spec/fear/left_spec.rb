@@ -140,6 +140,13 @@ RSpec.describe Fear::Left do
       let(:match) { Fear.left(Integer) }
       it { is_expected.to eq(false) }
     end
+
+    context "does non-either" do
+      let(:match) { Fear.left(42) }
+      let(:left) { 42 }
+
+      it { is_expected.to eq(false) }
+    end
   end
 
   describe "#match" do
