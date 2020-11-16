@@ -2,7 +2,7 @@
 
 RSpec.describe Fear::Option do
   describe "#zip" do
-    subject { left.zip(right) }
+    subject(:zip) { left.zip(right) }
 
     context "some with some" do
       let(:left) { Fear.some(42) }
@@ -28,6 +28,13 @@ RSpec.describe Fear::Option do
       it { is_expected.to eq(Fear.none) }
     end
 
+    context "some with non-option" do
+      let(:left) { Fear.some(42) }
+      let(:right) { 42 }
+
+      it { expect { zip }.to raise_error(TypeError) }
+    end
+
     context "none with some" do
       let(:left) { Fear.none }
       let(:right) { Fear.some(42) }
@@ -40,6 +47,13 @@ RSpec.describe Fear::Option do
       let(:right) { Fear.none }
 
       it { is_expected.to eq(Fear.none) }
+    end
+
+    context "none with non-option" do
+      let(:left) { Fear.none }
+      let(:right) { 42 }
+
+      it { expect { zip }.to raise_error(TypeError) }
     end
   end
 
