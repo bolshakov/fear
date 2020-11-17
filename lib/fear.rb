@@ -79,4 +79,8 @@ module Fear
     include Option::Mixin
     include Try::Mixin
   end
+
+  class << self
+    include Mixin
+  end
 end

@@ -1,3 +1,8 @@
+## 1.x
+
+* Add top-level factory methods: `Fear::Some`, `Fear::Option`, `Fear::Right`, `Fear::Left`, 
+  `Fear::Try`, `Fear::Success`, and `Fear::Failure`.
+   
 ## 1.2.0
 
 * Implement `Fear::Option#zip` and `Fear::Future#zip` with block argument ([@bolshakov][]) 
