@@ -40,7 +40,7 @@ Represents optional (nullable) values. Instances of `Option` are either an insta
 The most idiomatic way to use an `Option` instance is to treat it as a collection
 
 ```ruby
-name = Fear.option(params[:name])
+name = Fear.option(params[:name]) 
 upper = name.map(&:strip).select { |n| n.length != 0 }.map(&:upcase)
 puts upper.get_or_else('')
 ```
@@ -51,9 +51,11 @@ having to check for the existence of a value.
 A less-idiomatic way to use `Option` values is via pattern matching
 
 ```ruby
-Fear.option(params[:name]).match do |m|
-  m.some { |name| name.strip.upcase }
-  m.none { 'No name value' }
+case Fear.option(params[:name])
+in Fear::Some(name) 
+  name.strip.upcase
+in Fear::None
+  'No name value'
 end
 ```
 
@@ -68,17 +70,15 @@ else
 end
 ```
 
-Alternatively, include `Fear::Option::Mixin` to use `Option()`, `Some()` and `None()` methods:
+Alternatively, you can use camel-case factory methods `Fear::Option()`, `Fear::Some()` and `Fear::None` methods:
 
 ```ruby
-include Fear::Option::Mixin 
+Fear::Option(42) #=> #<Fear::Some get=42>
+Fear::Option(nil) #=> #<Fear::None>
 
-Option(42) #=> #<Fear::Some get=42>
-Option(nil) #=> #<Fear::None>
-
-Some(42) #=> #<Fear::Some get=42>
-Some(nil) #=> #<Fear::Some get=nil>
-None() #=> #<Fear::None>
+Fear::Some(42) #=> #<Fear::Some get=42>
+Fear::Some(nil) #=> #<Fear::Some get=nil>
+Fear::None #=> #<Fear::None>
 ``` 
 
 #### Option#get_or_else
@@ -156,7 +156,7 @@ Returns self if it is nonempty and applying the predicate to this `Option`'s val
 return `None`.
 
 ```ruby
-Fear.some(42).select { |v| v > 40 } #=> Fear.success(21)
+Fear.some(42).select { |v| v > 40 } #=> Fear.some(21)
 Fear.some(42).select { |v| v < 40 } #=> None
 Fear.none.select { |v| v < 40 }   #=> None
 ```
@@ -228,19 +228,14 @@ dividend = Fear.try { Integer(params[:dividend]) }
 divisor = Fear.try { Integer(params[:divisor]) }
 problem = dividend.flat_map { |x| divisor.map { |y| x / y } }
 
-problem.match |m|
-  m.success do |result|
-    puts "Result of #{dividend.get} / #{divisor.get} is: #{result}"
-  end
-
-  m.failure(ZeroDivisionError) do
-    puts "Division by zero is not allowed"
-  end
-
-  m.failure do |exception|
-    puts "You entered something wrong. Try again"
-    puts "Info from the exception: #{exception.message}"
-  end
+case problem
+in Fear::Success(result)
+  puts "Result of #{dividend.get} / #{divisor.get} is: #{result}"
+in Fear::Failure(ZeroDivisionError)
+  puts "Division by zero is not allowed"
+in Fear::Failure(exception)
+  puts "You entered something wrong. Try again"
+  puts "Info from the exception: #{exception.message}"
 end
 ```
 
@@ -257,13 +252,11 @@ type of default behavior in the case of failure.
 *NOTE*: Only non-fatal exceptions are caught by the combinators on `Try`.
 Serious system errors, on the other hand, will be thrown.
 
-Alternatively, include `Fear::Try::Mixin` to use `Try()` method:
+Alternatively, include you can use camel-case factory method `Fear::Try()`:
 
 ```ruby
-include Fear::Try::Mixin 
-
-Try { 4/0 }  #=> #<Fear::Failure exception=...>
-Try { 4/2 }  #=> #<Fear::Success value=2>
+Fear::Try { 4/0 }  #=> #<Fear::Failure exception=...>
+Fear::Try { 4/2 }  #=> #<Fear::Success value=2>
 ```
 
 #### Try#get_or_else
@@ -463,14 +456,11 @@ rescue ArgumentError
   Fear.left(in)
 end
 
-result.match do |m|
-  m.right do |x|
-    "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}"
-  end
-
-  m.left do |x|
-    "You passed me the String: #{x}"
-  end
+case result
+in Fear::Right(x)
+  "You passed me the Int: #{x}, which I will increment. #{x} + 1 = #{x+1}"
+in Fear::Left(x)
+  "You passed me the String: #{x}"
 end
 ```
 
@@ -478,13 +468,11 @@ Either is right-biased, which means that `Right` is assumed to be the default ca
 operate on. If it is `Left`, operations like `#map`, `#flat_map`, ... return the `Left` value
 unchanged.
 
-Alternatively, include `Fear::Either::Mixin` to use `Left()`, and `Right()` methods:
+Alternatively, you can use camel-case factory methods `Fear::Left()`, and `Fear::Right()`:
 
 ```ruby
-include Fear::Either::Mixin 
-
-Left(42)  #=> #<Fear::Left value=42>
-Right(42)  #=> #<Fear::Right value=42>
+Fear::Left(42)  #=> #<Fear::Left value=42>
+Fear::Right(42)  #=> #<Fear::Right value=42>
 ```
 
 #### Either#get_or_else
