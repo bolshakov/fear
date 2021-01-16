@@ -92,26 +92,4 @@ RSpec.describe Fear::Some do
 
     it { is_expected.to eq("#<Fear::Some get=42>") }
   end
-
-  describe "pattern matching" do
-    subject { Fear.xcase("Some(v : Integer)") { |v:| "matched #{v}" }.call_or_else(var) { "nothing" } }
-
-    context "some of int" do
-      let(:var) { Fear.some(42) }
-
-      it { is_expected.to eq("matched 42") }
-    end
-
-    context "some of string" do
-      let(:var) { Fear.some("42") }
-
-      it { is_expected.to eq("nothing") }
-    end
-
-    context "not some" do
-      let(:var) { "42" }
-
-      it { is_expected.to eq("nothing") }
-    end
-  end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "fear/either_api"
-require "fear/extractor_api"
 require "fear/for_api"
 require "fear/future_api"
 require "fear/option_api"
@@ -26,7 +25,6 @@ module Fear
   public_constant :PatternSyntaxError
 
   extend EitherApi
-  extend ExtractorApi
   extend ForApi
   extend FutureApi
   extend OptionApi
@@ -37,7 +35,6 @@ module Fear
   autoload :PartialFunction, "fear/partial_function"
   autoload :PartialFunctionClass, "fear/partial_function_class"
   autoload :PatternMatch, "fear/pattern_match"
-  autoload :Extractor, "fear/extractor"
 
   autoload :Unit, "fear/unit"
   autoload :For, "fear/for"

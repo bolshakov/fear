@@ -44,12 +44,6 @@ module Fear
     #     m.case(Integer, :even?.to_proc) { |x| ... }
     #     m.case(Integer, :odd?.to_proc) { |x| ... }
     #
-    # If you want to perform pattern destruction, use +#xcase+ method
-    #
-    #     m.xcase('Date(year, 12, 31)') { |year:| "Last day of the year #{year}" }
-    #
-    # The pattern above ensures that it's 31 of December and extracts year to block named parameter
-    #
     # Since matcher returns +Fear::PartialFunction+, you can combine matchers using
     # partial function API:
     #
@@ -110,28 +104,6 @@ module Fear
     # @return [Fear::PartialFunction]
     def case(*guards, &function)
       PartialFunction.and(*guards, &function)
-    end
-
-    # Creates partial function defined on domain described with guard
-    # and perform pattern extraction.
-    #
-    # @param pattern [String] pattern to match against
-    # @param guards [<#===>] other guards against extracted pattern
-    # @yieldparam hash [{Symbol => any}]
-    # @return [Fear::PartialFunction]
-    #
-    # @example
-    #   pf = Fear.xcase('['ok', Some(body)]') { |body:| ...  }
-    #   pf.defined_at?(['ok', Fear.some(body)]) #=> true
-    #   pf.defined_at?(['err', Fear.none]) #=> false
-    #
-    # @example pattern and guards. It matches against non-empty body
-    #
-    #   pf = Fear.xcase('['ok', Some(body)]', ->(body:) { !body.empty? }) { }
-    #
-    def xcase(pattern, *guards, &function)
-      warn "NOTE: Fear.xcase is deprecated and will be removed in a future version. Use `case .. in ..` instead."
-      Fear[pattern].and_then(self.case(*guards, &function))
     end
   end
 end

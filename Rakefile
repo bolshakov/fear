@@ -198,27 +198,6 @@ namespace :perf do
       end
     end
 
-    task :qo_vs_fear_pattern_extraction do
-      User = Struct.new(:id, :name)
-      user = User.new(42, "Jane")
-
-      Benchmark.ips do |x|
-        x.report("Qo") do
-          Qo.case(user, destructure: true) do |m|
-            m.when(User) { |id, name| [id, name] }
-          end
-        end
-
-        x.report("Fear") do
-          Fear.match(user) do |m|
-            m.xcase("User(id, name)") { |id:, name:| [id, name] }
-          end
-        end
-
-        x.compare!
-      end
-    end
-
     task :dry_vs_qo_vs_fear_try do
       module ExhaustivePatternMatch
         def initialize(*)

@@ -135,26 +135,4 @@ RSpec.describe Fear::Success do
 
     it { is_expected.to eq('#<Fear::Success value="value">') }
   end
-
-  describe "pattern matching" do
-    subject { Fear.xcase("Success(v : Integer)") { |v:| "matched #{v}" }.call_or_else(var) { "nothing" } }
-
-    context "success of int" do
-      let(:var) { Fear.success(42) }
-
-      it { is_expected.to eq("matched 42") }
-    end
-
-    context "success of string" do
-      let(:var) { Fear.success("42") }
-
-      it { is_expected.to eq("nothing") }
-    end
-
-    context "not success" do
-      let(:var) { "42" }
-
-      it { is_expected.to eq("nothing") }
-    end
-  end
 end

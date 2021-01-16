@@ -191,36 +191,4 @@ RSpec.describe Fear::Struct do
 
     it { is_expected.to eq("<#Fear::Struct StrToS a=2, b=nil>") }
   end
-
-  context "extract" do
-    Str = Fear::Struct.with_attributes(:a, :b)
-    let(:struct) { Str.new(b: 43, a: 42) }
-
-    context "Fear::Struct subclass" do
-      context "match by one member" do
-        subject do
-          proc do |effect|
-            struct.match do |m|
-              m.xcase("Str(a, 43)", &effect)
-            end
-          end
-        end
-
-        it { is_expected.to yield_with_args(a: 42) }
-      end
-
-      context "does not match" do
-        subject do
-          proc do |effect|
-            struct.match do |m|
-              m.xcase("Str(_, 40)", &effect)
-              m.else {}
-            end
-          end
-        end
-
-        it { is_expected.not_to yield_control }
-      end
-    end
-  end
 end
