@@ -9,8 +9,6 @@ PATH
   remote: .
   specs:
     fear (1.2.0)
-      lru_redux
-      treetop
 
 GEM
   remote: https://rubygems.org/
@@ -54,11 +52,9 @@ GEM
       rspec (~> 3.0)
     irb (1.1.0)
       reline (>= 0.0.1)
-    lru_redux (1.1.0)
     parallel (1.20.0)
     parser (2.7.2.0)
       ast (~> 2.4.1)
-    polyglot (0.3.5)
     rainbow (3.0.0)
     rake (13.0.3)
     regexp_parser (1.8.2)
@@ -100,8 +96,6 @@ GEM
     simplecov-html (0.12.3)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.2)
-    treetop (1.6.11)
-      polyglot (~> 0.3)
     unicode-display_width (1.7.0)
     yard (0.9.26)
 
@@ -129,4 +123,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.0.2
+   2.1.4
