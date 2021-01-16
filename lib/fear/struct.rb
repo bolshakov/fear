@@ -36,18 +36,6 @@ module Fear
   #     john.admin #=> false
   #     admin_john.admin #=> true
   #
-  # It's possible to match against struct attributes. The following example extracts email from
-  # user only if user is admin
-  #
-  #     john = User.new(id: 2, email: 'john@example.com', admin: false)
-  #     john.match |m|
-  #       m.xcase('Fear::Struct(_, email, true)') do |email|
-  #         email
-  #       end
-  #     end
-  #
-  # Note, parameters got extracted in order they was defined.
-  #
   class Struct
     include PatternMatch.mixin
 
@@ -58,7 +46,6 @@ module Fear
       # @api private
       def inherited(base)
         base.instance_variable_set(:@attributes, attributes)
-        Fear.register_extractor(base, Fear.case(base, &:to_a).lift)
       end
 
       # Defines attribute

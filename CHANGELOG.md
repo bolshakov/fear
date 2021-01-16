@@ -1,5 +1,6 @@
 ## 1.x
 
+* Drop pattern extraction support (`Fear.xcase`).
 * Add top-level factory methods: `Fear::Some`, `Fear::Option`, `Fear::Right`, `Fear::Left`, 
   `Fear::Try`, `Fear::Success`, and `Fear::Failure`.
    

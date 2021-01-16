@@ -200,26 +200,4 @@ RSpec.describe Fear::Failure do
 
     it { is_expected.to eq("#<Fear::Failure exception=#<RuntimeError: error>>") }
   end
-
-  describe "pattern matching" do
-    subject { Fear.xcase("Failure(v : ArgumentError)") { "matched" }.call_or_else(var) { "nothing" } }
-
-    context "failure of ArgumentError" do
-      let(:var) { Fear.failure(ArgumentError.new) }
-
-      it { is_expected.to eq("matched") }
-    end
-
-    context "failure of RuntimeError" do
-      let(:var) { Fear.failure(RuntimeError.new) }
-
-      it { is_expected.to eq("nothing") }
-    end
-
-    context "not failure" do
-      let(:var) { "42" }
-
-      it { is_expected.to eq("nothing") }
-    end
-  end
 end
