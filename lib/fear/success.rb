@@ -6,15 +6,6 @@ module Fear
     include RightBiased::Right
     include SuccessPatternMatch.mixin
 
-    EXTRACTOR = proc do |try|
-      if Fear::Success === try
-        Fear.some([try.get])
-      else
-        Fear.none
-      end
-    end
-    public_constant :EXTRACTOR
-
     attr_reader :value
     protected :value
 

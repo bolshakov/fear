@@ -7,15 +7,6 @@ module Fear
     include RightBiased::Left
     include NonePatternMatch.mixin
 
-    EXTRACTOR = proc do |option|
-      if Fear::None === option
-        Fear.some([])
-      else
-        Fear.none
-      end
-    end
-    public_constant :EXTRACTOR
-
     # @raise [NoSuchElementError]
     def get
       raise NoSuchElementError
