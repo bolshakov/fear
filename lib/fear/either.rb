@@ -331,3 +331,6 @@ module Fear
     end
   end
 end
+
+require "fear/left"
+require "fear/right"

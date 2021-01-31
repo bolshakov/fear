@@ -258,3 +258,6 @@ module Fear
     end
   end
 end
+
+require "fear/some"
+require "fear/none"

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "fear/right_biased"
+require "fear/failure_pattern_match"
+
 module Fear
   class Failure
     include Try

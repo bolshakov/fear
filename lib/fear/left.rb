@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "fear/right_biased"
+require "fear/left_pattern_match"
+
 module Fear
   class Left
     include Either

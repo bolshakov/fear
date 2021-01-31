@@ -317,3 +317,6 @@ module Fear
     end
   end
 end
+
+require "fear/success"
+require "fear/failure"
