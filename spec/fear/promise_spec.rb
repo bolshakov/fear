@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/promise"
+
 RSpec.describe Fear::Promise do
   let(:value) { 42 }
   let(:error) { StandardError.new("something went wrong") }
@@ -78,18 +80,16 @@ RSpec.describe Fear::Promise do
     end
 
     context "#future" do
-      subject(:future) do
-        completed_promise.to_future
-      end
+      subject(:future) { Fear::Await.ready(promise.to_future, 0.01) }
+
+      let(:promise) { Fear::Promise.new.success!(value) }
 
       it "is completed" do
         expect(future).to be_completed
       end
 
       it "completed with value" do
-        future_value = future.value
-
-        expect(future_value).to eq Fear.some(Fear.success(value))
+        expect(future.value).to be_some_of(Fear.success(value))
       end
     end
   end

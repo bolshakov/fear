@@ -168,7 +168,7 @@ RSpec.describe Fear::Struct do
     context "string attributes" do
       subject { -> { struct.copy("a" => 44) } }
 
-      it { is_expected.to raise_error(ArgumentError, "wrong number of arguments (given 1, expected 0)") }
+      it { is_expected.to raise_error(ArgumentError) }
     end
 
     context "no attributes given" do

@@ -13,8 +13,8 @@ module Fear
     #   f = Fear.future(executor: :io) { open('http://example.com') }
     #   f.map(&:read).each { |body| puts body }
     #
-    def future(options = {}, &block)
-      Future.new(options, &block)
+    def future(**options, &block)
+      Future.new(nil, **options, &block)
     end
   end
   # rubocop: enable Layout/LineLength

@@ -6,6 +6,11 @@ rescue LoadError
   puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
 end
 
+require "fear/option"
+require "fear/try"
+require "fear/promise"
+require "fear/awaitable"
+
 module Fear
   # Asynchronous computations that yield futures are created
   # with the +Fear.future+ call:
@@ -249,7 +254,7 @@ module Fear
     #     )
     #
     def transform(success, failure)
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete_match do |m|
         m.success { |value| promise.success(success.(value)) }
         m.failure { |error| promise.failure(failure.(error)) }
@@ -268,7 +273,7 @@ module Fear
     #   future.map { |v| v * 2 } #=> the same as Fear.future { 2 * 2 }
     #
     def map(&block)
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete do |try|
         promise.complete!(try.map(&block))
       end
@@ -294,7 +299,7 @@ module Fear
     #   end
     #
     def flat_map
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete_match do |m|
         m.case(Fear::Failure) { |failure| promise.complete!(failure) }
         m.success do |value|
@@ -348,7 +353,7 @@ module Fear
     #
     #
     def recover(&block)
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete do |try|
         promise.complete!(try.recover(&block))
       end
@@ -374,7 +379,7 @@ module Fear
     #     # but it performs two calls asynchronously
     #
     def zip(other)
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete_match do |m|
         m.success do |value|
           other.on_complete do |other_try|
@@ -412,7 +417,7 @@ module Fear
     #   f.fallback_to(g) # evaluates to 5
     #
     def fallback_to(fallback)
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete_match do |m|
         m.success { |value| promise.complete!(value) }
         m.failure do |error|
@@ -447,7 +452,7 @@ module Fear
     #   end
     #
     def and_then
-      promise = Promise.new(@options)
+      promise = Promise.new(**@options)
       on_complete do |try|
         Fear.try do
           Fear::Try.matcher { |m| yield(m) }.call_or_else(try, &:itself)
@@ -478,9 +483,8 @@ module Fear
       # @return [Fear::Future]
       #
       def failed(exception)
-        new(executor: Concurrent::ImmediateExecutor.new) do
-          raise exception
-        end
+        new { raise exception }
+          .yield_self { |future| Fear::Await.ready(future, 10) }
       end
 
       # Creates an already completed +Future+ with the specified result.
@@ -488,9 +492,8 @@ module Fear
       # @return [Fear::Future]
       #
       def successful(result)
-        new(executor: Concurrent::ImmediateExecutor.new) do
-          result
-        end
+        new { result }
+          .yield_self { |future| Fear::Await.ready(future, 10) }
       end
     end
   end
