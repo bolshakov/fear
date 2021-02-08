@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "fear/partial_function"
+require "fear/pattern_match"
+
 module Fear
   # @api private
   module PatternMatchingApi

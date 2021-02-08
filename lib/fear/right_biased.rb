@@ -111,7 +111,7 @@ module Fear
 
     module Left
       prepend Interface
-      include Utils
+
       # @!method get_or_else(default)
       #   @param default [any]
       #   @return [any] default value

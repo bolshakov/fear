@@ -548,9 +548,11 @@ RSpec.describe Fear::Future do
         it "ensure callbacks are called" do
           expect do |first|
             expect do |second|
-              Fear::Future.successful(5)
+              future = Fear.future { 5 }
                 .and_then { |m| m.success(&first) }
                 .and_then { |m| m.success(&second) }
+
+              Fear::Await.ready(future, 2)
             end.to yield_with_args(5)
           end.to yield_with_args(5)
         end
@@ -603,7 +605,8 @@ RSpec.describe Fear::Future do
         context "first callback is failing" do
           it "calls second callback" do
             expect do |callback|
-              Fear::Future.successful(5).and_then { raise error }.and_then { |m| m.success(&callback) }
+              future = Fear.future { 5 }.and_then { raise error }.and_then { |m| m.success(&callback) }
+              Fear::Await.ready(future, 2)
             end.to yield_with_args(5)
           end
 

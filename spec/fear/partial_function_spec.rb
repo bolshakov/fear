@@ -52,7 +52,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   describe ".or" do
-    subject { described_class.or(guard_1, guard_2, &Fear::Utils::IDENTITY) }
+    subject { described_class.or(guard_1, guard_2, &:itself) }
 
     let(:guard_1) { ->(x) { x == 42 } }
     let(:guard_2) { ->(x) { x == 21 } }
@@ -63,7 +63,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   describe ".and" do
-    subject { described_class.and(guard_1, guard_2, &Fear::Utils::IDENTITY) }
+    subject { described_class.and(guard_1, guard_2, &:itself) }
 
     let(:guard_1) { ->(x) { x % 5 == 0 } }
     let(:guard_2) { ->(x) { x % 2 == 0 } }

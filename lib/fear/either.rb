@@ -331,3 +331,7 @@ module Fear
     end
   end
 end
+
+require "fear/either_pattern_match"
+require "fear/left"
+require "fear/right"

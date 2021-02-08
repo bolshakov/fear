@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/pattern_match"
+
 module Fear
   # Structs are like regular classes and good for modeling immutable data.
   #
@@ -119,7 +121,7 @@ module Fear
     #   admin_john.admin #=> true
     #
     def copy(**attributes)
-      self.class.new(to_h.merge(attributes))
+      self.class.new(**to_h.merge(attributes))
     end
 
     # Returns the struct attributes as an array of symbols

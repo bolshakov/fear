@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/awaitable"
+
 RSpec.describe Fear::Awaitable do
   subject(:awaitable) { Object.new.extend(Fear::Awaitable) }
 

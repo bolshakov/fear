@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+require "fear/partial_function/and_then"
+require "fear/partial_function/any"
+require "fear/partial_function/combined"
+require "fear/partial_function/empty"
+require "fear/partial_function/guard"
+require "fear/partial_function/lifted"
+require "fear/partial_function/or_else"
+require "fear/partial_function_class"
+
 module Fear
   # A partial function is a unary function defined on subset of all possible inputs.
   # The method +defined_at?+ allows to test dynamically if an arg is in
@@ -45,14 +54,6 @@ module Fear
   #   @return [#call]
   #   @abstract
   module PartialFunction
-    autoload :AndThen, "fear/partial_function/and_then"
-    autoload :Any, "fear/partial_function/any"
-    autoload :Combined, "fear/partial_function/combined"
-    autoload :EMPTY, "fear/partial_function/empty"
-    autoload :Guard, "fear/partial_function/guard"
-    autoload :Lifted, "fear/partial_function/lifted"
-    autoload :OrElse, "fear/partial_function/or_else"
-
     # Checks if a value is contained in the function's domain.
     #
     # @param arg [any]

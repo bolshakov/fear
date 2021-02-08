@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Fear::None" do
+RSpec.describe Fear::None do
   it_behaves_like Fear::RightBiased::Left do
     let(:left) { Fear.none }
   end

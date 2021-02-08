@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/either"
+
 module Fear
   module EitherApi
     # @param value [any]

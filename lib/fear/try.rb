@@ -317,3 +317,7 @@ module Fear
     end
   end
 end
+
+require "fear/try_pattern_match"
+require "fear/success"
+require "fear/failure"

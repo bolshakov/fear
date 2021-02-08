@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 
-begin
-  require "concurrent"
-rescue LoadError
-  puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
-end
-
 module Fear
   # @api private
   class Promise < Concurrent::IVar
     # @param options [Hash] options passed to underlying +Concurrent::Promise+
-    def initialize(**options)
+    def initialize(*_, **options)
       super()
       @options = options
       @promise = Concurrent::Promise.new(options) do
@@ -27,7 +21,7 @@ module Fear
 
     # @return [Fear::Future]
     def to_future
-      Future.new(promise, options)
+      Future.new(promise, **options)
     end
 
     # Complete this promise with successful result
@@ -38,7 +32,7 @@ module Fear
       complete(Fear.success(value))
     end
 
-    # Complete this promise with failure
+    # Complete this promise with value
     # @param value [any]
     # @return [self]
     # @raise [IllegalStateException]

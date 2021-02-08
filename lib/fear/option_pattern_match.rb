@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/pattern_match"
+
 module Fear
   # Option pattern matcher
   #
@@ -24,15 +26,12 @@ module Fear
   # @note it has two optimized subclasses +Fear::SomePatternMatch+ and +Fear::NonePatternMatch+
   # @api private
   class OptionPatternMatch < Fear::PatternMatch
-    GET_METHOD = :get.to_proc
-    private_constant :GET_METHOD
-
     # Match against Some
     #
     # @param conditions [<#==>]
     # @return [Fear::OptionPatternMatch]
     def some(*conditions, &effect)
-      branch = Fear.case(Fear::Some, &GET_METHOD).and_then(Fear.case(*conditions, &effect))
+      branch = Fear.case(Fear::Some, &:get).and_then(Fear.case(*conditions, &effect))
       or_else(branch)
     end
 
@@ -46,3 +45,6 @@ module Fear
     end
   end
 end
+
+require "fear/some_pattern_match"
+require "fear/none_pattern_match"

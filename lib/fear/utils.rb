@@ -6,9 +6,6 @@ module Fear
     EMPTY_STRING = ""
     public_constant :EMPTY_STRING
 
-    IDENTITY = :itself.to_proc
-    public_constant :IDENTITY
-
     UNDEFINED = Object.new.freeze
     public_constant :UNDEFINED
 

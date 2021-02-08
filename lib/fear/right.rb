@@ -6,16 +6,6 @@ module Fear
     include RightBiased::Right
     include RightPatternMatch.mixin
 
-    EXTRACTOR = proc do |either|
-      if Fear::Right === either
-        Fear.some([either.right_value])
-      else
-        Fear.none
-      end
-    end
-
-    public_constant :EXTRACTOR
-
     # @api private
     def right_value
       value
