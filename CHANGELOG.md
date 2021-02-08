@@ -1,5 +1,10 @@
-## 1.x
+## 2.0.0 (not yet released)
 
+* Start testing against Ruby 3.0.0
+* Minimal supported Ruby version is 2.6.0
+* Make future and promises compatible with Ruby 3.0 method syntax.
+* Get rid off autoload in favor of require. Autoload appeared to be not thread-safe.
+* All monads are shareable with Ractors
 * Drop pattern extraction support (`Fear.xcase`).
 * Add top-level factory methods: `Fear::Some`, `Fear::Option`, `Fear::Right`, `Fear::Left`, 
   `Fear::Try`, `Fear::Success`, and `Fear::Failure`.
