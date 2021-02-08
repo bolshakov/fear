@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/utils"
+
 module Fear
   module PartialFunction
     # Composite function produced by +PartialFunction#or_else+ method

@@ -7,4 +7,6 @@ module Fear
       self
     end
   end
+
+  private_constant :FailurePatternMatch
 end

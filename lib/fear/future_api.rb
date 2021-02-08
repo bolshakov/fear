@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+begin
+  require "concurrent"
+rescue LoadError
+  puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
+end
+
+require "fear/awaitable"
+require "fear/await"
+require "fear/future"
+require "fear/promise"
+
 module Fear
   # rubocop: disable Layout/LineLength
   module FutureApi

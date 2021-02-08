@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/pattern_match"
+
 module Fear
   # Option pattern matcher
   #
@@ -43,3 +45,6 @@ module Fear
     end
   end
 end
+
+require "fear/some_pattern_match"
+require "fear/none_pattern_match"

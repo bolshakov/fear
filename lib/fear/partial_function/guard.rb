@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
+require "fear/partial_function/guard/or"
+require "fear/partial_function/guard/and"
+require "fear/partial_function/guard/and3"
+
 module Fear
   module PartialFunction
     # Guard represents PartialFunction guardian
     #
     # @api private
     class Guard
-      autoload :And, "fear/partial_function/guard/and"
-      autoload :And3, "fear/partial_function/guard/and3"
-      autoload :Or, "fear/partial_function/guard/or"
-
       class << self
         # Optimized version for combination of two guardians
         # Two guarding is a very common situation. For example checking for Some, and checking

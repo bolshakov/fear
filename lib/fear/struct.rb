@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/pattern_match"
+
 module Fear
   # Structs are like regular classes and good for modeling immutable data.
   #

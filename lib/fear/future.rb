@@ -1,16 +1,5 @@
 # frozen_string_literal: true
 
-begin
-  require "concurrent"
-rescue LoadError
-  puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
-end
-
-require "fear/option"
-require "fear/try"
-require "fear/promise"
-require "fear/awaitable"
-
 module Fear
   # Asynchronous computations that yield futures are created
   # with the +Fear.future+ call:

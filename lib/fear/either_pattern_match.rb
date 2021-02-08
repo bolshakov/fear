@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/pattern_match"
+
 module Fear
   # Either pattern matcher
   #
@@ -24,18 +26,12 @@ module Fear
   # @note it has two optimized subclasses +Fear::LeftPatternMatch+ and +Fear::RightPatternMatch+
   # @api private
   class EitherPatternMatch < Fear::PatternMatch
-    LEFT_EXTRACTOR = :left_value.to_proc
-    public_constant :LEFT_EXTRACTOR
-
-    RIGHT_EXTRACTOR = :right_value.to_proc
-    public_constant :RIGHT_EXTRACTOR
-
     # Match against +Fear::Right+
     #
     # @param conditions [<#==>]
     # @return [Fear::EitherPatternMatch]
     def right(*conditions, &effect)
-      branch = Fear.case(Fear::Right, &RIGHT_EXTRACTOR).and_then(Fear.case(*conditions, &effect))
+      branch = Fear.case(Fear::Right, &:right_value).and_then(Fear.case(*conditions, &effect))
       or_else(branch)
     end
     alias success right
@@ -45,9 +41,12 @@ module Fear
     # @param conditions [<#==>]
     # @return [Fear::EitherPatternMatch]
     def left(*conditions, &effect)
-      branch = Fear.case(Fear::Left, &LEFT_EXTRACTOR).and_then(Fear.case(*conditions, &effect))
+      branch = Fear.case(Fear::Left, &:left_value).and_then(Fear.case(*conditions, &effect))
       or_else(branch)
     end
     alias failure left
   end
 end
+
+require "fear/left_pattern_match"
+require "fear/right_pattern_match"

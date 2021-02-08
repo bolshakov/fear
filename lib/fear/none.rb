@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/right_biased"
-require "fear/none_pattern_match"
-
 module Fear
   # @api private
   class NoneClass

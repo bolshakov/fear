@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-begin
-  require "concurrent"
-rescue LoadError
-  puts "You must add 'concurrent-ruby' to your Gemfile in order to use Fear::Future"
-end
-
-require "fear/try"
-
 module Fear
   # @api private
   class Promise < Concurrent::IVar
