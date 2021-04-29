@@ -56,7 +56,7 @@ GEM
     rake (13.0.3)
     regexp_parser (1.8.2)
     reline (0.0.7)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
