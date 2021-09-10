@@ -1,0 +1,27 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "02:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: dry-matcher
+    versions:
+    - "> 0.8.0"
+  - dependency-name: dry-monads
+    versions:
+    - "> 1.2.0"
+  - dependency-name: irb
+    versions:
+    - "> 1.1.0"
+  - dependency-name: rubocop-rspec
+    versions:
+    - "> 1.34.0"
+  - dependency-name: dry-types
+    versions:
+    - 1.5.0
+  - dependency-name: concurrent-ruby
+    versions:
+    - 1.1.8
