@@ -106,7 +106,7 @@ module Fear
   #   this is a +Left+.
   #   @return [Option]
   #   @example
-  #     Fear.right(42).to_option          #=> Fear.some(21)
+  #     Fear.right(42).to_option          #=> Fear.some(42)
   #     Fear.left('undefined').to_option  #=> Fear.none()
   #
   # @!method any?(&predicate)

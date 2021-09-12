@@ -156,7 +156,7 @@ Returns self if it is nonempty and applying the predicate to this `Option`'s val
 return `None`.
 
 ```ruby
-Fear.some(42).select { |v| v > 40 } #=> Fear.some(21)
+Fear.some(42).select { |v| v > 40 } #=> Fear.some(42)
 Fear.some(42).select { |v| v < 40 } #=> None
 Fear.none.select { |v| v < 40 }   #=> None
 ```
@@ -311,7 +311,7 @@ Fear.failure(ArgumentError.new).flat_map { |v| Fear.success(v/2) } #=> Fear.fail
 Returns an `Some` containing the `Success` value or a `None` if this is a `Failure`.
 
 ```ruby
-Fear.success(42).to_option                 #=> Fear.some(21)
+Fear.success(42).to_option                 #=> Fear.some(42)
 Fear.failure(ArgumentError.new).to_option  #=> None
 ```
 
@@ -372,7 +372,7 @@ Converts this to a `Failure` if the predicate is not satisfied.
 
 ```ruby
 Fear.success(42).select { |v| v > 40 }
-  #=> Fear.success(21)
+  #=> Fear.success(42)
 Fear.success(42).select { |v| v < 40 }
   #=> Fear.failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
 Fear.failure(ArgumentError.new).select { |v| v < 40 }
@@ -539,7 +539,7 @@ Fear.left('undefined').flat_map { |v| Fear.right(v/2) } #=> Fear.left('undefined
 Returns an `Some` containing the `Right` value or a `None` if this is a `Left`.
 
 ```ruby
-Fear.right(42).to_option          #=> Fear.some(21)
+Fear.right(42).to_option          #=> Fear.some(42)
 Fear.left('undefined').to_option  #=> Fear::None
 ```
 
