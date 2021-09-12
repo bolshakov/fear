@@ -121,7 +121,7 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Option]
   #   @example
-  #     Fear.some(42).select { |v| v > 40 } #=> Fear.success(21)
+  #     Fear.some(42).select { |v| v > 40 } #=> Fear.success(42)
   #     Fear.some(42).select { |v| v < 40 } #=> None
   #     Fear.none.select { |v| v < 40 }   #=> None
   #

@@ -156,7 +156,7 @@ Returns self if it is nonempty and applying the predicate to this `Option`'s val
 return `None`.
 
 ```ruby
-Fear.some(42).select { |v| v > 40 } #=> Fear.some(21)
+Fear.some(42).select { |v| v > 40 } #=> Fear.some(42)
 Fear.some(42).select { |v| v < 40 } #=> None
 Fear.none.select { |v| v < 40 }   #=> None
 ```
@@ -372,7 +372,7 @@ Converts this to a `Failure` if the predicate is not satisfied.
 
 ```ruby
 Fear.success(42).select { |v| v > 40 }
-  #=> Fear.success(21)
+  #=> Fear.success(42)
 Fear.success(42).select { |v| v < 40 }
   #=> Fear.failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
 Fear.failure(ArgumentError.new).select { |v| v < 40 }

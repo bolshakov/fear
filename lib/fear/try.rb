@@ -172,7 +172,7 @@ module Fear
   #   @return [Try]
   #   @example
   #     Fear.success(42).select { |v| v > 40 }
-  #       #=> Fear.success(21)
+  #       #=> Fear.success(42)
   #     Fear.success(42).select { |v| v < 40 }
   #       #=> Fear.failure(Fear::NoSuchElementError.new("Predicate does not hold for 42"))
   #     Fear.failure(ArgumentError.new).select { |v| v < 40 }
