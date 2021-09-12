@@ -311,7 +311,7 @@ Fear.failure(ArgumentError.new).flat_map { |v| Fear.success(v/2) } #=> Fear.fail
 Returns an `Some` containing the `Success` value or a `None` if this is a `Failure`.
 
 ```ruby
-Fear.success(42).to_option                 #=> Fear.some(21)
+Fear.success(42).to_option                 #=> Fear.some(42)
 Fear.failure(ArgumentError.new).to_option  #=> None
 ```
 
@@ -539,7 +539,7 @@ Fear.left('undefined').flat_map { |v| Fear.right(v/2) } #=> Fear.left('undefined
 Returns an `Some` containing the `Right` value or a `None` if this is a `Left`.
 
 ```ruby
-Fear.right(42).to_option          #=> Fear.some(21)
+Fear.right(42).to_option          #=> Fear.some(42)
 Fear.left('undefined').to_option  #=> Fear::None
 ```
 

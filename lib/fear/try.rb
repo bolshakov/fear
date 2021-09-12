@@ -114,7 +114,7 @@ module Fear
   #   this is a +Failure+.
   #   @return [Option]
   #   @example
-  #     Fear.success(42).to_option                 #=> Fear.some(21)
+  #     Fear.success(42).to_option                 #=> Fear.some(42)
   #     Fear.failure(ArgumentError.new).to_option  #=> Fear.none()
   #
   # @!method any?(&predicate)
