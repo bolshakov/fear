@@ -22,6 +22,11 @@ module Fear
       true
     end
 
+    # @return [false]
+    def present?
+      false
+    end
+
     # @return [None]
     def select(*)
       self
