@@ -28,6 +28,11 @@ module Fear
       false
     end
 
+    # @return [true]
+    def present?
+      true
+    end
+
     # @return [Option]
     def select
       if yield(value)

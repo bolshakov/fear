@@ -50,6 +50,11 @@ RSpec.describe Fear::Some do
     it { is_expected.to eq(false) }
   end
 
+  describe "#present?" do
+    subject { some.present? }
+    it { is_expected.to be_truthy }
+  end
+
   describe "#match" do
     context "matched" do
       subject do
