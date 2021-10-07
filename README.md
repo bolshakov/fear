@@ -196,6 +196,15 @@ Fear.some(42).empty? #=> false
 Fear.none.empty?   #=> true
 ```
 
+#### Option#blank?
+
+Returns `true` if the `Option` is `None`, `false` otherwise.
+
+```ruby
+Fear.some(42).blank? #=> false
+Fear.none.blank?   #=> true
+```
+
 #### Option#present?
 
 Returns `false` if the `Option` is `None`, `true` otherwise.
