@@ -1,13 +1,14 @@
 ## 2.0.0 (not yet released)
 
-* Start testing against Ruby 3.0.0
-* Minimal supported Ruby version is 2.6.0
-* Make future and promises compatible with Ruby 3.0 method syntax.
-* Get rid off autoload in favor of require. Autoload appeared to be not thread-safe.
-* All monads are shareable with Ractors
-* Drop pattern extraction support (`Fear.xcase`).
-* Add top-level factory methods: `Fear::Some`, `Fear::Option`, `Fear::Right`, `Fear::Left`, 
-  `Fear::Try`, `Fear::Success`, and `Fear::Failure`.
+* Added `Fear::Option#present?` and `Fear::Option#empty?` methods ([@Lokideos][])
+* Start testing against Ruby 3.0.0 ([@bolshakov][]) 
+* Minimal supported Ruby version is 2.6.0 ([@bolshakov][]) 
+* Make future and promises compatible with Ruby 3.0 method syntax. ([@bolshakov][]) 
+* Get rid off autoload in favor of require. Autoload appeared to be not thread-safe. ([@bolshakov][]) 
+* All monads are shareable with Ractors ([@bolshakov][]) 
+* Drop pattern extraction support (`Fear.xcase`). ([@bolshakov][]) 
+* Add top-level factory methods: `Fear::Some`, `Fear::Option`, `Fear::Right`, `Fear::Left` ([@bolshakov][]) 
+  `Fear::Try`, `Fear::Success`, and `Fear::Failure`. ([@bolshakov][]) 
    
 ## 1.2.0
 
@@ -67,3 +68,4 @@
 * Added `Either#or_else` and `Option#or_else`. `Try#or_else` may accept only block ([@bolshakov][])
   
 [@bolshakov]: https://github.com/bolshakov
+[@Lokideos]: https://github.com/Lokideos
