@@ -31,6 +31,16 @@ RSpec.describe Fear::None do
     it { is_expected.to eq(true) }
   end
 
+  describe "#blank?" do
+    subject { none.blank? }
+    it { is_expected.to eq(true) }
+  end
+
+  describe "#present?" do
+    subject { none.present? }
+    it { is_expected.to be_falsey }
+  end
+
   describe "#select" do
     subject { none.select { |value| value > 42 } }
 

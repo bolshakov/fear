@@ -22,6 +22,13 @@ module Fear
       true
     end
 
+    alias :blank? :empty?
+
+    # @return [false]
+    def present?
+      false
+    end
+
     # @return [None]
     def select(*)
       self

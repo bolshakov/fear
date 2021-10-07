@@ -196,6 +196,24 @@ Fear.some(42).empty? #=> false
 Fear.none.empty?   #=> true
 ```
 
+#### Option#blank?
+
+Returns `true` if the `Option` is `None`, `false` otherwise.
+
+```ruby
+Fear.some(42).blank? #=> false
+Fear.none.blank?   #=> true
+```
+
+#### Option#present?
+
+Returns `false` if the `Option` is `None`, `true` otherwise.
+
+```ruby
+Fear.some(42).present? #=> true
+Fear.none.present?   #=> false
+```
+
 #### Option#zip
 
 Returns a `Fear::Some` formed from this Option and another Option by combining the corresponding elements in a pair. 

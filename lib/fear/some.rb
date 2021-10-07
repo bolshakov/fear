@@ -28,6 +28,13 @@ module Fear
       false
     end
 
+    alias :blank? :empty?
+
+    # @return [true]
+    def present?
+      true
+    end
+
     # @return [Option]
     def select
       if yield(value)
