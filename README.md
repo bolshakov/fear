@@ -452,7 +452,7 @@ Fear.success(42).to_either                #=> Fear.right(42)
 Fear.failure(ArgumentError.new).to_either #=> Fear.left(ArgumentError.new)
 ```
 
-### Either ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Option))
+### Either ([API Documentation](https://www.rubydoc.info/github/bolshakov/fear/master/Fear/Either))
   
 Represents a value of one of two possible types (a disjoint union.)
 An instance of `Either` is either an instance of `Left` or `Right`.
