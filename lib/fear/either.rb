@@ -72,7 +72,7 @@ module Fear
   #   Performs the given block if this is a +Right+.
   #   @yieldparam [any] value
   #   @yieldreturn [void]
-  #   @return [Option] itself
+  #   @return [Fear::Either] itself
   #   @example
   #     Fear.right(17).each do |value|
   #       puts value
@@ -95,8 +95,8 @@ module Fear
   #   Returns the given block applied to the value from this +Right+
   #   or returns this if this is a +Left+.
   #   @yieldparam [any] value
-  #   @yieldreturn [Option]
-  #   @return [Option]
+  #   @yieldreturn [Fear::Either]
+  #   @return [Fear::Either]
   #   @example
   #     Fear.right(42).flat_map { |v| Fear.right(v/2) }         #=> Fear.right(21)
   #     Fear.left('undefined').flat_map { |v| Fear.right(v/2) } #=> Fear.left('undefined')
