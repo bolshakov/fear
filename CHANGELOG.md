@@ -1,8 +1,8 @@
-## 2.0.0 (not yet released)
+## 2.0.0
 
 * Added `Fear::Option#present?` and `Fear::Option#empty?` methods ([@Lokideos][])
-* Start testing against Ruby 3.0.0 ([@bolshakov][]) 
-* Minimal supported Ruby version is 2.6.0 ([@bolshakov][]) 
+* Start testing against Ruby 3.1.0 ([@bolshakov][]) 
+* Minimal supported Ruby version is 2.7.0 ([@bolshakov][]) 
 * Make future and promises compatible with Ruby 3.0 method syntax. ([@bolshakov][]) 
 * Get rid off autoload in favor of require. Autoload appeared to be not thread-safe. ([@bolshakov][]) 
 * All monads are shareable with Ractors ([@bolshakov][]) 
