@@ -9,10 +9,6 @@ require "date"
 require "fear/rspec"
 
 RSpec.configure do |config|
-  unless RUBY_VERSION >= "2.7"
-    config.exclude_pattern = "**/*pattern_matching_spec.rb"
-  end
-
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
