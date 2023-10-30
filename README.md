@@ -1,6 +1,6 @@
 # Fear
 [![Gem Version](https://badge.fury.io/rb/fear.svg)](https://badge.fury.io/rb/fear)
-![Specs](https://github.com/bolshakov/fear/workflows/Spec/badge.svg)
+[![Spec](https://github.com/bolshakov/fear/actions/workflows/spec.yml/badge.svg)](https://github.com/bolshakov/fear/actions/workflows/spec.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/01030620c59e9f40961b/maintainability)](https://codeclimate.com/github/bolshakov/fear/maintainability)
 [![Coverage Status](https://coveralls.io/repos/github/bolshakov/fear/badge.svg?branch=master)](https://coveralls.io/github/bolshakov/fear?branch=master)
 
