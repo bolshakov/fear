@@ -7,7 +7,7 @@ module Fear
     # An +Option+ factory which creates +Some+ if the argument is
     # not +nil+, and +None+ if it is +nil+.
     # @param value [any]
-    # @return [Fear::Some, Fear::None]
+    # @return [Fear::Option<any>]
     #
     # @example
     #   Fear.option(nil) #=> #<Fear::None>
