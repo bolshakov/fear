@@ -70,6 +70,7 @@ module Fear
         yield(value)
         self
       end
+      alias apply each
 
       # Maps the value using given block.
       #
@@ -144,6 +145,7 @@ module Fear
       def each
         self
       end
+      alias apply each
 
       # Ignores the given block and return self.
       #
