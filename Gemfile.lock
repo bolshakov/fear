@@ -96,7 +96,7 @@ GEM
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
     unicode-display_width (2.2.0)
-    yard (0.9.34)
+    yard (0.9.35)
 
 PLATFORMS
   ruby
