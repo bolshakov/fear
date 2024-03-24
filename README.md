@@ -632,6 +632,20 @@ Fear.left('left').swap   #=> Fear.right('left')
 Fear.right('right').swap #=> Fear.left('left')
 ```
 
+#### Either#left
+
+Projects this `Fear::Either` as a `Fear::Left`.
+This allows performing right-biased operation of the left
+side of the `Fear::Either`.
+
+```ruby
+Fear.left(42).left.map(&:succ)  #=> Fear.left(43)
+Fear.right(42).left.map(&:succ) #=> Fear.left(42)
+
+Fear.left(42).left.select(&:even?)  #=> Fear.left(42)
+Fear.right(42).left.select(&:odd?) #=> Fear.right(42)
+```
+
 #### Either#reduce
 
 Applies `reduce_left` if this is a `Left` or `reduce_right` if this is a `Right`.

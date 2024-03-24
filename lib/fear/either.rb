@@ -116,9 +116,9 @@ module Fear
   #   @yieldreturn [Boolean]
   #   @return [Boolean]
   #   @example
-  #     Fear.right(12).any?( |v| v > 10)         #=> true
-  #     Fear.right(7).any?( |v| v > 10)          #=> false
-  #     Fear.left('undefined').any?( |v| v > 10) #=> false
+  #     Fear.right(12).any? { |v| v > 10 }         #=> true
+  #     Fear.right(7).any? { |v| v > 10 }          #=> false
+  #     Fear.left('undefined').any? { |v| v > 10 } #=> false
   #
   # -----
   #
@@ -177,7 +177,7 @@ module Fear
   #
   # @!method swap
   #   If this is a +Left+, then return the left value in +Right+ or vice versa.
-  #   @return [Either]
+  #   @return [Fear::Either]
   #   @example
   #     Fear.left('left').swap   #=> Fear.right('left')
   #     Fear.right('right').swap #=> Fear.left('left')
@@ -280,6 +280,19 @@ module Fear
       [value]
     end
 
+    # Projects this +Fear::Either+ as a +Fear::Left+.
+    # This allows performing right-biased operation of the left
+    # side of the +Fear::Either+.
+    #
+    # @example
+    #   Fear.left(42).left.map(&:succ)  #=> Fear.left(43)
+    #   Fear.right(42).left.map(&:succ) #=> Fear.left(42)
+    #
+    # @return [Fear::LeftProjection]
+    def left
+      LeftProjection.new(self)
+    end
+
     class << self
       # Build pattern matcher to be used later, despite off
       # +Either#match+ method, id doesn't apply matcher immanently,
@@ -335,3 +348,4 @@ end
 require "fear/either_pattern_match"
 require "fear/left"
 require "fear/right"
+require "fear/either/left_projection"

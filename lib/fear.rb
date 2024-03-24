@@ -25,9 +25,6 @@ module Fear
   NoSuchElementError = Class.new(Error)
   public_constant :NoSuchElementError
 
-  PatternSyntaxError = Class.new(Error)
-  public_constant :PatternSyntaxError
-
   extend EitherApi
   extend ForApi
   extend FutureApi
