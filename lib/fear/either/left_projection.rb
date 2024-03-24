@@ -83,6 +83,7 @@ module Fear
           either
         end
       end
+      alias apply each
 
       # Maps the block argument through +Fear::Left+.
       #
