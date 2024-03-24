@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "fear/utils/assertions"
+
 module Fear
   # @private
   module Utils

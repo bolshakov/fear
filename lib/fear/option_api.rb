@@ -29,7 +29,7 @@ module Fear
       Fear::None
     end
 
-    # @param value [any]
+    # @param value [Object]
     # @return [Fear::Some]
     # @example
     #   Fear.some(17) #=> #<Fear::Some get=17>
