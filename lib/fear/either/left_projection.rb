@@ -6,7 +6,7 @@ module Fear
     # @see Fear::Either#left
     #
     class LeftProjection
-      extend Utils::Assertions
+      prepend Fear::RightBiased::Interface
 
       # @!attribute either
       #   @return [Fear::Either]
@@ -59,7 +59,6 @@ module Fear
           args.fetch(0) { yield }
         end
       end
-      assert_arg_or_block :get_or_else
 
       # Performs the given block if this is a +Fear::Left+.
       #
@@ -122,7 +121,6 @@ module Fear
           either
         end
       end
-      assert_return Fear::Either, :flat_map
 
       # Returns an +Fear::Some+ containing the +Fear::Left+ value or a +Fear::None+ if
       # this is a +Fear::Right+.
@@ -225,6 +223,14 @@ module Fear
       # @return [Boolean]
       def ==(other)
         other.is_a?(self.class) && other.either == either
+      end
+
+      private def left_class
+        Fear::Right
+      end
+
+      private def right_class
+        Fear::Left
       end
     end
   end
