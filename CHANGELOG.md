@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Fix Fear.option yard signature ([@bolshakov])
+
 ## 2.0.0
 
 * Added `Fear::Option#present?` and `Fear::Option#empty?` methods ([@Lokideos][])
