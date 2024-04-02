@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Fear::EitherPatternMatch do
+RSpec.describe Fear::Either::PatternMatch do
   context "Right" do
     let(:matcher) do
       described_class.new do |m|

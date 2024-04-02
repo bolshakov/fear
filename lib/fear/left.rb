@@ -4,7 +4,7 @@ module Fear
   class Left
     include Either
     include RightBiased::Left
-    include LeftPatternMatch.mixin
+    include Left::PatternMatch.mixin
 
     # @api private
     def left_value
@@ -74,3 +74,5 @@ module Fear
     end
   end
 end
+
+require "fear/left/pattern_match"

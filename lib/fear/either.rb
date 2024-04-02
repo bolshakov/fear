@@ -226,7 +226,7 @@ module Fear
   #
   # @!method match(&matcher)
   #   Pattern match against this +Either+
-  #   @yield matcher [Fear::EitherPatternMatch]
+  #   @yield matcher [Fear::Either::PatternMatch]
   #   @example
   #     either.match do |m|
   #       m.right(Integer) do |x|
@@ -309,10 +309,10 @@ module Fear
       #     end
       #   matcher.call(Fear.right(42))
       #
-      # @yieldparam [Fear::EitherPatternMatch]
+      # @yieldparam [Fear::Either::PatternMatch]
       # @return [Fear::PartialFunction]
       def matcher(&matcher)
-        EitherPatternMatch.new(&matcher)
+        Either::PatternMatch.new(&matcher)
       end
     end
 
@@ -345,7 +345,7 @@ module Fear
   end
 end
 
-require "fear/either_pattern_match"
+require "fear/either/pattern_match"
 require "fear/left"
 require "fear/right"
 require "fear/either/left_projection"

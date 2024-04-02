@@ -22,7 +22,7 @@ module Fear
   #
   # Since structs are immutable, you are not allowed to reassign their attributes
   #
-  #     john.email = ''john.doe@example.com'' #=> raises NoMethodError
+  #     john.email = "john.doe@example.com" #=> raises NoMethodError
   #
   # Two structs of the same type with the same attributes are equal
   #

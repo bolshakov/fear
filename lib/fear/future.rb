@@ -170,7 +170,7 @@ module Fear
     #
     # If the future has already been completed,
     # this will either be applied immediately or be scheduled asynchronously.
-    # @yieldparam [Fear::TryPatternMatch]
+    # @yieldparam [Fear::Try::PatternMatch]
     # @return [self]
     #
     # @example

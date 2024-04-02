@@ -4,7 +4,7 @@ module Fear
   class Some
     include Option
     include RightBiased::Right
-    include SomePatternMatch.mixin
+    include Some::PatternMatch.mixin
 
     attr_reader :value
     protected :value
@@ -94,3 +94,5 @@ module Fear
     end
   end
 end
+
+require "fear/some/pattern_match"
