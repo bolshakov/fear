@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/pattern_match"
-
 module Fear
   module Option
     # Option pattern matcher

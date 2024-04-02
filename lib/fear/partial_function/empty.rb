@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require "fear/empty_partial_function"
-
 module Fear
   module PartialFunction
-    EMPTY = EmptyPartialFunction.new
-    EMPTY.freeze
+    Empty = EmptyPartialFunction.new
+    Empty.freeze
 
-    public_constant :EMPTY
+    public_constant :Empty
   end
 end

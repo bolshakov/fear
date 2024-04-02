@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/partial_function/guard/or"
-require "fear/partial_function/guard/and"
-require "fear/partial_function/guard/and3"
-
 module Fear
   module PartialFunction
     # Guard represents PartialFunction guardian

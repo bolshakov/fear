@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/for"
-
 module Fear
   module ForApi
     # Syntactic sugar for composition of  multiple monadic operations. It supports two such

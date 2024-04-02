@@ -20,7 +20,7 @@ module Fear
     #   is contained in the function domain.
     # @raise [MatchError] when this partial function is not defined.
     def call(arg)
-      call_or_else(arg, &PartialFunction::EMPTY)
+      call_or_else(arg, &PartialFunction::Empty)
     end
 
     # @param arg [any]

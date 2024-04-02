@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/partial_function/and_then"
-require "fear/partial_function/any"
-require "fear/partial_function/combined"
-require "fear/partial_function/empty"
-require "fear/partial_function/guard"
-require "fear/partial_function/lifted"
-require "fear/partial_function/or_else"
-require "fear/partial_function_class"
-
 module Fear
   # A partial function is a unary function defined on subset of all possible inputs.
   # The method +defined_at?+ allows to test dynamically if an arg is in

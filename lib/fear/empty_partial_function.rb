@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Fear
-  # Use singleton version of EmptyPartialFunction -- PartialFunction::EMPTY
+  # Use singleton version of EmptyPartialFunction -- PartialFunction::Empty
   # @api private
   class EmptyPartialFunction
     include PartialFunction

@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
-require "fear/utils"
-require "fear/right_biased"
-require "fear/struct"
-require "fear/unit"
-require "fear/either_api"
-require "fear/for_api"
-require "fear/future_api"
-require "fear/option_api"
-require "fear/pattern_matching_api"
-require "fear/try_api"
-require "fear/version"
+require "zeitwerk"
+loader = Zeitwerk::Loader.for_gem
+loader.ignore("#{__dir__}/dry")
+loader.setup
 
 module Fear
   Error = Class.new(StandardError)

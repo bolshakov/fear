@@ -20,4 +20,6 @@ Gem::Specification.new do |spec|
   spec.test_files = spec.files.grep(%r{^spec\/})
   spec.require_paths = ["lib"]
   spec.required_ruby_version = Gem::Requirement.new(">= 3.1")
+
+  spec.add_runtime_dependency "zeitwerk"
 end
