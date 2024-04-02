@@ -89,12 +89,13 @@ module Fear
     #
     # @param guards [<#===>]
     # @param effect [Proc]
-    # @return [Fear::PartialFunction]
+    # @return [Fear::PatternMatch]
     # @see #or_else for details
     def case(*guards, &effect)
       or_else(Fear.case(*guards, &effect))
     end
 
+    # @return [Fear::PatternMatch]
     # @see Fear::PartialFunction#or_else
     def or_else(other)
       self.result = result.or_else(other)

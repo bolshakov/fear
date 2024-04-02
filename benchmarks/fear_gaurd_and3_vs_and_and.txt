@@ -1,13 +1,14 @@
 # It verifies that optimization for Partial Functions with three guards actually works.
 
 > bundle exec rake perf:fear:guard:and3_vs_and_and
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]
 Warming up --------------------------------------
-          Guard.and3   236.318k i/100ms
-           Guard#and   170.369k i/100ms
+          Guard.and3   580.401B i/100ms
+           Guard#and   350.896B i/100ms
 Calculating -------------------------------------
-          Guard.and3    235.992B (± 3.4%) i/s -    791.166B
-           Guard#and    169.998B (± 4.0%) i/s -    640.637B
+          Guard.and3      3.152Q (± 1.3%) i/s -     15.736Q in   4.993183s
+           Guard#and      1.132Q (± 1.7%) i/s -      5.653Q in   4.996181s
 
 Comparison:
-          Guard.and3: 235992292688.6 i/s
-           Guard#and: 169997755111.1 i/s - 1.39x  slower
+          Guard.and3: 3152131160662449.0 i/s
+           Guard#and: 1131877273526757.5 i/s - 2.78x  slower

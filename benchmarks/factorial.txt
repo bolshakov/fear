@@ -1,16 +1,14 @@
 # Depends on `n`, for 100!:
 
 > bundle exec rake perf:pattern_matching:factorial
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]
 Warming up --------------------------------------
-                Proc     2.395k i/100ms
-                Fear   312.000  i/100ms
-                  Qo   122.000  i/100ms
+                Proc     5.678k i/100ms
+                Fear   859.000 i/100ms
 Calculating -------------------------------------
-                Proc     26.620k (± 2.9%) i/s -    134.120k in   5.042738s
-                Fear      3.219k (± 4.1%) i/s -     16.224k in   5.049215s
-                  Qo      1.250k (± 4.8%) i/s -      6.344k in   5.090745s
+                Proc     56.634k (± 0.2%) i/s -    283.900k in   5.012921s
+                Fear      8.573k (± 0.5%) i/s -     42.950k in   5.009859s
 
 Comparison:
-                Proc:    26620.3 i/s
-                Fear:     3219.4 i/s - 8.27x  slower
-                  Qo:     1249.6 i/s - 21.30x  slower
+                Proc:    56633.8 i/s
+                Fear:     8573.3 i/s - 6.61x  slower

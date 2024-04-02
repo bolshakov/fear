@@ -231,7 +231,7 @@ module Fear
   #
   # @!method match(&matcher)
   #   Pattern match against this +Try+
-  #   @yield matcher [Fear::TryPatternMatch]
+  #   @yield matcher [Fear::Try::PatternMatch]
   #   @example
   #     Fear.try { ... }.match do |m|
   #       m.success(Integer) do |x|
@@ -276,10 +276,10 @@ module Fear
       #     end
       #   matcher.call(try)
       #
-      # @yieldparam [Fear::TryPatternMatch]
+      # @yieldparam [Fear::Try::PatternMatch]
       # @return [Fear::PartialFunction]
       def matcher(&matcher)
-        TryPatternMatch.new(&matcher)
+        Try::PatternMatch.new(&matcher)
       end
     end
 
@@ -318,6 +318,6 @@ module Fear
   end
 end
 
-require "fear/try_pattern_match"
+require "fear/try/pattern_match"
 require "fear/success"
 require "fear/failure"

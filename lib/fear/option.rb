@@ -207,7 +207,7 @@ module Fear
       # @yieldparam [OptionPatternMatch]
       # @return [Fear::PartialFunction]
       def matcher(&matcher)
-        OptionPatternMatch.new(&matcher)
+        Option::PatternMatch.new(&matcher)
       end
 
       def match(value, &block)
@@ -259,6 +259,6 @@ module Fear
   end
 end
 
-require "fear/option_pattern_match"
+require "fear/option/pattern_match"
 require "fear/some"
 require "fear/none"

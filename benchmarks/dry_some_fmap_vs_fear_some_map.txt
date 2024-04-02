@@ -1,11 +1,12 @@
 > bundle exec rake perf:dry:some_fmap_vs_fear_some_map
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]
 Warming up --------------------------------------
-                 Dry    68.154k i/100ms
-                Fear   151.093k i/100ms
+                 Dry   156.108k i/100ms
+                Fear   398.884k i/100ms
 Calculating -------------------------------------
-                 Dry    884.315k (± 4.1%) i/s -      4.430M in   5.018931s
-                Fear      2.481M (± 4.1%) i/s -     12.390M in   5.003728s
+                 Dry      1.561M (± 0.2%) i/s -      7.962M in   5.099636s
+                Fear      3.976M (± 0.5%) i/s -     19.944M in   5.016186s
 
 Comparison:
-                Fear:  2480589.0 i/s
-                 Dry:   884315.1 i/s - 2.81x  slower
+                Fear:  3976079.7 i/s
+                 Dry:  1561199.0 i/s - 2.55x  slower

@@ -1,14 +1,12 @@
-> bundle exec rake perf:pattern_matching:dry_vs_qo_vs_fear_try
+> bundle exec rake perf:pattern_matching:dry_vs_fear_try
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]
 Warming up --------------------------------------
-                  Qo     2.958k i/100ms
-                Fear     7.127k i/100ms
-         Dr::Matcher    13.079k i/100ms
+                Fear    18.527k i/100ms
+         Dr::Matcher    40.145k i/100ms
 Calculating -------------------------------------
-                  Qo     38.872k (± 3.1%) i/s -    195.228k in   5.027249s
-                Fear     88.756k (± 3.7%) i/s -    449.001k in   5.066471s
-         Dr::Matcher    166.700k (± 3.0%) i/s -    837.056k in   5.026408s
+                Fear    187.617k (± 0.4%) i/s -    944.877k in   5.036258s
+         Dr::Matcher    395.181k (± 1.9%) i/s -      2.007M in   5.081136s
 
 Comparison:
-         Dr::Matcher:   166699.7 i/s
-                Fear:    88755.7 i/s - 1.88x  slower
-                  Qo:    38871.9 i/s - 4.29x  slower
+         Dr::Matcher:   395181.1 i/s
+                Fear:   187617.3 i/s - 2.11x  slower

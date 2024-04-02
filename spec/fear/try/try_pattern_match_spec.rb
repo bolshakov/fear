@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Fear::TryPatternMatch do
+RSpec.describe Fear::Try::PatternMatch do
   context "Success" do
     let(:matcher) do
       described_class.new do |m|

@@ -4,7 +4,7 @@ module Fear
   class Success
     include Try
     include RightBiased::Right
-    include SuccessPatternMatch.mixin
+    include Success::PatternMatch.mixin
 
     attr_reader :value
     protected :value
@@ -105,3 +105,5 @@ module Fear
     end
   end
 end
+
+require "fear/success/pattern_match"

@@ -5,7 +5,7 @@ module Fear
   class NoneClass
     include Option
     include RightBiased::Left
-    include NonePatternMatch.mixin
+    include NoneClass::PatternMatch.mixin
 
     # @raise [NoSuchElementError]
     def get
@@ -92,3 +92,5 @@ module Fear
     end
   end
 end
+
+require "fear/none_class/pattern_match"

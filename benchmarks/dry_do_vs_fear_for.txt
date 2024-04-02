@@ -1,11 +1,12 @@
 > bundle exec rake perf:dry:do_vs_fear_for
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [arm64-darwin23]
 Warming up --------------------------------------
-                 Dry    31.375k i/100ms
-                Fear    24.131k i/100ms
+                 Dry    50.838k i/100ms
+                Fear    53.687T i/100ms
 Calculating -------------------------------------
-                 Dry    360.990k (± 2.7%) i/s -      1.820M in   5.045364s
-                Fear      7.212B (±27.2%) i/s -     27.210B in   4.656760s
+                 Dry    505.586k (± 1.3%) i/s -      2.542M in   5.028546s
+                Fear 38414118363278401536.000 (±35.1%) i/s - 129350402624716800000.000 in   4.237227s
 
 Comparison:
-                Fear: 7212177713.5 i/s
-                 Dry:   360989.8 i/s - 19978.90x  slower
+                Fear: 38414118363278401536.0 i/s
+                 Dry:   505586.3 i/s - 75979343079241.66x  slower

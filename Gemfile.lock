@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/baweaver/qo.git
-  revision: 8951ce899559118eb60321014b43cf4211730bd0
-  specs:
-    qo (0.99.0)
-      any (= 0.1.0)
-
 PATH
   remote: .
   specs:
@@ -13,7 +6,6 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    any (0.1.0)
     ast (2.4.2)
     benchmark-ips (2.13.0)
     bigdecimal (3.1.7)
@@ -100,14 +92,12 @@ PLATFORMS
 
 DEPENDENCIES
   benchmark-ips
-  bundler
   concurrent-ruby
   dry-matcher
   dry-monads
   dry-types
   fear!
   fear-rspec
-  qo!
   rake (~> 13.0)
   rspec (~> 3.1)
   rubocop (= 1.32.0)
