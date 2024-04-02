@@ -1,3 +1,7 @@
+## 3.0.0
+
+See full changelog here: https://github.com/bolshakov/fear/releases/tag/v3.0.0
+
 ## 2.0.1
 
 * Fix Fear.option yard signature ([@bolshakov])
