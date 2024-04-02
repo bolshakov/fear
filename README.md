@@ -1193,76 +1193,7 @@ end
 
 ### Dry-Types integration
 
-#### Option
-
-    NOTE: Requires the dry-tyes gem to be loaded.
-
-Load the `:fear_option` extension in your application.
-
-```ruby
-require 'dry-types'
-require 'dry/types/fear'
-
-Dry::Types.load_extensions(:fear_option)
-
-module Types
-  include Dry.Types()
-end
-```
-
-Append .option to a Type to return a `Fear::Option` object:
-
-```ruby
-Types::Option::Strict::Integer[nil] 
-#=> Fear.none
-Types::Option::Coercible::String[nil] 
-#=> Fear.none
-Types::Option::Strict::Integer[123] 
-#=> Fear.some(123)
-Types::Option::Strict::String[123]
-#=> Fear.some(123)
-Types::Option::Coercible::Float['12.3'] 
-#=> Fear.some(12.3)
-```
-
-'Option' types can also accessed by calling '.option' on a regular type:
-
-```ruby
-Types::Strict::Integer.option # equivalent to Types::Option::Strict::Integer
-```
-
-
-You can define your own optional types:
-
-```ruby
-option_string = Types::Strict::String.option
-option_string[nil]
-# => Fear.none
-option_string[nil].map(&:upcase)
-# => Fear.none
-option_string['something']
-# => Fear.some('something')
-option_string['something'].map(&:upcase)
-# => Fear.some('SOMETHING')
-option_string['something'].map(&:upcase).get_or_else { 'NOTHING' }
-# => "SOMETHING"
-```
-
-You can use it with dry-struct as well:
-
-```ruby
-class User < Dry::Struct
-  attribute :name, Types::Coercible::String
-  attribute :age,  Types::Coercible::Integer.option
-end
-
-user = User.new(name: 'Bob', age: nil)
-user.name #=> "Bob"
-user.age #=> Fear.none 
-
-user = User.new(name: 'Bob', age: 42)
-user.age #=> Fear.some(42) 
-```
+To use `Fear::Option` as optional type for `Dry::Types` use the [dry-types-fear] gem. 
 
 ## Testing
 
@@ -1286,3 +1217,6 @@ provides a bunch of rspec matchers.
 * [maybe](https://github.com/bhb/maybe)
 * [ruby-possibly](https://github.com/rap1ds/ruby-possibly)
 * [rumonade](https://github.com/ms-ati/rumonade)
+
+
+[dry-types-fear]: https://github.com/bolshakov/dry-types-fear

@@ -2,7 +2,6 @@
 
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
-loader.ignore("#{__dir__}/dry")
 loader.setup
 
 module Fear
