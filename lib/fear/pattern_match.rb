@@ -37,7 +37,7 @@ module Fear
 
       # @return [Fear::PartialFunction]
       def new
-        builder = __new__(PartialFunction::EMPTY)
+        builder = __new__(PartialFunction::Empty)
         yield builder
         builder.result
       end

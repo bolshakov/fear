@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/try"
-
 module Fear
   module TryApi
     # Constructs a +Try+ using the block. This

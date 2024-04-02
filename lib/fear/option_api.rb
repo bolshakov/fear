@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/option"
-
 module Fear
   module OptionApi
     # An +Option+ factory which creates +Some+ if the argument is

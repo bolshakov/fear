@@ -4,7 +4,7 @@ module Fear
   class Right
     include Either
     include RightBiased::Right
-    include Right::PatternMatch.mixin
+    include PatternMatch.mixin
 
     # @api private
     def right_value
@@ -76,5 +76,3 @@ module Fear
     end
   end
 end
-
-require "fear/right/pattern_match"

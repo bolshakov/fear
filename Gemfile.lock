@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     fear (2.0.1)
+      zeitwerk
 
 GEM
   remote: https://rubygems.org/

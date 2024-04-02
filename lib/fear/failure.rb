@@ -4,7 +4,7 @@ module Fear
   class Failure
     include Try
     include RightBiased::Left
-    include Failure::PatternMatch.mixin
+    include PatternMatch.mixin
 
     # @param [StandardError]
     def initialize(exception)
@@ -103,5 +103,3 @@ module Fear
     end
   end
 end
-
-require "fear/failure/pattern_match"

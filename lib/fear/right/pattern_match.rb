@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "fear/either/pattern_match"
-
 module Fear
   class Right
     # @api private

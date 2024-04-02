@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Fear::PartialFunction::EMPTY do
+RSpec.describe Fear::PartialFunction::Empty do
   describe "#defined?" do
     subject { described_class.defined_at?(42) }
 

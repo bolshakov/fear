@@ -258,7 +258,3 @@ module Fear
     end
   end
 end
-
-require "fear/option/pattern_match"
-require "fear/some"
-require "fear/none"
