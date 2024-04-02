@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fear (2.0.1)
+    fear (3.0.0)
       zeitwerk
 
 GEM
