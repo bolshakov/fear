@@ -1,0 +1,54 @@
+name: Fear
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+jobs:
+  rubocop:
+    name: Standard 👮
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+      - name: Standard Ruby
+        uses: standardrb/standard-ruby-action@v1.5.0
+        with:
+          autofix: false
+
+  specs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '3.1', "3.2", "3.3", "truffleruby+graalvm-head" ]
+    name: Specs on Ruby ${{ matrix.ruby }} 💚
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Specs
+        run: bundle exec rspec
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ruby-${{ matrix.ruby }}
+          parallel: true
+
+
+  finish:
+    needs: specs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
