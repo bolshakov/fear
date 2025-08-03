@@ -27,7 +27,7 @@ module Fear
     # @yield [arg] if function not defined
     def call_or_else(arg)
       if defined_at?(arg)
-        function.(arg)
+        function.call(arg)
       else
         yield arg
       end

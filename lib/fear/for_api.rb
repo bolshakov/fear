@@ -62,7 +62,7 @@ module Fear
     # @return [{#map, #flat_map}]
     #
     def for(*monads, &block)
-      Fear::For.(monads, &block)
+      Fear::For.call(monads, &block)
     end
   end
 end

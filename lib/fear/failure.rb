@@ -31,7 +31,7 @@ module Fear
     # @return [Try] of calling block
     def or_else(*args)
       super
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
@@ -52,7 +52,7 @@ module Fear
       Fear.matcher { |m| yield(m) }
         .and_then { |result| result.tap { Utils.assert_type!(result, Success, Failure) } }
         .call_or_else(exception) { self }
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
@@ -63,7 +63,7 @@ module Fear
       Fear.matcher { |m| yield(m) }
         .and_then { |v| Success.new(v) }
         .call_or_else(exception) { self }
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
@@ -95,7 +95,7 @@ module Fear
     end
 
     # @return [String]
-    alias to_s inspect
+    alias_method :to_s, :inspect
 
     # @return [<StandardError>]
     def deconstruct

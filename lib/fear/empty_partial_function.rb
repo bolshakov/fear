@@ -14,8 +14,8 @@ module Fear
       raise MatchError, "partial function not defined at: #{arg}"
     end
 
-    alias === call
-    alias [] call
+    alias_method :===, :call
+    alias_method :[], :call
 
     def call_or_else(arg)
       yield arg

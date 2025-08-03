@@ -28,7 +28,7 @@ module Fear
       true
     end
 
-    alias :blank? :empty?
+    alias_method :blank?, :empty?
 
     # @return [false]
     def present?
@@ -51,7 +51,7 @@ module Fear
     end
 
     # @return [String]
-    alias to_s inspect
+    alias_method :to_s, :inspect
 
     # @param other [Any]
     # @return [Boolean]

@@ -80,13 +80,13 @@ RSpec.describe Fear::PartialFunction do
     let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x } }
 
     context "defined" do
-      subject { lifted.(2) }
+      subject { lifted.call(2) }
 
       it { is_expected.to eq(Fear::Some.new(2)) }
     end
 
     context "not defined" do
-      subject { lifted.(0) }
+      subject { lifted.call(0) }
 
       it { is_expected.to eq(Fear::None) }
     end
@@ -108,13 +108,13 @@ RSpec.describe Fear::PartialFunction do
     let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x } }
 
     context "defined" do
-      subject { partial_function.(2) }
+      subject { partial_function.call(2) }
 
       it { is_expected.to eq(2) }
     end
 
     context "not defined" do
-      subject { -> { partial_function.(0) } }
+      subject { -> { partial_function.call(0) } }
 
       it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 0") }
     end
@@ -124,13 +124,13 @@ RSpec.describe Fear::PartialFunction do
     let(:partial_function) { Fear.case(->(v) { v != 0 }) { |x| 4 / x }.to_proc }
 
     context "defined" do
-      subject { partial_function.(2) }
+      subject { partial_function.call(2) }
 
       it { is_expected.to eq(2) }
     end
 
     context "not defined" do
-      subject { -> { partial_function.(0) } }
+      subject { -> { partial_function.call(0) } }
 
       it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 0") }
     end
@@ -189,7 +189,7 @@ RSpec.describe Fear::PartialFunction do
   end
 
   shared_examples "#or_else" do |method_name|
-    subject { is_even.__send__(method_name, is_odd).(value) }
+    subject { is_even.__send__(method_name, is_odd).call(value) }
 
     let(:is_even) { Fear.case(:even?.to_proc) { |x| "#{x} is even" } }
     let(:is_odd) { Fear.case(:odd?.to_proc) { |x| "#{x} is odd" } }

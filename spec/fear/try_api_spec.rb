@@ -15,9 +15,9 @@ RSpec.describe Fear::TryApi do
     end
 
     context "when low level error happened" do
-      subject(:try) { Fear.try { raise Exception } }
+      subject(:try) { Fear.try { raise NoMemoryError } }
 
-      it { expect { try }.to raise_error(Exception) }
+      it { expect { try }.to raise_error(NoMemoryError) }
     end
   end
 end

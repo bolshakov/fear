@@ -1,7 +1,0 @@
-inherit_gem:
-  ruby_coding_standard: .rubocop.yml
-
-AllCops:
-  TargetRubyVersion: 2.7
-  Exclude:
-    - vendor/**/*

@@ -23,13 +23,13 @@ RSpec.describe Fear::PartialFunction, "#and_then" do
 
     describe "#call" do
       context "defined" do
-        subject { pf_and_f.(4) }
+        subject { pf_and_f.call(4) }
 
         it { is_expected.to eq("f: pf: 4") }
       end
 
       context "not defined" do
-        subject { -> { pf_and_f.(3) } }
+        subject { -> { pf_and_f.call(3) } }
 
         it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 3") }
       end
@@ -86,7 +86,7 @@ RSpec.describe Fear::PartialFunction, "#and_then" do
 
     describe "#call" do
       context "first defined, second defined on result of first" do
-        subject { first_and_then_second.(6) }
+        subject { first_and_then_second.call(6) }
 
         let(:first) { Fear.case(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { Fear.case(->(x) { x % 3 == 0 }) { |x| x / 3 } }
@@ -95,7 +95,7 @@ RSpec.describe Fear::PartialFunction, "#and_then" do
       end
 
       context "first defined, second not defined on result of first" do
-        subject { -> { first_and_then_second.(4) } }
+        subject { -> { first_and_then_second.call(4) } }
 
         let(:first) { Fear.case(->(x) { x.even? }) { |x| x / 2 } }
         let(:second) { Fear.case(->(x) { x % 3 == 0 }) { |x| x / 3 } }
@@ -104,7 +104,7 @@ RSpec.describe Fear::PartialFunction, "#and_then" do
       end
 
       context "first not defined" do
-        subject { -> { first_and_then_second.(3) } }
+        subject { -> { first_and_then_second.call(3) } }
 
         let(:first) { Fear.case(->(x) { x.even? }) { |x| "first: #{x}" } }
         let(:second) { Fear.case(->(x) { x % 3 == 0 }) { |x| "second: #{x}" } }

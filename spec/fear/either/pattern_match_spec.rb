@@ -10,10 +10,10 @@ RSpec.describe Fear::Either::PatternMatch do
     end
 
     it do
-      expect(matcher.(Fear.right(4))).to eq("4 is even")
-      expect(matcher.(Fear.right(3))).to eq("3 is odd")
+      expect(matcher.call(Fear.right(4))).to eq("4 is even")
+      expect(matcher.call(Fear.right(3))).to eq("3 is odd")
       expect do
-        matcher.(Fear.left(44))
+        matcher.call(Fear.left(44))
       end.to raise_error(Fear::MatchError)
     end
   end
@@ -27,10 +27,10 @@ RSpec.describe Fear::Either::PatternMatch do
     end
 
     it do
-      expect(matcher.(Fear.left(4))).to eq("4 is even")
-      expect(matcher.(Fear.left(3))).to eq("3 is odd")
+      expect(matcher.call(Fear.left(4))).to eq("4 is even")
+      expect(matcher.call(Fear.left(3))).to eq("3 is odd")
       expect do
-        matcher.(Fear.right(44))
+        matcher.call(Fear.right(44))
       end.to raise_error(Fear::MatchError)
     end
   end

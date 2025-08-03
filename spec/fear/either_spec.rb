@@ -2,7 +2,7 @@
 
 RSpec.describe Fear::Either do
   describe "#matcher" do
-    subject(:result) { matcher.(value) }
+    subject(:result) { matcher.call(value) }
 
     let(:matcher) do
       described_class.matcher do |m|

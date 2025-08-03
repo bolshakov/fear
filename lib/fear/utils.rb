@@ -38,7 +38,7 @@ module Fear
 
       def return_or_call_proc(value)
         if value.respond_to?(:call)
-          value.()
+          value.call
         else
           value
         end

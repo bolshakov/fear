@@ -32,7 +32,7 @@ module Fear
 
     private def resolve(monad_or_proc, inner_values)
       if monad_or_proc.respond_to?(:call)
-        monad_or_proc.(*inner_values)
+        monad_or_proc.call(*inner_values)
       else
         monad_or_proc
       end

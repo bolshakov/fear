@@ -8,7 +8,7 @@ RSpec.describe Fear::PartialFunction::Empty do
   end
 
   describe "#call" do
-    subject { -> { described_class.(42) } }
+    subject { -> { described_class.call(42) } }
 
     it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 42") }
   end

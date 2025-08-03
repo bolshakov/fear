@@ -33,7 +33,7 @@ module Fear
         branch = Fear.case(Fear::Right, &:right_value).and_then(Fear.case(*conditions, &effect))
         or_else(branch)
       end
-      alias success right
+      alias_method :success, :right
 
       # Match against +Fear::Left+
       #
@@ -43,7 +43,7 @@ module Fear
         branch = Fear.case(Fear::Left, &:left_value).and_then(Fear.case(*conditions, &effect))
         or_else(branch)
       end
-      alias failure left
+      alias_method :failure, :left
     end
   end
 end

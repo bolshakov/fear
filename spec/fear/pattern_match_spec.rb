@@ -11,26 +11,26 @@ RSpec.describe Fear::PatternMatch do
     end
 
     context "Integer" do
-      subject { matcher.(4) }
+      subject { matcher.call(4) }
 
       it { is_expected.to eq("4 is int") }
     end
 
     context "String" do
-      subject { matcher.("4") }
+      subject { matcher.call("4") }
 
       it { is_expected.to eq("4 is str") }
     end
 
     context "Symbol" do
-      subject { matcher.(:a) }
+      subject { matcher.call(:a) }
 
       it { is_expected.to eq("a is something else") }
     end
   end
 
   context "else before other branches" do
-    subject { matcher.(4) }
+    subject { matcher.call(4) }
 
     let(:matcher) do
       described_class.new do |m|
@@ -43,7 +43,7 @@ RSpec.describe Fear::PatternMatch do
   end
 
   context "several else branches" do
-    subject { matcher.(4) }
+    subject { matcher.call(4) }
 
     let(:matcher) do
       described_class.new do |m|

@@ -79,7 +79,7 @@ module Fear
     # @yieldparam matcher [Fear::PartialFunction]
     # @return [any]
     def match(value, &block)
-      matcher(&block).(value)
+      matcher(&block).call(value)
     end
 
     # Creates partial function defined on domain described with guards
