@@ -34,25 +34,25 @@ RSpec.describe Fear::PartialFunction, "#or_else" do
 
   describe "#call" do
     context "first defined, second not" do
-      subject { first_or_else_second.(4) }
+      subject { first_or_else_second.call(4) }
 
       it { is_expected.to eq("first: 4") }
     end
 
     context "first not defined, second defined" do
-      subject { first_or_else_second.(9) }
+      subject { first_or_else_second.call(9) }
 
       it { is_expected.to eq("second: 9") }
     end
 
     context "first not defined, second not defined" do
-      subject { -> { first_or_else_second.(5) } }
+      subject { -> { first_or_else_second.call(5) } }
 
       it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 5") }
     end
 
     context "first and second defined" do
-      subject { first_or_else_second.(6) }
+      subject { first_or_else_second.call(6) }
 
       it { is_expected.to eq("first: 6") }
     end
@@ -124,31 +124,31 @@ RSpec.describe Fear::PartialFunction, "#or_else" do
 
     describe "#call" do
       context "first defined, second not" do
-        subject { first_or_else_second_or_else_third.(4) }
+        subject { first_or_else_second_or_else_third.call(4) }
 
         it { is_expected.to eq("first: 4") }
       end
 
       context "first not defined, second defined" do
-        subject { first_or_else_second_or_else_third.(9) }
+        subject { first_or_else_second_or_else_third.call(9) }
 
         it { is_expected.to eq("second: 9") }
       end
 
       context "first not defined, second not defined, third defined" do
-        subject { first_or_else_second_or_else_third.(7) }
+        subject { first_or_else_second_or_else_third.call(7) }
 
         it { is_expected.to eq("third: 7") }
       end
 
       context "first not defined, second not defined, third not defined" do
-        subject { -> { first_or_else_second_or_else_third.(1) } }
+        subject { -> { first_or_else_second_or_else_third.call(1) } }
 
         it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 1") }
       end
 
       context "first, second and third defined" do
-        subject { first_or_else_second.(42) }
+        subject { first_or_else_second.call(42) }
 
         it { is_expected.to eq("first: 42") }
       end
@@ -221,25 +221,25 @@ RSpec.describe Fear::PartialFunction, "#or_else" do
 
     describe "#call" do
       context "first defined, second not" do
-        subject { first_or_else_second_and_then_function.(2) }
+        subject { first_or_else_second_and_then_function.call(2) }
 
         it { is_expected.to eq("f: first: 2") }
       end
 
       context "first not defined, second defined" do
-        subject { first_or_else_second_and_then_function.(3) }
+        subject { first_or_else_second_and_then_function.call(3) }
 
         it { is_expected.to eq("f: second: 3") }
       end
 
       context "first not defined, second not defined" do
-        subject { -> { first_or_else_second_and_then_function.(5) } }
+        subject { -> { first_or_else_second_and_then_function.call(5) } }
 
         it { is_expected.to raise_error(Fear::MatchError, "partial function not defined at: 5") }
       end
 
       context "first defined, second defined" do
-        subject { first_or_else_second_and_then_function.(6) }
+        subject { first_or_else_second_and_then_function.call(6) }
 
         it { is_expected.to eq("f: first: 6") }
       end

@@ -221,7 +221,7 @@ module Fear
     # @yieldparam [any] yields with successful feature value
     # @see {#on_complete}
     #
-    alias each on_success
+    alias_method :each, :on_success
 
     # Creates a new future by applying the +success+ function to the successful
     # result of this future, or the +failure+ function to the failed result.
@@ -245,8 +245,8 @@ module Fear
     def transform(success, failure)
       promise = Promise.new(**@options)
       on_complete_match do |m|
-        m.success { |value| promise.success(success.(value)) }
-        m.failure { |error| promise.failure(failure.(error)) }
+        m.success { |value| promise.success(success.call(value)) }
+        m.failure { |error| promise.failure(failure.call(error)) }
       end
       promise.to_future
     end
@@ -293,7 +293,7 @@ module Fear
         m.case(Fear::Failure) { |failure| promise.complete!(failure) }
         m.success do |value|
           yield(value).on_complete { |callback_result| promise.complete!(callback_result) }
-        rescue StandardError => error
+        rescue => error
           promise.failure!(error)
         end
       end
@@ -379,7 +379,7 @@ module Fear
                 else
                   [value, other_value]
                 end
-              end,
+              end
             )
           end
         end

@@ -82,7 +82,7 @@ module Fear
           either
         end
       end
-      alias apply each
+      alias_method :apply, :each
 
       # Maps the block argument through +Fear::Left+.
       #
@@ -169,7 +169,7 @@ module Fear
       def any?(&predicate)
         case either
         in Fear::Left(value)
-          predicate.(value)
+          predicate.call(value)
         in Fear::Right
           false
         end
@@ -191,7 +191,7 @@ module Fear
         case either
         in Fear::Right
           either
-        in Fear::Left(value) if predicate.(value)
+        in Fear::Left(value) if predicate.call(value)
           either
         in Fear::Left
           either.swap
@@ -211,13 +211,13 @@ module Fear
       #
       def find(&predicate)
         case either
-        in Fear::Left(value) if predicate.(value)
+        in Fear::Left(value) if predicate.call(value)
           Fear.some(either)
         in Fear::Either
           Fear.none
         end
       end
-      alias detect find
+      alias_method :detect, :find
 
       # @param other [Object]
       # @return [Boolean]

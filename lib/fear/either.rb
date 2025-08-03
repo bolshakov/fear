@@ -273,7 +273,7 @@ module Fear
     end
 
     # @return [String]
-    alias to_s inspect
+    alias_method :to_s, :inspect
 
     # @return [<any>]
     def deconstruct

@@ -15,13 +15,13 @@ module Fear
     def right?
       false
     end
-    alias success? right?
+    alias_method :success?, :right?
 
     # @return [true]
     def left?
       true
     end
-    alias failure? left?
+    alias_method :failure?, :left?
 
     # @return [Either]
     def select_or_else(*)
@@ -46,7 +46,7 @@ module Fear
     # @param reduce_left [Proc]
     # @return [any]
     def reduce(reduce_left, _reduce_right)
-      reduce_left.(value)
+      reduce_left.call(value)
     end
 
     # @return [self]

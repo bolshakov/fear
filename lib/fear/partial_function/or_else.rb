@@ -27,8 +27,8 @@ module Fear
         f1.call_or_else(arg, &f2)
       end
 
-      alias === call
-      alias [] call
+      alias_method :===, :call
+      alias_method :[], :call
 
       # @param other [Fear::PartialFunction]
       # @return [Fear::PartialFunction]

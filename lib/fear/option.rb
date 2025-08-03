@@ -211,7 +211,7 @@ module Fear
       end
 
       def match(value, &block)
-        matcher(&block).(value)
+        matcher(&block).call(value)
       end
     end
 

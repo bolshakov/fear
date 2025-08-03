@@ -24,7 +24,7 @@ RSpec.describe Fear::Utils do
       it "fails with argument error" do
         is_expected.to raise_error(
           ArgumentError,
-          "#the_method accepts either one argument or block",
+          "#the_method accepts either one argument or block"
         )
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe Fear::Utils do
       it "fails with argument error" do
         is_expected.to raise_error(
           ArgumentError,
-          "#the_method accepts either one argument or block",
+          "#the_method accepts either one argument or block"
         )
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe Fear::Utils do
       it "raises TypeError" do
         is_expected.to raise_error(
           TypeError,
-          "expected `24` to be of String class",
+          "expected `24` to be of String class"
         )
       end
     end

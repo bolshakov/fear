@@ -10,10 +10,10 @@ RSpec.describe Fear::Try::PatternMatch do
     end
 
     it do
-      expect(matcher.(Fear.success(4))).to eq("4 is even")
-      expect(matcher.(Fear.success(3))).to eq("3 is odd")
+      expect(matcher.call(Fear.success(4))).to eq("4 is even")
+      expect(matcher.call(Fear.success(3))).to eq("3 is odd")
       expect do
-        matcher.(Fear.failure(RuntimeError.new))
+        matcher.call(Fear.failure(RuntimeError.new))
       end.to raise_error(Fear::MatchError)
     end
   end
@@ -27,10 +27,10 @@ RSpec.describe Fear::Try::PatternMatch do
     end
 
     it do
-      expect(matcher.(Fear.failure(RuntimeError.new))).to eq("RuntimeError is first")
-      expect(matcher.(Fear.failure(StandardError.new))).to eq("StandardError is second")
+      expect(matcher.call(Fear.failure(RuntimeError.new))).to eq("RuntimeError is first")
+      expect(matcher.call(Fear.failure(StandardError.new))).to eq("StandardError is second")
       expect do
-        matcher.(Fear.success(44))
+        matcher.call(Fear.success(44))
       end.to raise_error(Fear::MatchError)
     end
   end

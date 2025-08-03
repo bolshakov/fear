@@ -24,11 +24,11 @@ module Fear
       # @param arg [any]
       # @return [any ]
       def call(arg)
-        f2.(f1.(arg))
+        f2.call(f1.call(arg))
       end
 
-      alias === call
-      alias [] call
+      alias_method :===, :call
+      alias_method :[], :call
 
       # @param arg [any]
       # @yieldparam arg [any]

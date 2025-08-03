@@ -25,7 +25,7 @@ module Fear
       # @param arg [any]
       # @return [any ]
       def call(arg)
-        function.(partial_function.(arg))
+        function.call(partial_function.call(arg))
       end
 
       # @param arg [any]
@@ -41,7 +41,7 @@ module Fear
         result = partial_function.call_or_else(arg) do
           return yield(arg)
         end
-        function.(result)
+        function.call(result)
       end
     end
 

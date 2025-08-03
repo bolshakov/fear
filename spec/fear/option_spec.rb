@@ -62,7 +62,7 @@ RSpec.describe Fear::Option do
 
     context "some mapped to nil" do
       let(:option) { Fear.some(42) }
-      let(:filter_map) { ->(*) { nil } }
+      let(:filter_map) { ->(*) {} }
 
       it { is_expected.to be_none }
     end
@@ -97,7 +97,7 @@ RSpec.describe Fear::Option do
   end
 
   describe "#matcher" do
-    subject(:result) { matcher.(value) }
+    subject(:result) { matcher.call(value) }
 
     let(:matcher) do
       described_class.matcher do |m|

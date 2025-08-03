@@ -7,7 +7,7 @@ module Fear
       def right(*)
         self
       end
-      alias success right
+      alias_method :success, :right
     end
 
     private_constant :PatternMatch

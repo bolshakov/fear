@@ -13,5 +13,5 @@ matcher = proc do |value|
   end
 end
 
-matcher.(User.new(1, "Jane", true))
-matcher.(User.new(1, "John", false))
+matcher.call(User.new(1, "Jane", true))
+matcher.call(User.new(1, "John", false))

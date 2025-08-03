@@ -12,7 +12,7 @@ module Fear
     #
     def try
       success(yield)
-    rescue StandardError => error
+    rescue => error
       failure(error)
     end
 

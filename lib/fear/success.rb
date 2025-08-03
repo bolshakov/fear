@@ -52,7 +52,7 @@ module Fear
       else
         raise NoSuchElementError, "Predicate does not hold for `#{value}`"
       end
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
@@ -69,14 +69,14 @@ module Fear
     # @return [Try]
     def map
       super
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
     # @return [Try]
     def flat_map
       super
-    rescue StandardError => error
+    rescue => error
       Failure.new(error)
     end
 
@@ -97,7 +97,7 @@ module Fear
     end
 
     # @return [String]
-    alias to_s inspect
+    alias_method :to_s, :inspect
 
     # @return [<any>]
     def deconstruct

@@ -77,7 +77,7 @@ RSpec.describe Fear::Left do
     subject do
       left.reduce(
         ->(left) { "Left: #{left}" },
-        ->(right) { "Right: #{right}" },
+        ->(right) { "Right: #{right}" }
       )
     end
 

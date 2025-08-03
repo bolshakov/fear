@@ -7,6 +7,20 @@ require_relative "lib/fear"
 
 include Dry::Monads[:maybe]
 
+class Operation
+  include Dry::Monads::Do.for(:call)
+
+  def call
+    m1 = Some(1)
+    m2 = Some(2)
+
+    one = yield m1
+    two = yield m2
+
+    Some(one + two)
+  end
+end
+
 namespace :perf do
   # Contains benchmarking against Dry-rb
   namespace :dry do
@@ -26,24 +40,10 @@ namespace :perf do
     task :do_vs_fear_for do
       require "dry/monads/do"
 
-      class Operation
-        include Dry::Monads::Do.for(:call)
-
-        def call
-          m1 = Some(1)
-          m2 = Some(2)
-
-          one = yield m1
-          two = yield m2
-
-          Some(one + two)
-        end
-      end
-
       op = Operation.new
 
       Benchmark.ips do |x|
-        x.report("Dry") { op.() }
+        x.report("Dry") { op.call }
 
         x.report("Fear") do |_n|
           Fear.for(Fear.some(1), Fear.some(2)) do |one, two|
@@ -141,7 +141,7 @@ namespace :perf do
         end
 
         x.report("execution") do
-          matcher.(42)
+          matcher.call(42)
         end
 
         x.compare!
@@ -178,7 +178,7 @@ namespace :perf do
         end
 
         x.report("Option#matcher") do
-          matcher.(some)
+          matcher.call(some)
         end
 
         x.compare!
@@ -194,14 +194,14 @@ namespace :perf do
         match: ->(try, *pattern) {
           try.is_a?(Fear::Success) && pattern.all? { |p| p === try.get }
         },
-        resolve: ->(try) { try.get },
+        resolve: ->(try) { try.get }
       )
 
       failure_case = Dry::Matcher::Case.new(
         match: ->(try, *pattern) {
           try.is_a?(Fear::Failure) && pattern.all? { |p| p === try.exception }
         },
-        resolve: ->(value) { value.exception },
+        resolve: ->(value) { value.exception }
       )
 
       # Build the matcher
@@ -219,7 +219,7 @@ namespace :perf do
         end
 
         x.report("Dr::Matcher") do
-          matcher.(success) do |m|
+          matcher.call(success) do |m|
             m.failure(&:itself)
             m.success(Integer, ->(y) { y % 5 == 0 }, &:itself)
             m.success { "else" }
@@ -235,23 +235,23 @@ namespace :perf do
         if n <= 1
           1
         else
-          n * factorial_proc.(n - 1)
+          n * factorial_proc.call(n - 1)
         end
       end
 
       factorial_pm = Fear.matcher do |m|
         m.case(1, &:itself)
         m.case(0, &:itself)
-        m.else { |n| n * factorial_pm.(n - 1) }
+        m.else { |n| n * factorial_pm.call(n - 1) }
       end
 
       Benchmark.ips do |x|
         x.report("Proc") do
-          factorial_proc.(100)
+          factorial_proc.call(100)
         end
 
         x.report("Fear") do
-          factorial_pm.(100)
+          factorial_pm.call(100)
         end
 
         x.compare!

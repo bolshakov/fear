@@ -33,7 +33,7 @@ module Fear
   # @note Use this class only to build custom pattern match classes. See +Fear::OptionPatternMatch+ as an example.
   class PatternMatch
     class << self
-      alias __new__ new
+      alias_method :__new__, :new
 
       # @return [Fear::PartialFunction]
       def new
@@ -61,7 +61,7 @@ module Fear
 
         Module.new do
           define_method(as) do |&matchers|
-            matcher_class.new(&matchers).(self)
+            matcher_class.new(&matchers).call(self)
           end
         end
       end

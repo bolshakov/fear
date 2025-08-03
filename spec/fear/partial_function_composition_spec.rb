@@ -60,13 +60,13 @@ RSpec.describe Fear::PartialFunction do
   it "two branches" do
     first_branch = Fear.case(Integer, &:itself).and_then(Fear.case(1) { "one" })
     second_branch = Fear.case(String, &:itself).and_then(
-      (Fear.case("zero") { 0 }).or_else(Fear.case("one") { 1 }),
+      (Fear.case("zero") { 0 }).or_else(Fear.case("one") { 1 })
     )
 
     full = first_branch.or_else(second_branch)
-    expect(full.(1)).to eq("one")
-    expect(full.("zero")).to eq(0)
-    expect(full.("one")).to eq(1)
+    expect(full.call(1)).to eq("one")
+    expect(full.call("zero")).to eq(0)
+    expect(full.call("one")).to eq(1)
   end
 
   it "or else anh then" do
@@ -76,7 +76,7 @@ RSpec.describe Fear::PartialFunction do
 
     f5 = f1.and_then(f3).or_else(f2)
 
-    expect(f5.(11)).to eq(10)
-    expect(f5.(3)).to eq(2)
+    expect(f5.call(11)).to eq(10)
+    expect(f5.call(3)).to eq(2)
   end
 end
