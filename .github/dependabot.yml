@@ -25,3 +25,8 @@ updates:
   - dependency-name: concurrent-ruby
     versions:
     - 1.1.8
+
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: daily
