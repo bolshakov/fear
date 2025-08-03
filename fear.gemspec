@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0")
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = Gem::Requirement.new(">= 3.1")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.2")
 
   spec.add_runtime_dependency "zeitwerk"
 end
