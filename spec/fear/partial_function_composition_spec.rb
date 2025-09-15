@@ -60,7 +60,7 @@ RSpec.describe Fear::PartialFunction do
   it "two branches" do
     first_branch = Fear.case(Integer, &:itself).and_then(Fear.case(1) { "one" })
     second_branch = Fear.case(String, &:itself).and_then(
-      (Fear.case("zero") { 0 }).or_else(Fear.case("one") { 1 })
+      Fear.case("zero") { 0 }.or_else(Fear.case("one") { 1 })
     )
 
     full = first_branch.or_else(second_branch)
